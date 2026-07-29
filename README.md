@@ -10,7 +10,8 @@ ai/
 │   ├── orchestration/
 │   │   └── local.md                    # Tilt, nginx, Docker, k8s, Terraform patterns
 │   ├── conventions/
-│   │   └── code-style.md              # TypeScript naming, file org, imports
+│   │   ├── code-style.md              # TypeScript naming, file org, imports
+│   │   └── frontend-pipeline-contract.md  # Sub-agent pipeline I/O schema
 │   ├── security/
 │   │   └── policies.md               # Auth, validation, CORS, secrets, headers
 │   └── preferences/stack/
@@ -24,8 +25,10 @@ ai/
 │       │   └── middleware.md          # Auth, redirects, A/B testing at the edge
 │       ├── node/
 │       │   └── api-caching.md         # Layered caching (HTTP, Redis, in-memory)
-│       └── csharp/
-│           └── api-caching.md         # Response/output cache, IDistributedCache
+│       ├── csharp/
+│       │   └── api-caching.md         # Response/output cache, IDistributedCache
+│       └── resume/
+│           └── guardrails.md          # Resume/cover letter generation guardrails
 ├── skills/                             # On-demand capability files (YAML frontmatter)
 │   ├── react-components.md
 │   ├── backend-rest-api-feature.md
@@ -36,11 +39,28 @@ ai/
 │   ├── refactor.md
 │   ├── debug.md
 │   ├── test.md
-│   └── deploy.md
+│   ├── deploy.md
+│   ├── fe-scaffold.md                  # Pipeline: component scaffolding
+│   ├── fe-architecture.md              # Pipeline: UI architecture decisions
+│   ├── fe-styling.md                   # Pipeline: Tailwind/shadcn styling
+│   ├── fe-testing.md                   # Pipeline: tests and stories
+│   ├── fe-refactor.md                  # Pipeline: code refactoring
+│   ├── resume-builder.md               # Resume/cover letter generation workflow
+│   ├── experience-parser.md            # Extract experience from .docx files
+│   └── job-scorer.md                   # Score resume against job description
 ├── agents/                             # Agent persona configs (JSON)
 │   ├── dev.json                        # Full-stack: all steering, broad tool access
 │   ├── frontend.json                   # React/Next.js only, no shell/db access
-│   └── infra.json                      # Infrastructure/DevOps focused
+│   ├── frontend-orchestrator.json      # Orchestrator: routes to sub-agents by task type
+│   ├── fe-scaffold.json                # Sub-agent: component scaffolding (haiku)
+│   ├── fe-architecture.json            # Sub-agent: UI architecture decisions (opus)
+│   ├── fe-styling.json                 # Sub-agent: Tailwind/shadcn styling (haiku)
+│   ├── fe-testing.json                 # Sub-agent: tests and stories (sonnet)
+│   ├── fe-refactor.json                # Sub-agent: code refactoring (opus)
+│   ├── infra.json                      # Infrastructure/DevOps focused
+│   ├── resume-builder.json             # Resume generation orchestrator
+│   ├── experience-parser.json          # Extract experience from .docx resumes
+│   └── job-scorer.json                 # Score resume fit against a job description
 ├── mcp/                                # MCP server definitions + tool scripts
 │   ├── servers.json                    # Server config (git, io, postgres)
 │   └── mcp-scripts/
@@ -90,6 +110,10 @@ ln -s ~/workspace/ai/skills /path/to/project/.kiro/skills
 kiro --agent dev        # Full-stack, broad access
 kiro --agent frontend   # React/Next.js scoped
 kiro --agent infra      # Infrastructure/DevOps
+kiro --agent frontend-orchestrator  # Multi-agent pipeline (delegates to sub-agents)
+kiro --agent resume-builder         # Generate tailored resume + cover letter from a JD
+kiro --agent experience-parser      # Extract experience data from .docx resumes
+kiro --agent job-scorer             # Score resume fit against a job description
 ```
 
 ### Syncing the .kiro mirror
