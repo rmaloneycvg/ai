@@ -1,23 +1,92 @@
 {
-  "name": "frontend",
-  "description": "Frontend-focused agent for React and Next.js development with component scaffolding, refactoring, and testing skills",
-  "prompt": "file://../steering/orchestration/local.md",
-  "tools": ["read", "write", "glob", "grep", "code"],
-  "allowedTools": ["read", "write", "@builtin"],
+  "name": "react-nextjs-frontend",
+  "description": "Frontend-focused agent for React and Next.js projects. Scaffolds components with TypeScript, Storybook stories, and Vitest tests. Follows the standard React dependency graph (shadcn/ui, Tailwind, Zustand, TanStack Query, React Hook Form, Zod, AG Grid, Recharts). No shell or database access — scoped exclusively to frontend source files.",
+  "prompt": "You are a frontend development assistant specializing in React and Next.js. You follow the React dependency graph (shadcn/ui, Tailwind, Zustand, TanStack Query, React Hook Form, Zod, AG Grid, Recharts) and Next.js patterns (App Router, Server Components, Server Actions, ISR). You scaffold components with TypeScript, Storybook stories, and tests. You never modify infrastructure, backend, or database files.",
+  "mcpServers": {
+    "git": {
+      "command": "git",
+      "args": [],
+      "timeout": 30000
+    },
+    "io": {
+      "command": "npx",
+      "args": ["tsx"],
+      "timeout": 10000
+    }
+  },
+  "tools": [
+    "read",
+    "write",
+    "glob",
+    "grep",
+    "code",
+    "@git",
+    "@io"
+  ],
+  "allowedTools": [
+    "read",
+    "write",
+    "glob",
+    "grep",
+    "code",
+    "@git/status",
+    "@git/diff",
+    "@git/log",
+    "@io/read-json"
+  ],
+  "toolAliases": {
+    "@git/status": "git-status",
+    "@git/diff": "git-diff",
+    "@git/log": "git-log",
+    "@io/read-json": "read-json",
+    "@io/write-json": "write-json"
+  },
+  "toolsSettings": {
+    "write": {
+      "allowedPaths": [
+        "src/**",
+        "app/**",
+        "components/**",
+        "lib/**",
+        "hooks/**",
+        "stores/**",
+        "schemas/**",
+        "styles/**",
+        "e2e/**",
+        "public/**",
+        "*.tsx",
+        "*.ts",
+        "*.css",
+        "*.md"
+      ]
+    }
+  },
   "resources": [
     "file://../steering/preferences/stack/react/**/*.md",
     "file://../steering/preferences/stack/nextjs/**/*.md",
     "file://../steering/conventions/code-style.md",
-    "skill://../skills/react-components.md",
-    "skill://../skills/backend-rest-api-feature.md",
-    "skill://../skills/project-readme-documentation.md",
-    "skill://../skills/refactor.md",
-    "skill://../skills/test.md"
+    "file://../skills/react-components.md",
+    "file://../skills/refactor.md",
+    "file://../skills/test.md",
+    "file://package.json",
+    "file://tsconfig.json",
+    "file://tailwind.config.ts",
+    "file://components.json"
   ],
-  "mcpServers": ["@io", "@git"],
   "hooks": {
-    "agentSpawn": [{"command": "git status --short"}]
-  },
-  "keyboardShortcut": "ctrl+f",
-  "welcomeMessage": "Frontend agent ready. Focused on React and Next.js with component, API, refactor, and test skills."
+    "agentSpawn": [
+      {
+        "command": "git status --porcelain",
+        "timeout_ms": 5000
+      },
+      {
+        "command": "git branch --show-current",
+        "timeout_ms": 3000
+      },
+      {
+        "command": "cat package.json | grep -E '\"(name|version)\"' 2>/dev/null || echo 'no package.json'",
+        "timeout_ms": 3000
+      }
+    ]
+  }
 }

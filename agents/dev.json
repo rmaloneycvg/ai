@@ -1,17 +1,94 @@
 {
-  "name": "dev",
-  "description": "General-purpose development agent for full-stack work across React, Next.js, and infrastructure",
-  "prompt": "file://../steering/orchestration/local.md",
-  "tools": ["*"],
-  "allowedTools": ["read", "@builtin"],
+  "name": "full-stack-dev",
+  "description": "General-purpose full-stack development agent. Handles React/Next.js frontend, Node.js/C# backends, and light infrastructure work. Has broad tool access but requires approval for destructive operations (shell commands, database writes). Use this when work spans multiple layers or when unsure which specialized agent to pick.",
+  "prompt": "You are a full-stack development assistant with expertise in React, Next.js, Node.js, C#, and infrastructure. You have access to all steering documents and skills for the complete technology stack. Prefer non-destructive operations. Ask before running shell commands that modify state, write to databases, or alter git history.",
+  "mcpServers": {
+    "git": {
+      "command": "git",
+      "args": [],
+      "timeout": 30000
+    },
+    "io": {
+      "command": "npx",
+      "args": ["tsx"],
+      "timeout": 10000
+    },
+    "postgres": {
+      "command": "uv",
+      "args": ["run"],
+      "timeout": 30000
+    }
+  },
+  "tools": [
+    "read",
+    "write",
+    "shell",
+    "glob",
+    "grep",
+    "code",
+    "@git",
+    "@io",
+    "@postgres"
+  ],
+  "allowedTools": [
+    "read",
+    "glob",
+    "grep",
+    "code",
+    "@git/status",
+    "@git/diff",
+    "@git/log",
+    "@io/read-json",
+    "@postgres/query"
+  ],
+  "toolAliases": {
+    "@git/status": "git-status",
+    "@git/diff": "git-diff",
+    "@git/log": "git-log",
+    "@io/read-json": "read-json",
+    "@io/write-json": "write-json",
+    "@postgres/query": "db-query",
+    "@postgres/seed": "db-seed"
+  },
+  "toolsSettings": {
+    "shell": {
+      "allowedCommands": [
+        "npm *",
+        "npx *",
+        "node *",
+        "tilt *",
+        "docker *",
+        "kubectl *",
+        "terraform *",
+        "git *",
+        "cat *",
+        "ls *",
+        "find *",
+        "grep *"
+      ]
+    }
+  },
   "resources": [
     "file://../steering/**/*.md",
-    "skill://../skills/*.md"
+    "file://../skills/*.md",
+    "file://package.json",
+    "file://tsconfig.json",
+    "file://README.md"
   ],
-  "mcpServers": ["@io", "@git"],
   "hooks": {
-    "agentSpawn": [{"command": "git status --short"}]
-  },
-  "keyboardShortcut": "ctrl+d",
-  "welcomeMessage": "Dev agent ready. I have access to all skills and steering for React, Next.js, and infrastructure."
+    "agentSpawn": [
+      {
+        "command": "git status --porcelain",
+        "timeout_ms": 5000
+      },
+      {
+        "command": "git branch --show-current",
+        "timeout_ms": 3000
+      },
+      {
+        "command": "node --version 2>/dev/null || echo 'no node'",
+        "timeout_ms": 3000
+      }
+    ]
+  }
 }
