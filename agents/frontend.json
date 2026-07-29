@@ -66,6 +66,7 @@
     "file://../steering/preferences/stack/nextjs/**/*.md",
     "file://../steering/conventions/code-style.md",
     "file://../skills/react-components.md",
+    "file://../skills/hooks-optimization.md",
     "file://../skills/refactor.md",
     "file://../skills/test.md",
     "file://package.json",

@@ -12,11 +12,6 @@
       "command": "npx",
       "args": ["tsx"],
       "timeout": 10000
-    },
-    "postgres": {
-      "command": "uv",
-      "args": ["run"],
-      "timeout": 30000
     }
   },
   "tools": [
@@ -70,10 +65,8 @@
   },
   "resources": [
     "file://../steering/**/*.md",
-    "file://../skills/*.md",
     "file://package.json",
-    "file://tsconfig.json",
-    "file://README.md"
+    "file://tsconfig.json"
   ],
   "hooks": {
     "agentSpawn": [

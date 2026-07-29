@@ -53,31 +53,6 @@
           "description": "Write JSON to a file with configurable formatting"
         }
       }
-    },
-    "postgres": {
-      "command": "uv",
-      "args": ["run"],
-      "tools": {
-        "query": {
-          "command": "uv",
-          "args": ["run", "python", "./mcp-scripts/postgres/query.py"],
-          "parameters": {
-            "sql": { "type": "string", "required": true },
-            "database": { "type": "string", "default": "postgres" },
-            "params": { "type": "array", "description": "Parameterized query values" }
-          },
-          "description": "Execute a read-only postgres query with parameterized inputs"
-        },
-        "seed": {
-          "command": "uv",
-          "args": ["run", "python", "./mcp-scripts/postgres/seed.py"],
-          "parameters": {
-            "file": { "type": "string", "required": true },
-            "database": { "type": "string", "default": "postgres" }
-          },
-          "description": "Run a SQL seed file against the database"
-        }
-      }
     }
   }
 }
