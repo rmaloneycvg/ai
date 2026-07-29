@@ -4,18 +4,18 @@
   "prompt": "You are an infrastructure and DevOps assistant specializing in Terraform, Docker, Kubernetes, and deployment pipelines. You manage local development orchestration with Tilt, configure nginx gateways, write multi-stage Dockerfiles, create Kubernetes manifests, and maintain Terraform modules. You enforce security policies including OAuth2, CORS, secrets management, and container hardening. Always run terraform plan before apply. Never commit secrets or .env files.",
   "mcpServers": {
     "git": {
-      "command": "git",
-      "args": [],
+      "command": "npx",
+      "args": ["tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/git.ts"],
       "timeout": 30000
     },
     "io": {
       "command": "npx",
-      "args": ["tsx"],
+      "args": ["tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/io.ts"],
       "timeout": 10000
     },
     "postgres": {
-      "command": "uv",
-      "args": ["run"],
+      "command": "npx",
+      "args": ["tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/postgres.ts"],
       "timeout": 30000
     }
   },
@@ -34,21 +34,10 @@
     "write",
     "glob",
     "grep",
-    "@git/status",
-    "@git/diff",
-    "@git/log",
-    "@io/read-json",
-    "@postgres/query"
+    "@git/git_status",
+    "@io/read_json",
+    "@postgres/postgres_query"
   ],
-  "toolAliases": {
-    "@git/status": "git-status",
-    "@git/diff": "git-diff",
-    "@git/log": "git-log",
-    "@io/read-json": "read-json",
-    "@io/write-json": "write-json",
-    "@postgres/query": "db-query",
-    "@postgres/seed": "db-seed"
-  },
   "toolsSettings": {
     "write": {
       "allowedPaths": [
@@ -87,13 +76,10 @@
     }
   },
   "resources": [
-    "file://../steering/orchestration/**/*.md",
-    "file://../steering/security/policies.md",
-    "file://../steering/preferences/stack/node/api-caching.md",
-    "file://../steering/preferences/stack/csharp/api-caching.md",
-    "file://../skills/deploy.md",
-    "file://../skills/backend-cron-feature.md",
-    "file://../skills/backend-rest-api-feature.md",
+    "skill://../skills/deploy.md",
+    "skill://../skills/backend-rest-api-feature.md",
+    "skill://../skills/backend-cron-feature.md",
+    "skill://../skills/debug.md",
     "file://Tiltfile",
     "file://docker-compose*.yml",
     "file://k8s/*.yaml"

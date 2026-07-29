@@ -4,13 +4,13 @@
   "prompt": "You are a frontend development assistant specializing in React and Next.js. You follow the React dependency graph (shadcn/ui, Tailwind, Zustand, TanStack Query, React Hook Form, Zod, AG Grid, Recharts) and Next.js patterns (App Router, Server Components, Server Actions, ISR). You scaffold components with TypeScript, Storybook stories, and tests. You never modify infrastructure, backend, or database files.",
   "mcpServers": {
     "git": {
-      "command": "git",
-      "args": [],
+      "command": "npx",
+      "args": ["tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/git.ts"],
       "timeout": 30000
     },
     "io": {
       "command": "npx",
-      "args": ["tsx"],
+      "args": ["tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/io.ts"],
       "timeout": 10000
     }
   },
@@ -29,18 +29,9 @@
     "glob",
     "grep",
     "code",
-    "@git/status",
-    "@git/diff",
-    "@git/log",
-    "@io/read-json"
+    "@git/git_status",
+    "@io/read_json"
   ],
-  "toolAliases": {
-    "@git/status": "git-status",
-    "@git/diff": "git-diff",
-    "@git/log": "git-log",
-    "@io/read-json": "read-json",
-    "@io/write-json": "write-json"
-  },
   "toolsSettings": {
     "write": {
       "allowedPaths": [
@@ -62,13 +53,15 @@
     }
   },
   "resources": [
-    "file://../steering/preferences/stack/react/**/*.md",
-    "file://../steering/preferences/stack/nextjs/**/*.md",
-    "file://../steering/conventions/code-style.md",
-    "file://../skills/react-components.md",
-    "file://../skills/hooks-optimization.md",
-    "file://../skills/refactor.md",
-    "file://../skills/test.md",
+    "skill://../skills/react-components.md",
+    "skill://../skills/hooks-optimization.md",
+    "skill://../skills/refactor.md",
+    "skill://../skills/test.md",
+    "skill://../skills/fe-scaffold.md",
+    "skill://../skills/fe-architecture.md",
+    "skill://../skills/fe-styling.md",
+    "skill://../skills/fe-testing.md",
+    "skill://../skills/fe-refactor.md",
     "file://package.json",
     "file://tsconfig.json",
     "file://tailwind.config.ts",

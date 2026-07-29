@@ -250,8 +250,10 @@ When the JD requires something not in experience.json:
 
 ## File Naming Convention
 
+Output directory is configured via `paths.resumeDir` in `config/resume/experience.json` (default: `~/workspace/resume`).
+
 ```
-~/workspace/resume/YYYY-MM-DD/
+{resumeDir}/YYYY-MM-DD/
 ├── Resume_{CompanyName}.docx
 ├── Resume_{CompanyName}.pdf
 ├── Cover_Letter_{CompanyName}.docx

@@ -77,5 +77,5 @@ Act as an ATS algorithm simulator and hiring committee reviewer combined. Be qua
 
 ## References
 
-- `~/workspace/resume/experience.json` — source of truth for truthfulness validation
+- `~/workspace/ai/config/resume/experience.json` — source of truth for truthfulness validation
 - `steering/preferences/resume/guardrails.md` — ATS and formatting rules being checked

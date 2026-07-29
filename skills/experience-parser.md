@@ -15,9 +15,9 @@ Act as a meticulous data extraction specialist. Be precise about what was found 
 
 ## Workflow
 
-1. **Check Existing State** — Read `~/workspace/resume/experience.json`. If it already contains populated data, ask user whether to merge new findings or overwrite.
+1. **Check Existing State** — Read `~/workspace/ai/config/resume/experience.json`. If it already contains populated data, ask user whether to merge new findings or overwrite.
 2. **Install Dependencies** — Ensure `python-docx` is installed: `pip3 install python-docx`
-3. **Run Parser** — Execute `python3 ~/workspace/resume/scripts/parse_resumes.py` to extract raw text from all resume .docx files (skips cover letters and PDFs).
+3. **Run Parser** — Execute `python3 ~/workspace/ai/scripts/resume/parse_resumes.py` to extract raw text from all resume .docx files (skips cover letters and PDFs).
 4. **Structure Data** — Organize extracted text into the schema format:
    - Identify sections by heading styles or text patterns (SUMMARY, EXPERIENCE, SKILLS, EDUCATION)
    - Parse experience entries: company name, job title, date range, bullet points
@@ -33,7 +33,7 @@ Act as a meticulous data extraction specialist. Be precise about what was found 
    - Skills extracted (grouped)
    - Any entries with missing dates or vague bullets (flagged for attention)
    - Full structured output for approval
-8. **Save** — Write validated data to `~/workspace/resume/experience.json`
+8. **Save** — Write validated data to `~/workspace/ai/config/resume/experience.json`
 
 ### Failure Recovery (max 3 retries)
 
@@ -56,5 +56,5 @@ If user rejects the extracted data: do not write to experience.json. Offer to re
 
 ## References
 
-- `~/workspace/resume/experience.schema.json` — defines the target data structure
-- `~/workspace/resume/scripts/parse_resumes.py` — extraction script
+- `~/workspace/ai/config/resume/experience.schema.json` — defines the target data structure
+- `~/workspace/ai/scripts/resume/parse_resumes.py` — extraction script

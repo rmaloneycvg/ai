@@ -14,7 +14,7 @@
     "grep"
   ],
   "resources": [
-    "file:///home/ryanm/workspace/resume/experience.json",
-    "file:///home/ryanm/workspace/resume/experience.schema.json"
+    "file:///home/ryanm/workspace/ai/config/resume/experience.json",
+    "file:///home/ryanm/workspace/ai/config/resume/experience.schema.json"
   ]
 }

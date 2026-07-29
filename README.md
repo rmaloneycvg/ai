@@ -62,16 +62,30 @@ ai/
 │   ├── experience-parser.json          # Extract experience from .docx resumes
 │   └── job-scorer.json                 # Score resume fit against a job description
 ├── mcp/                                # MCP server definitions + tool scripts
-│   ├── servers.json                    # Server config (git, io, postgres)
 │   └── mcp-scripts/
+│       ├── servers/                    # MCP server entry points (git, io, postgres)
+│       │   ├── git.ts                 # git_status tool
+│       │   ├── io.ts                  # read_json, write_json tools
+│       │   └── postgres.ts            # postgres_query, postgres_seed tools
 │       ├── git/status.ts               # Parsed git status
 │       ├── io/read-json.ts             # Read and validate JSON files
 │       ├── io/write-json.ts            # Write JSON with formatting
 │       ├── postgres/query.py           # Parameterized read-only queries
 │       └── postgres/seed.py            # Run SQL seed files
-├── .kiro/                              # Mirror of agents/steering/skills for Kiro CLI
-├── root-to-kiro.sh                     # Sync root dirs → .kiro/
-├── kiro-to-root.sh                     # Sync .kiro/ → root dirs
+├── scripts/                            # Executable scripts used by agents
+│   └── resume/
+│       ├── generate_docx.py           # Generate ATS-optimized resume/cover letter docx
+│       ├── parse_resumes.py           # Extract structured text from .docx files
+│       ├── create_templates.py        # Generate docx templates with named styles
+│       ├── requirements.txt           # Python dependencies for resume scripts
+│       └── setup.sh                   # Initialize config (experience.json, venv, templates)
+├── config/                             # Per-user configuration (personal data gitignored)
+│   └── resume/
+│       ├── experience.schema.json     # Schema for experience data (tracked)
+│       ├── experience.json            # Personal experience data (gitignored, created by setup.sh)
+│       └── templates/                 # Generated docx templates (gitignored)
+├── setup.sh                            # Generate local .kiro/ with symlinks
+├── link.sh                             # Create .kiro/ in another project with symlinks back
 └── .gitignore
 ```
 
@@ -89,20 +103,33 @@ ai/
 
 ### In a project
 
-Kiro CLI looks for `.kiro/` at the project root. Symlink this workspace:
+Kiro CLI looks for `.kiro/` at the project root. Use the `link.sh` script to create one with symlinks back to this workspace:
 
 ```bash
-ln -s ~/workspace/ai /path/to/project/.kiro
+~/workspace/ai/link.sh /path/to/project
 ```
 
-Or symlink individual directories:
+This creates `/path/to/project/.kiro/` containing symlinks to `agents/`, `steering/`, and `skills/`. Changes to any file are reflected immediately in all linked projects — no syncing needed.
+
+### Local setup (this repo as a project)
+
+To use Kiro CLI directly in this workspace:
 
 ```bash
-mkdir -p /path/to/project/.kiro
-ln -s ~/workspace/ai/agents /path/to/project/.kiro/agents
-ln -s ~/workspace/ai/steering /path/to/project/.kiro/steering
-ln -s ~/workspace/ai/skills /path/to/project/.kiro/skills
+./setup.sh
 ```
+
+Creates `.kiro/` with symlinks to the sibling directories. Gitignored.
+
+### Resume tooling setup
+
+If you plan to use the resume-builder, experience-parser, or job-scorer agents:
+
+```bash
+./scripts/resume/setup.sh
+```
+
+This creates `config/resume/experience.json` (from an existing file or a blank scaffold), installs Python dependencies, and generates docx templates. The experience.json file is gitignored — each user populates their own.
 
 ### Selecting an agent
 
@@ -114,17 +141,6 @@ kiro --agent frontend-orchestrator  # Multi-agent pipeline (delegates to sub-age
 kiro --agent resume-builder         # Generate tailored resume + cover letter from a JD
 kiro --agent experience-parser      # Extract experience data from .docx resumes
 kiro --agent job-scorer             # Score resume fit against a job description
-```
-
-### Syncing the .kiro mirror
-
-The repo maintains a `.kiro/` copy of `agents/`, `steering/`, and `skills/` for when the repo itself is used as a `.kiro` directory:
-
-```bash
-./root-to-kiro.sh              # Copy root → .kiro/
-./root-to-kiro.sh /other/proj  # Copy root → /other/proj/.kiro/
-
-./kiro-to-root.sh              # Copy .kiro/ → root (after editing via Kiro)
 ```
 
 ## Agent config format
@@ -139,8 +155,8 @@ The repo maintains a `.kiro/` copy of `agents/`, `steering/`, and `skills/` for 
   "allowedTools": [ /* auto-approved subset */ ],
   "toolsSettings": { /* per-tool restrictions (allowed paths, commands) */ },
   "resources": [
-    "file://../steering/**/*.md",      // Glob-matched steering docs
-    "file://../skills/react-components.md"  // Specific skills
+    "skill://../skills/react-components.md",  // On-demand skill (metadata only at startup)
+    "file://package.json"                     // Small project file (always in context)
   ],
   "hooks": {
     "agentSpawn": [ /* commands run when agent starts */ ]

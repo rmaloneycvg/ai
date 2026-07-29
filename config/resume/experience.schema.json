@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "experience.schema.json",
+  "title": "Professional Experience Data",
+  "description": "Structured experience data for resume generation. This is the single source of truth — the resume builder agent will ONLY use claims documented here.",
+  "type": "object",
+  "required": ["metadata", "personalInfo", "skills", "experience"],
+  "properties": {
+    "paths": {
+      "type": "object",
+      "description": "User-configurable paths for resume tooling. Agents read these at runtime instead of hardcoding directories.",
+      "properties": {
+        "resumeDir": {
+          "type": "string",
+          "description": "Directory containing source .docx resume files and where generated output is written (e.g., '~/workspace/resume')"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Schema and data versioning metadata",
+      "required": ["version", "lastUpdated"],
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Semantic version of this data file",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "lastUpdated": {
+          "type": "string",
+          "format": "date",
+          "description": "ISO date when this file was last modified"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Optional notes about recent changes"
+        }
+      }
+    },
+    "personalInfo": {
+      "type": "object",
+      "description": "Contact and identity information. Placed in document body (not header/footer) for ATS compatibility.",
+      "required": ["name", "email", "phone", "location"],
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "linkedin": { "type": "string", "format": "uri" },
+        "github": { "type": "string", "format": "uri" },
+        "portfolio": { "type": "string", "format": "uri" },
+        "location": {
+          "type": "string",
+          "description": "City, State format (e.g., 'Longmont, CO')"
+        }
+      }
+    },
+    "summaryTemplates": {
+      "type": "array",
+      "description": "Pre-written executive summary variations. The builder agent selects and tailors the most relevant one based on the target JD.",
+      "items": {
+        "type": "object",
+        "required": ["focus", "text"],
+        "properties": {
+          "focus": {
+            "type": "string",
+            "description": "What domain/role type this summary targets (e.g., 'frontend', 'full-stack', 'backend', 'leadership')"
+          },
+          "text": {
+            "type": "string",
+            "description": "3-4 sentence professional summary. Use {yearsExperience} as a placeholder for dynamic calculation."
+          }
+        }
+      }
+    },
+    "skills": {
+      "type": "object",
+      "description": "Skills grouped by category. Only include technologies used in the last 7-10 years unless a specific JD requests legacy tech.",
+      "required": ["categories"],
+      "properties": {
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "skills"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Category label (e.g., 'Languages', 'Cloud & Infrastructure', 'Frameworks & Libraries', 'Architecture', 'Tools & Practices')"
+              },
+              "skills": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "List of skills in this category, ordered by proficiency/relevance"
+              }
+            }
+          }
+        }
+      }
+    },
+    "experience": {
+      "type": "array",
+      "description": "Professional experience entries from 2016 to present. These get full treatment (4-6 bullets per role). Ordered most recent first.",
+      "items": {
+        "$ref": "#/$defs/experienceEntry"
+      }
+    },
+    "additionalExperience": {
+      "type": "array",
+      "description": "Pre-2016 roles. Condensed format — company, title, dates, and 0-2 bullets highlighting major wins only. Grouped under 'Previous Engineering Experience' on the resume.",
+      "items": {
+        "$ref": "#/$defs/experienceEntry"
+      }
+    },
+    "education": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["institution", "degree"],
+        "properties": {
+          "institution": { "type": "string" },
+          "degree": { "type": "string" },
+          "field": { "type": "string" },
+          "graduationDate": { "type": "string" },
+          "location": { "type": "string" },
+          "honors": { "type": "string" }
+        }
+      }
+    },
+    "certifications": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string" },
+          "issuer": { "type": "string" },
+          "date": { "type": "string" },
+          "expirationDate": { "type": "string" },
+          "credentialId": { "type": "string" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "experienceEntry": {
+      "type": "object",
+      "required": ["company", "title", "startDate"],
+      "properties": {
+        "company": { "type": "string" },
+        "title": { "type": "string" },
+        "startDate": {
+          "type": "string",
+          "description": "Format: 'Month Year' (e.g., 'January 2022'). Always include month — AI flags missing dates.",
+          "pattern": "^(January|February|March|April|May|June|July|August|September|October|November|December) \\d{4}$"
+        },
+        "endDate": {
+          "type": "string",
+          "description": "Format: 'Month Year' or 'Present'",
+          "pattern": "^((January|February|March|April|May|June|July|August|September|October|November|December) \\d{4}|Present)$"
+        },
+        "location": { "type": "string" },
+        "remote": { "type": "boolean" },
+        "bullets": {
+          "type": "array",
+          "description": "Impact-driven accomplishments following X-Y-Z formula: Accomplished [X] as measured by [Y], by doing [Z].",
+          "items": {
+            "$ref": "#/$defs/bullet"
+          }
+        },
+        "technologies": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Technologies used in this role — used for keyword matching against JDs"
+        }
+      }
+    },
+    "bullet": {
+      "type": "object",
+      "required": ["text"],
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "The accomplishment statement. Should follow X-Y-Z formula where possible."
+        },
+        "metrics": {
+          "type": "string",
+          "description": "Quantified results (e.g., '40% performance improvement', '$120k annual savings', '5x deployment frequency'). Null if no metric available."
+        },
+        "keywords": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Key technologies, methods, or concepts in this bullet — used for JD keyword matching"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["architecture", "scale", "leadership", "business-impact", "force-multiplier", "technical-execution"],
+          "description": "What type of accomplishment this represents — helps the builder select relevant bullets for a given JD"
+        }
+      }
+    }
+  }
+}

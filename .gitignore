@@ -3,3 +3,10 @@
 **/.pytest_cache
 **/.venv
 **/__pycache__
+
+# Resume personal data (populated per-user via scripts/resume/setup.sh)
+config/resume/experience.json
+config/resume/templates/
+
+# Generated resume output
+output/

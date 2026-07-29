@@ -29,7 +29,7 @@ Act as a senior career strategist who specializes in getting experienced enginee
 
 ### Phase 2: Match Experience to JD
 
-2. **Read `~/workspace/resume/experience.json`**
+2. **Read `~/workspace/ai/config/resume/experience.json`**
 3. **Select relevant content:**
    - Choose which experience entries to include (most relevant to JD)
    - Select which bullets from each role best match JD requirements
@@ -94,9 +94,12 @@ Act as a senior career strategist who specializes in getting experienced enginee
 
 ### Phase 7: Generate Documents
 
+16. **Resolve output directory:**
+    Read `paths.resumeDir` from `~/workspace/ai/config/resume/experience.json` (default: `~/workspace/resume`). Use this as `RESUME_DIR` for all output paths below.
+
 17. **Create output directory:**
     ```bash
-    mkdir -p ~/workspace/resume/$(date +%Y-%m-%d)
+    mkdir -p $RESUME_DIR/$(date +%Y-%m-%d)
     ```
 
 18. **Write content JSON files** to /tmp/:
@@ -105,17 +108,17 @@ Act as a senior career strategist who specializes in getting experienced enginee
 
 19. **Generate docx files:**
     ```bash
-    python3 ~/workspace/resume/scripts/generate_docx.py \
+    python3 ~/workspace/ai/scripts/resume/generate_docx.py \
       --type resume \
       --content /tmp/resume_content_{company}.json \
-      --output ~/workspace/resume/YYYY-MM-DD/Resume_{Company}.docx \
-      --template ~/workspace/resume/templates/resume_template.docx
+      --output $RESUME_DIR/YYYY-MM-DD/Resume_{Company}.docx \
+      --template ~/workspace/ai/config/resume/templates/resume_template.docx
 
-    python3 ~/workspace/resume/scripts/generate_docx.py \
+    python3 ~/workspace/ai/scripts/resume/generate_docx.py \
       --type cover_letter \
       --content /tmp/cover_letter_content_{company}.json \
-      --output ~/workspace/resume/YYYY-MM-DD/Cover_Letter_{Company}.docx \
-      --template ~/workspace/resume/templates/cover_letter_template.docx
+      --output $RESUME_DIR/YYYY-MM-DD/Cover_Letter_{Company}.docx \
+      --template ~/workspace/ai/config/resume/templates/cover_letter_template.docx
     ```
 
 20. **Convert to PDF (WSL → PowerShell → docx2pdf):**
@@ -129,14 +132,14 @@ Act as a senior career strategist who specializes in getting experienced enginee
 
     Then for each docx file:
     ```bash
-    WIN_SRC=$(wslpath -w ~/workspace/resume/YYYY-MM-DD/Resume_{Company}.docx)
+    WIN_SRC=$(wslpath -w $RESUME_DIR/YYYY-MM-DD/Resume_{Company}.docx)
     TEMP_DOCX="${WIN_TEMP}\\Resume_{Company}.docx"
     TEMP_PDF="${WIN_TEMP}\\Resume_{Company}.pdf"
     powershell.exe -Command "
       Copy-Item '${WIN_SRC}' -Destination '${TEMP_DOCX}' -Force
       python -c \"from docx2pdf import convert; convert(r'${TEMP_DOCX}', r'${TEMP_PDF}')\"
     "
-    cp "$(wslpath "${TEMP_PDF}")" ~/workspace/resume/YYYY-MM-DD/Resume_{Company}.pdf
+    cp "$(wslpath "${TEMP_PDF}")" $RESUME_DIR/YYYY-MM-DD/Resume_{Company}.pdf
     powershell.exe -Command "Remove-Item '${WIN_TEMP}\\Resume_{Company}.*' -Force -ErrorAction SilentlyContinue"
     ```
     Repeat for the cover letter docx. Requirements: Windows Python with `docx2pdf` installed, Microsoft Word on Windows.
@@ -194,8 +197,8 @@ If user cancels after partial generation: remove the dated output directory and 
 
 ## References
 
-- `~/workspace/resume/experience.json` — single source of truth for all claims
-- `~/workspace/resume/experience.schema.json` — schema definition
+- `~/workspace/ai/config/resume/experience.json` — single source of truth for all claims
+- `~/workspace/ai/config/resume/experience.schema.json` — schema definition
 - `steering/preferences/resume/guardrails.md` — full guardrail details
-- `~/workspace/resume/scripts/generate_docx.py` — docx generation script
+- `~/workspace/ai/scripts/resume/generate_docx.py` — docx generation script
 - `skills/job-scorer.md` — scoring criteria details
