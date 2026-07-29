@@ -1,0 +1,17 @@
+{
+  "name": "dev",
+  "description": "General-purpose development agent for full-stack work across React, Next.js, and infrastructure",
+  "prompt": "file://../steering/orchestration/local.md",
+  "tools": ["*"],
+  "allowedTools": ["read", "@builtin"],
+  "resources": [
+    "file://../steering/**/*.md",
+    "skill://../skills/*.md"
+  ],
+  "mcpServers": ["@io", "@git"],
+  "hooks": {
+    "agentSpawn": [{"command": "git status --short"}]
+  },
+  "keyboardShortcut": "ctrl+d",
+  "welcomeMessage": "Dev agent ready. I have access to all skills and steering for React, Next.js, and infrastructure."
+}

@@ -1,0 +1,23 @@
+{
+  "name": "frontend",
+  "description": "Frontend-focused agent for React and Next.js development with component scaffolding, refactoring, and testing skills",
+  "prompt": "file://../steering/orchestration/local.md",
+  "tools": ["read", "write", "glob", "grep", "code"],
+  "allowedTools": ["read", "write", "@builtin"],
+  "resources": [
+    "file://../steering/preferences/stack/react/**/*.md",
+    "file://../steering/preferences/stack/nextjs/**/*.md",
+    "file://../steering/conventions/code-style.md",
+    "skill://../skills/react-components.md",
+    "skill://../skills/backend-rest-api-feature.md",
+    "skill://../skills/project-readme-documentation.md",
+    "skill://../skills/refactor.md",
+    "skill://../skills/test.md"
+  ],
+  "mcpServers": ["@io", "@git"],
+  "hooks": {
+    "agentSpawn": [{"command": "git status --short"}]
+  },
+  "keyboardShortcut": "ctrl+f",
+  "welcomeMessage": "Frontend agent ready. Focused on React and Next.js with component, API, refactor, and test skills."
+}

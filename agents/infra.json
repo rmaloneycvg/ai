@@ -1,0 +1,23 @@
+{
+  "name": "infra",
+  "description": "Infrastructure-focused agent for Terraform, Docker, Kubernetes, and deployment workflows",
+  "prompt": "file://../steering/orchestration/local.md",
+  "tools": ["shell", "read", "write", "glob", "grep"],
+  "allowedTools": ["shell", "read", "write", "@builtin"],
+  "resources": [
+    "file://../steering/orchestration/**/*.md",
+    "file://../steering/security/policies.md",
+    "file://../steering/preferences/stack/node/api-caching.md",
+    "file://../steering/preferences/stack/csharp/api-caching.md",
+    "skill://../skills/deploy.md",
+    "skill://../skills/backend-cron-feature.md",
+    "skill://../skills/backend-rest-api-feature.md",
+    "skill://../skills/project-readme-documentation.md"
+  ],
+  "mcpServers": ["@io", "@git"],
+  "hooks": {
+    "agentSpawn": [{"command": "git status --short"}]
+  },
+  "keyboardShortcut": "ctrl+i",
+  "welcomeMessage": "Infra agent ready. Focused on Terraform, Docker, Kubernetes, and deployment workflows."
+}
