@@ -108,23 +108,38 @@ Act as a senior career strategist who specializes in getting experienced enginee
     python3 ~/workspace/resume/scripts/generate_docx.py \
       --type resume \
       --content /tmp/resume_content_{company}.json \
-      --output ~/workspace/resume/YYYY-MM-DD/Ryan_Maloney_Resume_{Company}.docx \
+      --output ~/workspace/resume/YYYY-MM-DD/Resume_{Company}.docx \
       --template ~/workspace/resume/templates/resume_template.docx
 
     python3 ~/workspace/resume/scripts/generate_docx.py \
       --type cover_letter \
       --content /tmp/cover_letter_content_{company}.json \
-      --output ~/workspace/resume/YYYY-MM-DD/Ryan_Maloney_Cover_Letter_{Company}.docx \
+      --output ~/workspace/resume/YYYY-MM-DD/Cover_Letter_{Company}.docx \
       --template ~/workspace/resume/templates/cover_letter_template.docx
     ```
 
-20. **Convert to PDF:**
+20. **Convert to PDF (WSL → PowerShell → docx2pdf):**
+    
+    Word cannot open `\\wsl.localhost` paths, so files must be copied to a Windows temp folder for conversion. Use `$WIN_TEMP` env var (set in .zshrc) — never hardcode Windows user paths.
+
+    First, kill any existing Word process to avoid stale COM errors:
     ```bash
-    bash ~/workspace/resume/scripts/convert_pdf.sh \
-      ~/workspace/resume/YYYY-MM-DD/Ryan_Maloney_Resume_{Company}.docx \
-      ~/workspace/resume/YYYY-MM-DD/Ryan_Maloney_Cover_Letter_{Company}.docx \
-      --output-dir ~/workspace/resume/YYYY-MM-DD/
+    powershell.exe -Command "Stop-Process -Name WINWORD -Force -ErrorAction SilentlyContinue; Start-Sleep -Seconds 2"
     ```
+
+    Then for each docx file:
+    ```bash
+    WIN_SRC=$(wslpath -w ~/workspace/resume/YYYY-MM-DD/Resume_{Company}.docx)
+    TEMP_DOCX="${WIN_TEMP}\\Resume_{Company}.docx"
+    TEMP_PDF="${WIN_TEMP}\\Resume_{Company}.pdf"
+    powershell.exe -Command "
+      Copy-Item '${WIN_SRC}' -Destination '${TEMP_DOCX}' -Force
+      python -c \"from docx2pdf import convert; convert(r'${TEMP_DOCX}', r'${TEMP_PDF}')\"
+    "
+    cp "$(wslpath "${TEMP_PDF}")" ~/workspace/resume/YYYY-MM-DD/Resume_{Company}.pdf
+    powershell.exe -Command "Remove-Item '${WIN_TEMP}\\Resume_{Company}.*' -Force -ErrorAction SilentlyContinue"
+    ```
+    Repeat for the cover letter docx. Requirements: Windows Python with `docx2pdf` installed, Microsoft Word on Windows.
 
 21. **Report results:** Show file paths, job fit score, and any notes/gaps.
 
@@ -183,5 +198,4 @@ If user cancels after partial generation: remove the dated output directory and 
 - `~/workspace/resume/experience.schema.json` — schema definition
 - `steering/preferences/resume/guardrails.md` — full guardrail details
 - `~/workspace/resume/scripts/generate_docx.py` — docx generation script
-- `~/workspace/resume/scripts/convert_pdf.sh` — PDF conversion
 - `skills/job-scorer.md` — scoring criteria details

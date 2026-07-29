@@ -252,10 +252,10 @@ When the JD requires something not in experience.json:
 
 ```
 ~/workspace/resume/YYYY-MM-DD/
-├── Ryan_Maloney_Resume_{CompanyName}.docx
-├── Ryan_Maloney_Resume_{CompanyName}.pdf
-├── Ryan_Maloney_Cover_Letter_{CompanyName}.docx
-└── Ryan_Maloney_Cover_Letter_{CompanyName}.pdf
+├── Resume_{CompanyName}.docx
+├── Resume_{CompanyName}.pdf
+├── Cover_Letter_{CompanyName}.docx
+└── Cover_Letter_{CompanyName}.pdf
 ```
 
 - CompanyName: PascalCase, no spaces (e.g., "BlueOrigin", "YesEnergy", "OrthoFi")
