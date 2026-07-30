@@ -1,0 +1,36 @@
+#!/bin/bash
+# Git hook: commit-msg
+# Validates commit messages against conventional commit format.
+# Installed by scripts/git/setup.sh as a symlink into .git/hooks/
+#
+# This is a thin shim that delegates to the Python validation module.
+
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
+GIT_SCRIPTS_DIR="$(cd "$SCRIPT_DIR/../../scripts/git" 2>/dev/null && pwd)"
+
+# Try to find the scripts/git directory
+if [ -z "$GIT_SCRIPTS_DIR" ] || [ ! -d "$GIT_SCRIPTS_DIR" ]; then
+    # Fall back to searching from repo root
+    REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
+    if [ -n "$REPO_ROOT" ]; then
+        GIT_SCRIPTS_DIR="$REPO_ROOT/scripts/git"
+    fi
+fi
+
+if [ ! -d "$GIT_SCRIPTS_DIR" ]; then
+    echo "⚠️  git-workflow scripts not found. Skipping commit-msg validation."
+    echo "   Run setup.sh to configure: scripts/git/setup.sh"
+    exit 0
+fi
+
+# Resolve the commit message file to an absolute path before changing directories
+COMMIT_MSG_FILE="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+
+# Run the Python validator
+cd "$GIT_SCRIPTS_DIR" || exit 0
+
+if command -v uv &>/dev/null; then
+    uv run python -m src.lib.conventional validate-file "$COMMIT_MSG_FILE"
+else
+    python -m src.lib.conventional validate-file "$COMMIT_MSG_FILE"
+fi
