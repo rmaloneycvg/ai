@@ -16,7 +16,7 @@ This document consolidates all hard constraints, best practices, and optimizatio
 | No headers/footers for contact info | Many parsers skip document headers entirely — write all content in the body |
 | No Photoshop, graphic design tools, or online resume builders | Use only Word/Google Docs body text |
 | Standard section titles ONLY (see Section Order below) | Creative names break ATS parsing |
-| Standard fonts ONLY: Calibri, Arial, Garamond | New/custom fonts may convert letters into unreadable special characters |
+| Standard fonts ONLY: Calibri, Arial, Garamond, Lato | New/custom fonts may convert letters into unreadable special characters |
 | Font size NEVER below 10pt | Must be readable for humans in later hiring stages |
 | Use pipe `\|` or tabs as dividers between inline info | No slashes, dashes, or custom separators |
 | Save as both .docx AND .pdf | PDF preserves layout (generated via MS Word docx2pdf); docx ensures parseability |

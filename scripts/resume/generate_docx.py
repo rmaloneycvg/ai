@@ -94,23 +94,23 @@ except ImportError:
 TEMPLATE_DIR = Path(__file__).resolve().parent.parent.parent / "config" / "resume" / "templates"
 
 # ATS formatting constants
-FONT_NAME = "Calibri"
+FONT_NAME = "Lato"
 FONT_SIZE_NAME = 14
 FONT_SIZE_SECTION = 11
 FONT_SIZE_BODY = 10
 FONT_SIZE_CONTACT = 10
-COLOR_HEADING = (0x1A, 0x1A, 0x1A)
+COLOR_HEADING = (0x00, 0x3D, 0x7A)  # Royal blue for headers/section titles
 COLOR_BODY = (0x2A, 0x2A, 0x2A)
 COLOR_META = (0x4A, 0x4A, 0x4A)
 MARGIN_CM = 1.27  # 0.5 inch — reduced margins per ATS guide
 
 
 def add_bottom_border(paragraph):
-    """Add a thin bottom border as section separator."""
+    """Add a thin bottom border as section separator (royal blue accent)."""
     pPr = paragraph._p.get_or_add_pPr()
     pBdr = parse_xml(
         '<w:pBdr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
-        '<w:bottom w:val="single" w:sz="4" w:space="1" w:color="CCCCCC"/>'
+        '<w:bottom w:val="single" w:sz="6" w:space="1" w:color="003D7A"/>'
         '</w:pBdr>'
     )
     pPr.append(pBdr)
