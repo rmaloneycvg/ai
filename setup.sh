@@ -20,6 +20,15 @@ fi
 
 mkdir -p "$KIRO_DIR"
 
+# Create workspace settings with default agent
+mkdir -p "$KIRO_DIR/settings"
+cat > "$KIRO_DIR/settings/cli.json" <<'EOF'
+{
+  "chat.defaultAgent": "dev"
+}
+EOF
+echo "  Created .kiro/settings/cli.json (defaultAgent: dev)"
+
 for dir in "${DIRS_TO_LINK[@]}"; do
     if [[ ! -d "$SCRIPT_DIR/$dir" ]]; then
         echo "  Warning: $dir/ not found, skipping."

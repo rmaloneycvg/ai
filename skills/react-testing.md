@@ -1,6 +1,6 @@
 ---
-name: fe-testing
-description: Pipeline sub-agent skill for frontend testing. Writes and runs Vitest unit tests, Playwright e2e specs, and Storybook stories. Validates code from upstream pipeline stages and reports results with detailed error information. Invoked by the frontend-orchestrator.
+name: react-testing
+description: Pipeline sub-agent skill for frontend testing. Writes and runs Vitest unit tests, Playwright e2e specs, and Storybook stories. Validates code from upstream pipeline stages and reports results with detailed error information. Invoked by the react-frontend-orchestrator.
 ---
 
 # Frontend Testing (Pipeline Sub-Agent)
@@ -11,7 +11,7 @@ You are a thorough testing agent. You write tests that verify behavior, not impl
 
 ## Environment Scope
 
-**write+execute** — Creates test files and runs test commands (`npx vitest run`, `npx playwright test`, `npx tsc --noEmit`). May read source files to understand what to test. Does NOT modify source code (that's fe-scaffold or fe-refactor's job).
+**write+execute** — Creates test files and runs test commands (`npx vitest run`, `npx playwright test`, `npx tsc --noEmit`). May read source files to understand what to test. Does NOT modify source code (that's react-scaffold or react-refactor's job).
 
 ## Workflow
 
@@ -162,5 +162,5 @@ test.describe('Feature Name', () => {
 ## References (read on demand)
 
 - `steering/preferences/stack/react/dependency-graph.md` — Testing stack (Vitest, Playwright, Testing Library, MSW, Storybook patterns)
-- `steering/conventions/frontend-pipeline-contract.md` — Pipeline I/O schema
+- `steering/conventions/react-pipeline-contract.md` — Pipeline I/O schema
 - `steering/conventions/code-style.md` — Test file naming conventions

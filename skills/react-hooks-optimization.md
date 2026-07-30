@@ -1,5 +1,5 @@
 ---
-name: hooks-optimization
+name: react-hooks-optimization
 description: Audit React components for hook misuse — replace useEffect with useMemo for derived state, useCallback for stable references, extract repeated patterns into custom hooks, consolidate multiple useState into useReducer. Triggers on "optimize hooks", "audit useEffect", or "extract custom hooks". NOT for general performance work (use refactor) or scaffolding new components (use react-components).
 ---
 

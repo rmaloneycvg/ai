@@ -11,7 +11,10 @@ ai/
 │   │   └── local.md                    # Tilt, nginx, Docker, k8s, Terraform patterns
 │   ├── conventions/
 │   │   ├── code-style.md              # TypeScript naming, file org, imports
-│   │   └── frontend-pipeline-contract.md  # Sub-agent pipeline I/O schema
+│   │   ├── documentation.md           # README structure, Mermaid templates, validation
+│   │   ├── react-pipeline-contract.md  # React/Next.js sub-agent pipeline I/O schema
+│   │   ├── git-workflow.md            # Branching strategy, conventional commits, PR workflow
+│   │   └── skill-schema.md            # Skill authoring patterns, quality checklist, refactoring ops
 │   ├── security/
 │   │   └── policies.md               # Auth, validation, CORS, secrets, headers
 │   └── preferences/stack/
@@ -40,23 +43,25 @@ ai/
 │   ├── debug.md
 │   ├── test.md
 │   ├── deploy.md
-│   ├── fe-scaffold.md                  # Pipeline: component scaffolding
-│   ├── fe-architecture.md              # Pipeline: UI architecture decisions
-│   ├── fe-styling.md                   # Pipeline: Tailwind/shadcn styling
-│   ├── fe-testing.md                   # Pipeline: tests and stories
-│   ├── fe-refactor.md                  # Pipeline: code refactoring
+│   ├── git-workflow.md                 # Git branching, conventional commits, PR prep, hotfix
+│   ├── react-scaffold.md                # Pipeline: component scaffolding
+│   ├── react-architecture.md            # Pipeline: UI architecture decisions
+│   ├── react-styling.md                 # Pipeline: Tailwind/shadcn styling
+│   ├── react-testing.md                 # Pipeline: tests and stories
+│   ├── react-refactor.md                # Pipeline: code refactoring
+│   ├── react-hooks-optimization.md      # Audit React hooks, extract custom hooks
 │   ├── resume-builder.md               # Resume/cover letter generation workflow
 │   ├── experience-parser.md            # Extract experience from .docx files
 │   └── job-scorer.md                   # Score resume against job description
 ├── agents/                             # Agent persona configs (JSON)
 │   ├── dev.json                        # Full-stack: all steering, broad tool access
-│   ├── frontend.json                   # React/Next.js only, no shell/db access
-│   ├── frontend-orchestrator.json      # Orchestrator: routes to sub-agents by task type
-│   ├── fe-scaffold.json                # Sub-agent: component scaffolding (haiku)
-│   ├── fe-architecture.json            # Sub-agent: UI architecture decisions (opus)
-│   ├── fe-styling.json                 # Sub-agent: Tailwind/shadcn styling (haiku)
-│   ├── fe-testing.json                 # Sub-agent: tests and stories (sonnet)
-│   ├── fe-refactor.json                # Sub-agent: code refactoring (opus)
+│   ├── react-frontend.json              # React/Next.js only, no shell/db access
+│   ├── react-frontend-orchestrator.json # Orchestrator: routes to sub-agents by task type
+│   ├── react-scaffold.json              # Sub-agent: component scaffolding (haiku)
+│   ├── react-architecture.json          # Sub-agent: UI architecture decisions (opus)
+│   ├── react-styling.json               # Sub-agent: Tailwind/shadcn styling (haiku)
+│   ├── react-testing.json               # Sub-agent: tests and stories (sonnet)
+│   ├── react-refactor.json              # Sub-agent: code refactoring (opus)
 │   ├── infra.json                      # Infrastructure/DevOps focused
 │   ├── resume-builder.json             # Resume generation orchestrator
 │   ├── experience-parser.json          # Extract experience from .docx resumes
@@ -73,11 +78,24 @@ ai/
 │       ├── postgres/query.py           # Parameterized read-only queries
 │       └── postgres/seed.py            # Run SQL seed files
 ├── scripts/                            # Executable scripts used by agents
+│   ├── git/
+│   │   ├── setup.sh                  # Install hooks, validate env, configure workflow
+│   │   ├── pyproject.toml            # Python dependencies (managed by uv)
+│   │   ├── src/                      # CLI scripts + shared library
+│   │   │   ├── branch.py            # Create branch with naming convention
+│   │   │   ├── commit.py            # Auto-group changes, commit per type
+│   │   │   ├── prepare_pr.py        # Squash + rewrite + rebase for PR
+│   │   │   ├── merge_pr.py          # Final validation + merge
+│   │   │   ├── hotfix.py            # Hotfix workflow from prod
+│   │   │   ├── promote.py           # Manual environment promotion
+│   │   │   └── lib/                  # Shared library (conventional, detect_changes, git_ops, ticket)
+│   │   ├── hooks/                    # Git hook shell shims (commit-msg, pre-push)
+│   │   └── tests/                    # pytest unit + integration tests
 │   └── resume/
 │       ├── generate_docx.py           # Generate ATS-optimized resume/cover letter docx
 │       ├── parse_resumes.py           # Extract structured text from .docx files
 │       ├── create_templates.py        # Generate docx templates with named styles
-│       ├── requirements.txt           # Python dependencies for resume scripts
+│       ├── pyproject.toml             # Python dependencies for resume scripts (managed by uv)
 │       └── setup.sh                   # Initialize config (experience.json, venv, templates)
 ├── config/                             # Per-user configuration (personal data gitignored)
 │   └── resume/
@@ -131,13 +149,38 @@ If you plan to use the resume-builder, experience-parser, or job-scorer agents:
 
 This creates `config/resume/experience.json` (from an existing file or a blank scaffold), installs Python dependencies, and generates docx templates. The experience.json file is gitignored — each user populates their own.
 
+### Git workflow setup
+
+To enforce conventional commits, branch naming, and the squash+rebase PR workflow:
+
+```bash
+./scripts/git/setup.sh
+```
+
+This installs commit-msg and pre-push git hooks, enables `git rerere` globally, and makes the workflow scripts available. The hooks validate commit message format and branch naming conventions. Available commands (from `scripts/git/`):
+
+```bash
+uv run git-branch       # Create branch with naming convention
+uv run git-commit       # Auto-group changes, commit per type
+uv run git-prepare-pr   # Squash + rewrite + rebase for PR
+uv run git-hotfix       # Hotfix workflow from prod
+uv run git-merge-pr     # Validate and merge PR
+uv run git-promote      # Manual environment promotion
+```
+
+Optional: set `TICKET_SYSTEM_URL` in your shell profile to enable ticket references in branch names and PR titles:
+
+```bash
+export TICKET_SYSTEM_URL="https://yourcompany.atlassian.net"
+```
+
 ### Selecting an agent
 
 ```bash
 kiro --agent dev        # Full-stack, broad access
-kiro --agent frontend   # React/Next.js scoped
+kiro --agent react-frontend   # React/Next.js scoped
 kiro --agent infra      # Infrastructure/DevOps
-kiro --agent frontend-orchestrator  # Multi-agent pipeline (delegates to sub-agents)
+kiro --agent react-frontend-orchestrator  # Multi-agent pipeline (delegates to sub-agents)
 kiro --agent resume-builder         # Generate tailored resume + cover letter from a JD
 kiro --agent experience-parser      # Extract experience data from .docx resumes
 kiro --agent job-scorer             # Score resume fit against a job description

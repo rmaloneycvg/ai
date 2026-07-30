@@ -92,6 +92,7 @@ curl -v http://localhost:3000/api/endpoint \
 - **Frontend**: Lighthouse, React Profiler, `performance.mark()`/`performance.measure()`
 - **Bundle size**: `npx vite-bundle-visualizer` or `source-map-explorer`
 - **Backend**: structured logging with timing, `clinic.js` for Node services
+- **Distributed tracing**: Jaeger UI at the Tilt-mapped port for request flow across services (see `steering/orchestration/local.md` for port mappings)
 - **Database**: enable slow query logging, check `EXPLAIN ANALYZE`
 
 ## Guardrails

@@ -15,8 +15,8 @@ Act as a meticulous data extraction specialist. Be precise about what was found 
 
 ## Workflow
 
-1. **Check Existing State** — Read `~/workspace/ai/config/resume/experience.json`. If it already contains populated data, ask user whether to merge new findings or overwrite.
-2. **Install Dependencies** — Ensure `python-docx` is installed: `pip3 install python-docx`
+1. **Check Existing State** — Read `~/workspace/ai/config/resume/experience.json`. If it already contains populated data, ask user whether to merge new findings or overwrite. If entries already exist for the same company + role + date range being parsed, report "already parsed" for those entries and skip them unless user requests re-extraction.
+2. **Install Dependencies** — Ensure `python-docx` is installed: `uv add python-docx`
 3. **Run Parser** — Execute `python3 ~/workspace/ai/scripts/resume/parse_resumes.py` to extract raw text from all resume .docx files (skips cover letters and PDFs).
 4. **Structure Data** — Organize extracted text into the schema format:
    - Identify sections by heading styles or text patterns (SUMMARY, EXPERIENCE, SKILLS, EDUCATION)

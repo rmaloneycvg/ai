@@ -130,6 +130,13 @@ export function buildUser(overrides: Partial<User> = {}): User {
 - E2E tests run against built artifacts, not dev server
 - Use `--reporter=junit` for CI-friendly output
 
+## Accessibility Testing
+
+- `jest-axe` / `vitest-axe` in unit tests: `expect(await axe(container)).toHaveNoViolations()`
+- `@storybook/addon-a11y` in every story (automatic axe checks in Storybook UI)
+- Playwright: test keyboard navigation flows, focus management, screen reader announcements
+- Run accessibility checks in CI — fail on critical/serious violations
+
 ## Guardrails
 
 - NEVER write tests that depend on another test's state — each test is isolated

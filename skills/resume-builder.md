@@ -121,28 +121,17 @@ Act as a senior career strategist who specializes in getting experienced enginee
       --template ~/workspace/ai/config/resume/templates/cover_letter_template.docx
     ```
 
-20. **Convert to PDF (WSL → PowerShell → docx2pdf):**
-    
-    Word cannot open `\\wsl.localhost` paths, so files must be copied to a Windows temp folder for conversion. Use `$WIN_TEMP` env var (set in .zshrc) — never hardcode Windows user paths.
+20. **Convert to PDF:**
+    Run the PDF conversion using the platform-appropriate method. On WSL, use `docx2pdf` via PowerShell (see `scripts/resume/generate_docx.py --help` for platform-specific instructions). On native Linux/macOS, use LibreOffice headless conversion.
 
-    First, kill any existing Word process to avoid stale COM errors:
-    ```bash
-    powershell.exe -Command "Stop-Process -Name WINWORD -Force -ErrorAction SilentlyContinue; Start-Sleep -Seconds 2"
+    Expected output files:
     ```
-
-    Then for each docx file:
-    ```bash
-    WIN_SRC=$(wslpath -w $RESUME_DIR/YYYY-MM-DD/Resume_{Company}.docx)
-    TEMP_DOCX="${WIN_TEMP}\\Resume_{Company}.docx"
-    TEMP_PDF="${WIN_TEMP}\\Resume_{Company}.pdf"
-    powershell.exe -Command "
-      Copy-Item '${WIN_SRC}' -Destination '${TEMP_DOCX}' -Force
-      python -c \"from docx2pdf import convert; convert(r'${TEMP_DOCX}', r'${TEMP_PDF}')\"
-    "
-    cp "$(wslpath "${TEMP_PDF}")" $RESUME_DIR/YYYY-MM-DD/Resume_{Company}.pdf
-    powershell.exe -Command "Remove-Item '${WIN_TEMP}\\Resume_{Company}.*' -Force -ErrorAction SilentlyContinue"
+    $RESUME_DIR/YYYY-MM-DD/
+    ├── Resume_{Company}.docx
+    ├── Resume_{Company}.pdf
+    ├── Cover_Letter_{Company}.docx
+    └── Cover_Letter_{Company}.pdf
     ```
-    Repeat for the cover letter docx. Requirements: Windows Python with `docx2pdf` installed, Microsoft Word on Windows.
 
 21. **Report results:** Show file paths, job fit score, and any notes/gaps.
 
@@ -201,4 +190,5 @@ If user cancels after partial generation: remove the dated output directory and 
 - `~/workspace/ai/config/resume/experience.schema.json` — schema definition
 - `steering/preferences/resume/guardrails.md` — full guardrail details
 - `~/workspace/ai/scripts/resume/generate_docx.py` — docx generation script
+- `~/workspace/ai/scripts/resume/generate_docx.py --help` — platform-specific PDF conversion instructions
 - `skills/job-scorer.md` — scoring criteria details

@@ -1,7 +1,7 @@
 {
-  "name": "full-stack-dev",
-  "description": "General-purpose full-stack development agent. Handles React/Next.js frontend, Node.js/C# backends, and light infrastructure work. Has broad tool access but requires approval for destructive operations (shell commands, database writes). Use this when work spans multiple layers or when unsure which specialized agent to pick.",
-  "prompt": "You are a full-stack development assistant with expertise in React, Next.js, Node.js, C#, and infrastructure. You have access to all steering documents and skills for the complete technology stack. Prefer non-destructive operations. Ask before running shell commands that modify state, write to databases, or alter git history.",
+  "name": "dev",
+  "description": "General-purpose full-stack development agent. Has broad tool access but requires approval for destructive operations (shell commands, database writes). ",
+  "prompt": "You are a full-stack development assistant. Prefer non-destructive operations. Ask before running shell commands that modify state, write to databases, or alter git history. suggest available agents when there is support and future prompts are related before doing work.",
   "mcpServers": {
     "git": {
       "command": "npx",
@@ -12,11 +12,6 @@
       "command": "npx",
       "args": ["tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/io.ts"],
       "timeout": 10000
-    },
-    "postgres": {
-      "command": "npx",
-      "args": ["tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/postgres.ts"],
-      "timeout": 30000
     }
   },
   "tools": [
@@ -27,8 +22,7 @@
     "grep",
     "code",
     "@git",
-    "@io",
-    "@postgres"
+    "@io"
   ],
   "allowedTools": [
     "read",
@@ -36,8 +30,7 @@
     "grep",
     "code",
     "@git/git_status",
-    "@io/read_json",
-    "@postgres/postgres_query"
+    "@io/read_json"
   ],
   "toolsSettings": {
     "shell": {
@@ -58,18 +51,7 @@
     }
   },
   "resources": [
-    "skill://../skills/react-components.md",
-    "skill://../skills/hooks-optimization.md",
-    "skill://../skills/refactor.md",
-    "skill://../skills/test.md",
-    "skill://../skills/debug.md",
-    "skill://../skills/deploy.md",
-    "skill://../skills/backend-rest-api-feature.md",
-    "skill://../skills/backend-cron-feature.md",
-    "skill://../skills/project-readme-documentation.md",
-    "skill://../skills/create-kiro-skill.md",
-    "skill://../skills/refactor-kiro-skill.md",
-    "skill://../skills/refactor-kiro-ai.md",
+    "skill://../skills/git-workflow.md",
     "file://package.json",
     "file://tsconfig.json"
   ],

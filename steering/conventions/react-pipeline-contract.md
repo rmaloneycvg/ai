@@ -8,11 +8,11 @@ The frontend orchestrator delegates work to specialized sub-agents running on di
 
 | Agent | Model | Purpose |
 |-------|-------|---------|
-| `fe-scaffold` | claude-haiku-4.5 | Generate component files, stories, tests, barrel exports |
-| `fe-architecture` | claude-opus-4.8 | Component decomposition, server/client boundaries, data flow decisions |
-| `fe-styling` | claude-haiku-4.5 | Tailwind CSS, shadcn/ui composition, responsive design, accessibility |
-| `fe-testing` | claude-sonnet-5 | Vitest unit tests, Playwright e2e, Storybook stories |
-| `fe-refactor` | claude-opus-4.7 | Component/hook extraction, state migration, performance optimization |
+| `react-scaffold` | claude-haiku-4.5 | Generate component files, stories, tests, barrel exports |
+| `react-architecture` | claude-opus-4.8 | Component decomposition, server/client boundaries, data flow decisions |
+| `react-styling` | claude-haiku-4.5 | Tailwind CSS, shadcn/ui composition, responsive design, accessibility |
+| `react-testing` | claude-sonnet-5 | Vitest unit tests, Playwright e2e, Storybook stories |
+| `react-refactor` | claude-opus-4.7 | Component/hook extraction, state migration, performance optimization |
 
 ## Pipeline Input Schema
 
@@ -31,7 +31,7 @@ Every sub-agent receives this structure as its task context from the orchestrato
     ],
     "upstream_decisions": [
       {
-        "from_agent": "fe-architecture",
+        "from_agent": "react-architecture",
         "decisions": [
           "client component — needs interactivity for edit button",
           "receive user data as props from server parent",
@@ -196,29 +196,29 @@ if output.status == "failed":
 ### New Component (full pipeline)
 
 ```
-fe-architecture → fe-scaffold → fe-styling → fe-testing
+react-architecture → react-scaffold → react-styling → react-testing
 ```
 
-1. **fe-architecture**: Analyze requirements → produce decisions (server/client, data flow, state)
-2. **fe-scaffold**: Receive architecture decisions as `upstream_decisions` → generate files
-3. **fe-styling**: Receive `files_created` → apply Tailwind/shadcn styling
-4. **fe-testing**: Receive `files_created` + `files_modified` → write and run tests
+1. **react-architecture**: Analyze requirements → produce decisions (server/client, data flow, state)
+2. **react-scaffold**: Receive architecture decisions as `upstream_decisions` → generate files
+3. **react-styling**: Receive `files_created` → apply Tailwind/shadcn styling
+4. **react-testing**: Receive `files_created` + `files_modified` → write and run tests
 
 ### Refactoring
 
 ```
-fe-refactor → fe-testing
+react-refactor → react-testing
 ```
 
-1. **fe-refactor**: Apply refactoring with green baseline verification
-2. **fe-testing**: Validate existing tests still pass, add coverage for new structure
+1. **react-refactor**: Apply refactoring with green baseline verification
+2. **react-testing**: Validate existing tests still pass, add coverage for new structure
 
 ### Standalone Tasks
 
-- **"Style this component"** → `fe-styling` alone
-- **"Write tests for X"** → `fe-testing` alone
-- **"Extract this into a hook"** → `fe-refactor` alone
-- **"How should I structure this page?"** → `fe-architecture` alone
+- **"Style this component"** → `react-styling` alone
+- **"Write tests for X"** → `react-testing` alone
+- **"Extract this into a hook"** → `react-refactor` alone
+- **"How should I structure this page?"** → `react-architecture` alone
 
 ## Examples by Task Type
 

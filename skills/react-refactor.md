@@ -1,6 +1,6 @@
 ---
-name: fe-refactor
-description: Pipeline sub-agent skill for frontend refactoring. Extracts components and hooks, migrates state management, optimizes performance, and removes dead code while maintaining a green test baseline. Invoked by the frontend-orchestrator.
+name: react-refactor
+description: Pipeline sub-agent skill for frontend refactoring. Extracts components and hooks, migrates state management, optimizes performance, and removes dead code while maintaining a green test baseline. Invoked by the react-frontend-orchestrator.
 ---
 
 # Frontend Refactoring (Pipeline Sub-Agent)
@@ -127,4 +127,4 @@ When refactoring cannot be completed without breaking tests:
 - `steering/preferences/stack/react/custom-hooks.md` — Hook extraction rules
 - `steering/preferences/stack/react/use-reducer.md` — When to use useReducer
 - `steering/conventions/code-style.md` — Naming, file organization after extraction
-- `steering/conventions/frontend-pipeline-contract.md` — Pipeline I/O schema
+- `steering/conventions/react-pipeline-contract.md` — Pipeline I/O schema

@@ -1,0 +1,32 @@
+#!/bin/bash
+# Git hook: pre-push
+# Validates branch naming conventions before pushing.
+# When TICKET_SYSTEM_URL is set: blocks non-conforming branches.
+# When not set: warns but allows the push.
+#
+# Installed by scripts/git/setup.sh as a symlink into .git/hooks/
+
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
+GIT_SCRIPTS_DIR="$(cd "$SCRIPT_DIR/../../scripts/git" 2>/dev/null && pwd)"
+
+# Try to find the scripts/git directory
+if [ -z "$GIT_SCRIPTS_DIR" ] || [ ! -d "$GIT_SCRIPTS_DIR" ]; then
+    REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
+    if [ -n "$REPO_ROOT" ]; then
+        GIT_SCRIPTS_DIR="$REPO_ROOT/scripts/git"
+    fi
+fi
+
+if [ ! -d "$GIT_SCRIPTS_DIR" ]; then
+    echo "⚠️  git-workflow scripts not found. Skipping pre-push validation."
+    exit 0
+fi
+
+# Run the Python validator
+cd "$GIT_SCRIPTS_DIR" || exit 0
+
+if command -v uv &>/dev/null; then
+    uv run python -m src.lib.ticket validate-branch
+else
+    python -m src.lib.ticket validate-branch
+fi

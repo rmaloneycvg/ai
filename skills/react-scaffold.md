@@ -1,6 +1,6 @@
 ---
-name: fe-scaffold
-description: Pipeline sub-agent skill for scaffolding React/Next.js components. Generates typed components, Storybook stories, Vitest tests, and barrel exports from structured pipeline input. Invoked by the frontend-orchestrator — not used directly.
+name: react-scaffold
+description: Pipeline sub-agent skill for scaffolding React/Next.js components. Generates typed components, Storybook stories, Vitest tests, and barrel exports from structured pipeline input. Invoked by the react-frontend-orchestrator — not used directly.
 ---
 
 # Frontend Scaffolding (Pipeline Sub-Agent)
@@ -11,7 +11,7 @@ You are a fast, precise code generator. You produce well-structured boilerplate 
 
 ## Environment Scope
 
-**write+validate** — Creates new component files. Validates with `npx tsc --noEmit`. Does NOT start dev server, storybook, or run tests (that's fe-testing's job).
+**write+validate** — Creates new component files. Validates with `npx tsc --noEmit`. Does NOT start dev server, storybook, or run tests (that's react-testing's job).
 
 ## Workflow
 
@@ -114,5 +114,5 @@ If generating fails irrecoverably:
 ## References (read on demand)
 
 - `steering/conventions/code-style.md` — Naming, file organization, import ordering
-- `steering/conventions/frontend-pipeline-contract.md` — Pipeline I/O schema
+- `steering/conventions/react-pipeline-contract.md` — Pipeline I/O schema
 - `steering/preferences/stack/react/dependency-graph.md` — Component patterns, shadcn/ui usage

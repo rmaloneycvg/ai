@@ -49,7 +49,7 @@ On-demand (progressive):
 
 ### Exceptions
 
-- **Orchestrator agents MAY load steering docs as `file://`** when the doc defines a pipeline contract or protocol that the orchestrator must enforce on every invocation (e.g., `frontend-pipeline-contract.md` in the frontend-orchestrator)
+- **Orchestrator agents MAY load steering docs as `file://`** when the doc defines a pipeline contract or protocol that the orchestrator must enforce on every invocation (e.g., `react-pipeline-contract.md` in the react-frontend-orchestrator)
 - **Sub-agents (under `agents/`) load their skill as `file://`, not `skill://`** — sub-agents are single-purpose pipeline workers that always execute their one skill; progressive disclosure adds no value when the agent's entire purpose IS that skill
 - **Non-markdown file globs are acceptable as `file://`** — wildcards for code/config files (`*.yaml`, `*.yml`, `docker-compose*.yml`, `k8s/*.yaml`) are fine since they're small project artifacts, not heavy reference docs. The no-glob rule applies only to `.md` steering/skill files
 
@@ -122,4 +122,4 @@ If user rejects: revert all modified files to pre-edit state. Confirm with file 
 
 - `skills/create-kiro-skill.md` — creating new skills (schema, frontmatter, workflow structure)
 - `skills/refactor-kiro-skill.md` — editing existing skill content (narrowing triggers, fixing overlap)
-- `steering/conventions/frontend-pipeline-contract.md` — example of detailed steering kept out of agent context
+- `steering/conventions/react-pipeline-contract.md` — example of detailed steering kept out of agent context

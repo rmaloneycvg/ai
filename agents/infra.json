@@ -76,6 +76,7 @@
     }
   },
   "resources": [
+    "skill://../skills/git-workflow.md",
     "skill://../skills/deploy.md",
     "skill://../skills/backend-rest-api-feature.md",
     "skill://../skills/backend-cron-feature.md",

@@ -135,4 +135,5 @@ describe('ComponentName', () => {
 
 - `steering/conventions/code-style.md` — TypeScript naming, file organization, import ordering, component patterns
 - `steering/preferences/stack/react/dependency-graph.md` — Full stack choices, import rules, and patterns
-- `steering/preferences/stack/nextjs/server-components.md` — When to use 'use client' vs server component
+- `steering/preferences/stack/nextjs/server-components.md` — When to use 'use client' vs server component (check BEFORE scaffolding)
+- `steering/preferences/stack/nextjs/app-router.md` — File-based routing context for page/layout components

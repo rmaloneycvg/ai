@@ -22,7 +22,7 @@ All paths are relative to `cwd` (current working directory). The Kiro directory 
 └── .kiro/
     ├── agents/           # Agent JSON configs referencing skills via skill:// URIs
     │   ├── dev.json
-    │   ├── frontend.json
+    │   ├── react-frontend.json
     │   └── infra.json
     ├── skills/           # Skill markdown files (this is where refactored files live)
     │   └── *.md
@@ -73,90 +73,17 @@ If user rejects changes mid-implementation:
 
 ## Quality Checklist
 
-Assess every skill against these criteria during diagnosis:
-
-### Schema Completeness
-
-| Element | Present? | Quality? |
-|---------|----------|----------|
-| `name` in frontmatter | ✓/✗ | kebab-case, matches filename |
-| `description` in frontmatter | ✓/✗ | Hyper-specific, no false-positive triggers |
-| Role & Tone | ✓/✗ | Only if needed — adds value vs default agent |
-| Environment Scope | ✓/✗ | Declares write-only / write+validate / write+execute |
-| Workflow | ✓/✗ | Phased with approval gate before implementation |
-| Failure Recovery | ✓/✗ | Max retries defined, escalation path exists |
-| Rollback | ✓/✗ | Tracks modified files, revert procedure documented |
-| Guardrails | ✓/✗ | Absolute ("NEVER"), not aspirational ("try to") |
-| References | ✓/✗ | Points to steering, not duplicating it inline |
-
-### Behavioral Quality
-
-- [ ] **Idempotent** — Re-running produces same result, no duplication
-- [ ] **Bounded context** — Reads only relevant files, never entire directories
-- [ ] **Non-overlapping trigger** — Description doesn't collide with other skills
-- [ ] **Non-overlapping write targets** — No file conflicts with sibling skills
-- [ ] **Under 200 lines** — If over, can it be split? (Meta-skills exempt at 300)
-- [ ] **No stale references** — All referenced steering/skill files still exist
-- [ ] **Guardrails enforceable** — Each guardrail maps to a concrete violation the agent could actually commit
+Assess every skill against the quality checklist defined in the steering doc. See References.
 
 ## Refactoring Operations
 
-### Narrow a Trigger
+For detailed procedures and examples for each operation, see `steering/conventions/skill-schema.md`.
 
-When a skill's description is too broad:
-
-1. Identify which requests are misfiring to this skill
-2. Add specificity: mention the exact technology, file type, or workflow stage
-3. Add negative boundaries if needed: "NOT for... use [other-skill] instead"
-
-Before:
-```yaml
-description: Use when working on the backend.
-```
-
-After:
-```yaml
-description: Use when adding a new REST API endpoint to a Node.js Express service with Zod validation. NOT for cron jobs (use backend-cron-feature) or database migrations.
-```
-
-### Split an Oversized Skill
-
-When a skill exceeds 200 lines or covers multiple distinct workflows:
-
-1. Identify the natural seams (usually at workflow boundaries)
-2. Each split must have its own trigger, approval gate, and verification
-3. Partition write targets — each new skill owns distinct files
-4. Cross-reference between the splits in their References sections
-
-### Merge Overlapping Skills
-
-When two skills have colliding triggers or write targets:
-
-1. Confirm with user which skill is the "primary"
-2. Move unique content from the secondary into the primary
-3. Delete the secondary file from `<cwd>/.kiro/skills/`
-4. Search `<cwd>/.kiro/agents/*.json` for `skill://` URIs referencing the deleted file — update to the primary
-5. Search `<cwd>/.kiro/skills/*.md` References sections for the deleted filename — update or remove
-6. Update `<cwd>/README.md` if it lists skills
-7. Verify the merged skill still passes the quality checklist
-
-### Add Missing Schema Elements
-
-When a skill is missing failure recovery, rollback, or environment scope:
-
-1. Determine the skill's execution model from its workflow steps
-2. Add Environment Scope based on whether it runs commands
-3. Add Failure Recovery with appropriate max_retries for the domain
-4. Add Rollback if the skill modifies more than one file
-
-### Remove Stale Content
-
-When a skill references dead code, removed files, or deprecated patterns:
-
-1. Check each Reference path — does the file still exist?
-2. Check guardrails — do they reference tools or commands that are no longer used?
-3. Check workflow steps — do they mention files/dirs that were restructured?
-4. Remove or update stale lines. Don't leave dead references.
+- **Narrow a Trigger** — When a skill's description is too broad and causes misfires from unrelated requests.
+- **Split an Oversized Skill** — When a skill exceeds 200 lines or covers multiple distinct workflows.
+- **Merge Overlapping Skills** — When two skills have colliding triggers or write targets.
+- **Add Missing Schema Elements** — When a skill lacks failure recovery, rollback, or environment scope.
+- **Remove Stale Content** — When a skill references dead code, removed files, or deprecated patterns.
 
 ## Clarification & Anti-Pattern Detection
 
@@ -178,17 +105,9 @@ This skill MUST ask for clarification when:
 - NEVER leave broken references in agent configs after renaming/splitting a skill
 - NEVER rewrite a working skill from scratch — prefer minimal targeted edits
 
-## Anti-Patterns in Refactoring
-
-- ❌ Rewriting the entire file when only the description needs narrowing
-- ❌ Splitting a 150-line skill just because it's "getting long" (it's under threshold)
-- ❌ Merging skills that share a technology but have different workflows
-- ❌ Removing Role & Tone because "it's optional" when it actually changes behavior
-- ❌ Adding environment scope of write+execute to avoid telling users to run commands manually
-- ❌ Reading all skill files to "understand the landscape" (use listing + targeted reads)
-
 ## References
 
+- `steering/conventions/skill-schema.md` — Quality checklist, refactoring operation procedures, anti-patterns, and full schema definition
 - `skills/create-kiro-skill.md` — Schema definition, EARS format, idempotency principle, full quality standards
 - `steering/orchestration/local.md` — Infrastructure context for infra-related skills
 - `steering/preferences/stack/react/dependency-graph.md` — Frontend context for React-related skills
