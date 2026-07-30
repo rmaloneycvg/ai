@@ -251,7 +251,7 @@ def generate_resume(content: dict, template_path: Path, output_path: Path):
             # Bullet points
             for bullet in role.get("bullets", []):
                 p = doc.add_paragraph()
-                set_spacing(p, before=1, after=1)
+                set_spacing(p, before=2, after=3)
                 p.paragraph_format.left_indent = Cm(0.5)
                 add_run(p, f"• {bullet}", size=FONT_SIZE_BODY, color=COLOR_BODY)
 
