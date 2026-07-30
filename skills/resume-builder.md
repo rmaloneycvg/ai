@@ -48,81 +48,102 @@ Act as a senior career strategist who specializes in getting experienced enginee
    - A significant rewording opportunity exists that changes meaning (not just phrasing)
    - Maximum 1-2 questions, then proceed regardless
 
-### Phase 4: Generate Resume Content
+### Phase 4: Generate Content (Delegated to Sub-Agent)
 
-7. **Executive Summary** — 3-4 sentences tailored to this specific role. Use exact JD terminology where it matches real experience. Lead with years of relevant experience + primary domain match.
+7. **Delegate to resume-content-writer** — Invoke the `resume-content-writer` sub-agent with model override `claude-opus-4` for higher reasoning capacity. Pass:
+   - Parsed JD (company, role, required skills, responsibilities, seniority signals)
+   - Full experience.json content
+   - Any user clarifications from Phase 3
+   - Specific instructions (e.g., "emphasize integration platform ownership")
 
-8. **Skills Section** — Grouped by category, ordered to lead with JD-relevant tech. Use exact terminology from JD (if JD says "AWS", write "AWS" not "Cloud Infrastructure").
+8. **Receive from sub-agent:**
+   - `resume_content` — full content JSON matching generate_docx.py format
+   - `cover_letter_content` — full cover letter JSON
+   - `score` — self-assessment with breakdown and keyword gaps
 
-9. **Experience Section (2016-Present)** — 4-6 impact-driven bullets per role following X-Y-Z formula:
-   - Accomplished [X] as measured by [Y], by doing [Z]
-   - Lead with the most JD-relevant bullets
-   - Include metrics on 70%+ of bullets
-   - Highlight force-multiplier work (mentoring, CI/CD improvements, RFCs)
+   If the subagent tool is unavailable, perform content generation directly (single-agent fallback).
 
-10. **Previous Experience (pre-2016)** — Condensed: title, company, dates. 0-2 bullets only for major wins relevant to this JD.
+### Phase 5: Review and Validate
 
-11. **Education & Certifications** — Include if relevant to JD.
+9. **Truthfulness review** — Cross-check the sub-agent's output against experience.json:
+    - Every skill claimed must exist in the skills section
+    - Every metric must be documented in a bullet's `metrics` field
+    - No scope inflation (team sizes, dollar amounts, percentages)
+    - If a violation is found, correct it before proceeding
 
-### Phase 5: Generate Cover Letter Content
+10. **Cover letter review** — Verify:
+    - ≤ 300 words
+    - References something specific about the company
+    - Doesn't rehash resume bullets verbatim
+    - Tone is conversational, not formulaic
 
-12. **Structure (250-300 words max):**
-    - **Hook** (2-3 sentences): Why this company + why you. Reference something specific about the company (mission, recent news, engineering blog, product).
-    - **Value** (3-4 sentences): One specific, relevant accomplishment from your experience that directly addresses their biggest stated need. Don't repeat the resume — go deeper on the "how" and "why."
-    - **Connection** (2-3 sentences): How your approach/philosophy fits their current challenges. Show you understand their problems.
-    - **Close** (1-2 sentences): Express enthusiasm + call to action. Keep it brief.
+### Phase 6: Score and Gate
 
-13. **Tone requirements:**
-    - Pleasant and conversational — like a confident professional writing to a peer
-    - NOT formulaic or AI-sounding
-    - NOT a resume rehash — explain WHY and HOW, not just WHAT
-    - Address "Dear [Department] Hiring Manager" or specific name if findable
-    - Never mention employment gaps
-    - Never focus on what the job does for you
-
-### Phase 6: Score and Validate
-
-14. **Self-score using job-scorer criteria:**
+11. **Use the sub-agent's score** (or self-score if running single-agent):
     - Keyword Match (0-30): count exact JD terms in resume
     - Quantification Density (0-20): % of bullets with metrics
     - Relevance Alignment (0-30): top bullets match JD priorities
     - ATS Compliance (0-10): standard headers, fonts, formatting
     - Recency Weighting (0-10): recent roles weighted appropriately
 
-15. **If score >= 75:** proceed to generation
-16. **If score < 75:** present score breakdown + 3 improvement suggestions. Ask user if they want to iterate or proceed as-is.
+12. **If score >= 75:** proceed to generation
+13. **If score < 75:** present score breakdown + 3 improvement suggestions. Ask user if they want to iterate or proceed as-is. If iterating, re-invoke sub-agent with specific feedback.
 
 ### Phase 7: Generate Documents
 
 16. **Resolve output directory:**
-    Read `paths.resumeDir` from `~/workspace/ai/config/resume/experience.json` (default: `~/workspace/resume`). Use this as `RESUME_DIR` for all output paths below.
+    Read `paths.resumeDir` from `~/workspace/ai/config/resume/experience.json` (default: `~/workspace/resume`). Expand `~` to the user's home directory. Use this as `RESUME_DIR`.
 
 17. **Create output directory:**
     ```bash
     mkdir -p $RESUME_DIR/$(date +%Y-%m-%d)
     ```
 
-18. **Write content JSON files** to /tmp/:
-    - `/tmp/resume_content_{company}.json` — resume content matching generate_docx.py format
-    - `/tmp/cover_letter_content_{company}.json` — cover letter content
+18. **Write content JSON files** to the output directory:
+    - `$RESUME_DIR/YYYY-MM-DD/resume_content_{company}.json` — resume content matching generate_docx.py format
+    - `$RESUME_DIR/YYYY-MM-DD/cover_letter_content_{company}.json` — cover letter content
 
 19. **Generate docx files:**
     ```bash
     python3 ~/workspace/ai/scripts/resume/generate_docx.py \
       --type resume \
-      --content /tmp/resume_content_{company}.json \
-      --output $RESUME_DIR/YYYY-MM-DD/Resume_{Company}.docx \
-      --template ~/workspace/ai/config/resume/templates/resume_template.docx
+      --content $RESUME_DIR/YYYY-MM-DD/resume_content_{company}.json \
+      --output $RESUME_DIR/YYYY-MM-DD/Resume_{Company}.docx
 
     python3 ~/workspace/ai/scripts/resume/generate_docx.py \
       --type cover_letter \
-      --content /tmp/cover_letter_content_{company}.json \
-      --output $RESUME_DIR/YYYY-MM-DD/Cover_Letter_{Company}.docx \
-      --template ~/workspace/ai/config/resume/templates/cover_letter_template.docx
+      --content $RESUME_DIR/YYYY-MM-DD/cover_letter_content_{company}.json \
+      --output $RESUME_DIR/YYYY-MM-DD/Cover_Letter_{Company}.docx
     ```
 
-20. **Convert to PDF:**
-    Run the PDF conversion using the platform-appropriate method. On WSL, use `docx2pdf` via PowerShell (see `scripts/resume/generate_docx.py --help` for platform-specific instructions). On native Linux/macOS, use LibreOffice headless conversion.
+20. **Convert to PDF (WSL → PowerShell → docx2pdf):**
+    Environment requires: `$WIN_TEMP` set in shell profile, Windows Python with `docx2pdf`, Microsoft Word installed.
+
+    First kill any lingering Word process:
+    ```bash
+    powershell.exe -Command "Stop-Process -Name WINWORD -Force -ErrorAction SilentlyContinue; Start-Sleep -Seconds 2"
+    ```
+
+    For EACH docx file, convert using `wslpath -w` to get the Windows-accessible path:
+    ```bash
+    WIN_SRC=$(wslpath -w "$RESUME_DIR/YYYY-MM-DD/Resume_{Company}.docx")
+    powershell.exe -Command "python -c \"from docx2pdf import convert; convert(r'${WIN_SRC}')\""
+    ```
+
+    This produces a `.pdf` alongside the `.docx` in the same directory. Repeat for the cover letter.
+
+    If direct path conversion fails (Word cannot open `\\wsl.localhost` paths), use the temp-copy fallback:
+    ```bash
+    WIN_SRC=$(wslpath -w "<linux_path>.docx")
+    TEMP_DOCX="${WIN_TEMP}\\<filename>.docx"
+    TEMP_PDF="${WIN_TEMP}\\<filename>.pdf"
+    powershell.exe -Command "
+      Copy-Item '${WIN_SRC}' -Destination '${TEMP_DOCX}' -Force
+      python -c \"from docx2pdf import convert; convert(r'${TEMP_DOCX}', r'${TEMP_PDF}')\"
+    "
+    cp "$(wslpath "${TEMP_PDF}")" "<linux_output_path>.pdf"
+    powershell.exe -Command "Remove-Item '${WIN_TEMP}\\<filename>.*' -Force -ErrorAction SilentlyContinue"
+    ```
 
     Expected output files:
     ```
@@ -131,9 +152,11 @@ Act as a senior career strategist who specializes in getting experienced enginee
     ├── Resume_{Company}.pdf
     ├── Cover_Letter_{Company}.docx
     └── Cover_Letter_{Company}.pdf
+    ├── resume_content_{company}.json      (intermediate, kept for reproducibility)
+    └── cover_letter_content_{company}.json (intermediate, kept for reproducibility)
     ```
 
-21. **Report results:** Show file paths, job fit score, and any notes/gaps.
+21. **Report results:** Show file paths, estimated page count, word count (cover letter), job fit score, and any keyword gaps.
 
 ### Failure Recovery (max 3 retries)
 

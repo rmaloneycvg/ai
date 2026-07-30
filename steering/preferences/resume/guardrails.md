@@ -87,6 +87,12 @@ Bullets follow: `[Accomplishment summary]: [Action] that resulted in [quantifiab
 | **2006–2015** | Condensed: company, title, dates + 1-2 bullets for major wins. OR group under "Previous Engineering Experience" |
 | **Pre-2006** | Omit or single line if highly relevant to target role |
 
+### Years of Experience (Match the JD)
+
+In the executive summary, only state the number of years the JD asks for with a "+" after it. Never advertise more years than required. If the JD says "6+ years", write "6+ years" in the summary, not "20+ years". The goal is to match their requirement, not signal overqualification. The full work history is visible in the experience section for anyone who wants to count.
+
+**Floor: 12 years minimum.** If the JD asks for fewer than 12 years, use "12+" instead. Never go below 12+ regardless of what the JD requests.
+
 ### Executive Summary (Replaces Objective)
 
 3-4 sentences that establish identity and set the narrative:
@@ -238,6 +244,45 @@ Brief, confident. Express enthusiasm for discussing specifics.
 | Rephrasing | Allowed — rewording for impact without changing meaning is fine |
 | Fabrication | NEVER allowed under any circumstances |
 
+---
+
+## Voice & Personality
+
+All resume and cover letter content should sound like Ryan — not about Ryan. The documents are written in his voice.
+
+**Who Ryan is:**
+- An empathetic listener who genuinely cares about the people using what he builds
+- Committed and tenacious about hard problems. Doesn't shy away from complexity, jumps in with both feet and figures things out
+- Team-first — celebrates shared wins, loves mentoring, thrives in collaboration
+- Direct and warm, never corporate or detached
+- Finds real joy in making the developers around him more productive
+
+**Resume bullet voice:**
+- Compressed stories Ryan would tell enthusiastically in conversation
+- Emphasize human impact — who benefited, what was unblocked, what the team accomplished together
+- Confident without boasting — the work speaks, framed with genuine energy
+- Active, vivid verbs: "built", "solved", "untangled", "connected" — not "leveraged", "facilitated", "spearheaded"
+
+**Cover letter voice:**
+- Sounds like Ryan writing to someone he'd enjoy working with
+- Show genuine curiosity about the company's challenges and mission
+- Express real excitement — "What drew me to this role..." not "I am writing to express my interest..."
+- Warmth and personality in sentence rhythm — short punchy mixed with longer explanatory
+- Empathy for end users (patients, families, customers) — Ryan cares about who benefits
+
+**Anti-patterns (NEVER):**
+- ❌ "Leveraged synergies to drive stakeholder alignment"
+- ❌ "Results-driven professional with a passion for excellence"
+- ❌ "I am writing to express my interest in the position"
+- ❌ "Spearheaded a cross-functional initiative to optimize workflows"
+- ❌ Em-dashes (—) or double-hyphens (--) mid-sentence. Use commas, "and", or split into two sentences.
+- ❌ Semicolons (;) as sentence joiners. Rewrite as two sentences or use a comma.
+
+**Examples (YES):**
+- ✅ "Built the integration layer that finally let our healthcare teams stop manually reconciling data between three systems"
+- ✅ "What drew me to this role is the chance to solve the same kind of messy, real-world data problems I've spent the last four years untangling"
+- ✅ "The best part of that project was watching three junior engineers ship their first production integration using the library I'd built for exactly that purpose"
+
 ### Handling Skill Gaps
 
 When the JD requires something not in experience.json:
@@ -257,9 +302,13 @@ Output directory is configured via `paths.resumeDir` in `config/resume/experienc
 ├── Resume_{CompanyName}.docx
 ├── Resume_{CompanyName}.pdf
 ├── Cover_Letter_{CompanyName}.docx
-└── Cover_Letter_{CompanyName}.pdf
+├── Cover_Letter_{CompanyName}.pdf
+├── resume_content_{companyname}.json       (intermediate content, kept for reproducibility)
+└── cover_letter_content_{companyname}.json  (intermediate content, kept for reproducibility)
 ```
 
-- CompanyName: PascalCase, no spaces (e.g., "BlueOrigin", "YesEnergy", "OrthoFi")
+- CompanyName: PascalCase, no spaces (e.g., "BlueOrigin", "YesEnergy", "OrthoFi") — used in human-facing filenames
+- companyname: lowercase (e.g., "blueorigin", "frontera") — used in content JSON filenames
 - Date: ISO format from generation date
-- Always produce all 4 files
+- Always produce all 4 document files (docx + pdf for both resume and cover letter)
+- Keep content JSON files alongside outputs for traceability and re-generation

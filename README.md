@@ -51,6 +51,7 @@ ai/
 │   ├── react-refactor.md                # Pipeline: code refactoring
 │   ├── react-hooks-optimization.md      # Audit React hooks, extract custom hooks
 │   ├── resume-builder.md               # Resume/cover letter generation workflow
+│   ├── resume-content-writer.md        # Sub-agent: high-reasoning content generation
 │   ├── experience-parser.md            # Extract experience from .docx files
 │   └── job-scorer.md                   # Score resume against job description
 ├── agents/                             # Agent persona configs (JSON)
@@ -64,6 +65,7 @@ ai/
 │   ├── react-refactor.json              # Sub-agent: code refactoring (opus)
 │   ├── infra.json                      # Infrastructure/DevOps focused
 │   ├── resume-builder.json             # Resume generation orchestrator
+│   ├── resume-content-writer.json      # Sub-agent: high-reasoning content generation (opus)
 │   ├── experience-parser.json          # Extract experience from .docx resumes
 │   └── job-scorer.json                 # Score resume fit against a job description
 ├── mcp/                                # MCP server definitions + tool scripts
