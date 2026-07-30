@@ -213,7 +213,7 @@ def generate_resume(content: dict, template_path: Path, output_path: Path):
 
         for category in content["skills"]:
             p = doc.add_paragraph()
-            set_spacing(p, before=1, after=1)
+            set_spacing(p, before=2, after=2)
             add_run(p, f"{category['name']}: ", size=FONT_SIZE_BODY, bold=True, color=COLOR_BODY)
             skills_str = " | ".join(category["skills"])
             add_run(p, skills_str, size=FONT_SIZE_BODY, color=COLOR_BODY)
