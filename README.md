@@ -17,52 +17,71 @@ ai/
 │   │   └── skill-schema.md            # Skill authoring patterns, quality checklist, refactoring ops
 │   ├── security/
 │   │   └── policies.md               # Auth, validation, CORS, secrets, headers
-│   └── preferences/stack/
-│       ├── react/
-│       │   └── dependency-graph.md    # React stack choices (shadcn, Zustand, TQ, etc.)
-│       ├── nextjs/
-│       │   ├── overview.md            # What Next.js replaces vs keeps from React stack
-│       │   ├── app-router.md          # File-based routing, layouts, parallel routes
-│       │   ├── server-components.md   # RSC vs client component decisions
-│       │   ├── data-patterns.md       # ISR, server actions, route handlers
-│       │   └── middleware.md          # Auth, redirects, A/B testing at the edge
-│       ├── node/
-│       │   └── api-caching.md         # Layered caching (HTTP, Redis, in-memory)
-│       ├── csharp/
-│       │   └── api-caching.md         # Response/output cache, IDistributedCache
+│   └── preferences/
+│       ├── stack/
+│       │   ├── react/
+│       │   │   ├── dependency-graph.md    # React stack choices (shadcn, Zustand, TQ, etc.)
+│       │   │   ├── custom-hooks.md        # Custom hook extraction patterns
+│       │   │   ├── tanstack-query-hooks.md # TanStack Query hook patterns
+│       │   │   ├── react-router-hooks.md  # React Router v6+ hook patterns
+│       │   │   ├── use-callback.md        # useCallback steering
+│       │   │   ├── use-context.md         # useContext vs Zustand decisions
+│       │   │   ├── use-debug-value.md     # useDebugValue for custom hooks
+│       │   │   ├── use-deferred-value.md  # useDeferredValue for expensive renders
+│       │   │   ├── use-effect.md          # useEffect patterns and anti-patterns
+│       │   │   ├── use-effect-event.md    # useEffectEvent (experimental)
+│       │   │   ├── use-imperative-handle.md # useImperativeHandle for ref APIs
+│       │   │   ├── use-layout-effect.md   # useLayoutEffect for DOM measurement
+│       │   │   ├── use-memo.md            # useMemo steering
+│       │   │   ├── use-optimistic.md      # useOptimistic for server actions
+│       │   │   ├── use-reducer.md         # useReducer state machine patterns
+│       │   │   ├── use-ref.md             # useRef patterns and pitfalls
+│       │   │   ├── use-sync-external-store.md # useSyncExternalStore for browser APIs
+│       │   │   └── use-transition.md      # useTransition for non-blocking updates
+│       │   ├── nextjs/
+│       │   │   ├── overview.md            # What Next.js replaces vs keeps from React stack
+│       │   │   ├── app-router.md          # File-based routing, layouts, parallel routes
+│       │   │   ├── server-components.md   # RSC vs client component decisions
+│       │   │   ├── data-patterns.md       # ISR, server actions, route handlers
+│       │   │   └── middleware.md          # Auth, redirects, A/B testing at the edge
+│       │   ├── node/
+│       │   │   └── api-caching.md         # Layered caching (HTTP, Redis, in-memory)
+│       │   └── csharp/
+│       │       └── api-caching.md         # Response/output cache, IDistributedCache
 │       └── resume/
-│           └── guardrails.md          # Resume/cover letter generation guardrails
+│           └── guardrails.md              # Resume/cover letter generation guardrails
 ├── skills/                             # On-demand capability files (YAML frontmatter)
-│   ├── react-components.md
-│   ├── backend-rest-api-feature.md
-│   ├── backend-cron-feature.md
-│   ├── project-readme-documentation.md
-│   ├── create-kiro-skill.md
-│   ├── refactor-kiro-skill.md
-│   ├── refactor.md
-│   ├── debug.md
-│   ├── test.md
-│   ├── deploy.md
+│   ├── react-components.md             # React component generation
+│   ├── react-scaffold.md               # Pipeline: component scaffolding
+│   ├── react-architecture.md           # Pipeline: UI architecture decisions
+│   ├── react-styling.md                # Pipeline: Tailwind/shadcn styling
+│   ├── react-testing.md                # Pipeline: tests and stories
+│   ├── react-refactor.md               # Pipeline: code refactoring
+│   ├── react-hooks-optimization.md     # Audit React hooks, extract custom hooks
+│   ├── backend-rest-api-feature.md     # REST API endpoint scaffolding
+│   ├── backend-cron-feature.md         # Cron job / scheduled task setup
+│   ├── project-readme-documentation.md # README generation and maintenance
+│   ├── create-kiro-skill.md            # Skill authoring workflow
+│   ├── refactor-kiro-skill.md          # Skill refactoring operations
+│   ├── refactor-kiro-ai.md             # AI workspace refactoring
+│   ├── refactor.md                     # General code refactoring
+│   ├── debug.md                        # Debugging workflow
+│   ├── test.md                         # Test writing workflow
+│   ├── deploy.md                       # Deployment workflow
 │   ├── git-workflow.md                 # Git branching, conventional commits, PR prep, hotfix
-│   ├── react-scaffold.md                # Pipeline: component scaffolding
-│   ├── react-architecture.md            # Pipeline: UI architecture decisions
-│   ├── react-styling.md                 # Pipeline: Tailwind/shadcn styling
-│   ├── react-testing.md                 # Pipeline: tests and stories
-│   ├── react-refactor.md                # Pipeline: code refactoring
-│   ├── react-hooks-optimization.md      # Audit React hooks, extract custom hooks
-│   ├── resume-builder.md               # Resume/cover letter generation workflow
-│   ├── resume-content-writer.md        # Sub-agent: high-reasoning content generation
-│   ├── experience-parser.md            # Extract experience from .docx files
-│   └── job-scorer.md                   # Score resume against job description
+│   ├── resume-builder.md              # Resume/cover letter generation orchestrator
+│   ├── resume-content-writer.md       # Sub-agent: high-reasoning content generation
+│   ├── experience-parser.md           # Extract experience from .docx files
+│   └── job-scorer.md                  # Score resume against job description
 ├── agents/                             # Agent persona configs (JSON)
 │   ├── dev.json                        # Full-stack: all steering, broad tool access
-│   ├── react-frontend.json              # React/Next.js only, no shell/db access
+│   ├── react-frontend.json             # React/Next.js only, no shell/db access
 │   ├── react-frontend-orchestrator.json # Orchestrator: routes to sub-agents by task type
-│   ├── react-scaffold.json              # Sub-agent: component scaffolding (haiku)
-│   ├── react-architecture.json          # Sub-agent: UI architecture decisions (opus)
-│   ├── react-styling.json               # Sub-agent: Tailwind/shadcn styling (haiku)
-│   ├── react-testing.json               # Sub-agent: tests and stories (sonnet)
-│   ├── react-refactor.json              # Sub-agent: code refactoring (opus)
+│   ├── react-scaffold.json             # Sub-agent: component scaffolding (haiku)
+│   ├── react-architecture.json         # Sub-agent: UI architecture decisions (opus)
+│   ├── react-styling.json              # Sub-agent: Tailwind/shadcn styling (haiku)
+│   ├── react-testing.json              # Sub-agent: tests and stories (sonnet)
+│   ├── react-refactor.json             # Sub-agent: code refactoring (opus)
 │   ├── infra.json                      # Infrastructure/DevOps focused
 │   ├── resume-builder.json             # Resume generation orchestrator
 │   ├── resume-content-writer.json      # Sub-agent: high-reasoning content generation (opus)
@@ -74,11 +93,15 @@ ai/
 │       │   ├── git.ts                 # git_status tool
 │       │   ├── io.ts                  # read_json, write_json tools
 │       │   └── postgres.ts            # postgres_query, postgres_seed tools
-│       ├── git/status.ts               # Parsed git status
-│       ├── io/read-json.ts             # Read and validate JSON files
-│       ├── io/write-json.ts            # Write JSON with formatting
-│       ├── postgres/query.py           # Parameterized read-only queries
-│       └── postgres/seed.py            # Run SQL seed files
+│       ├── lib/
+│       │   └── exec-python.ts         # Python execution helper
+│       ├── git/status.ts              # Parsed git status implementation
+│       ├── io/
+│       │   ├── read-json.ts           # Read and validate JSON files
+│       │   └── write-json.ts          # Write JSON with formatting
+│       └── postgres/
+│           ├── query.py               # Parameterized read-only queries
+│           └── seed.py                # Run SQL seed files
 ├── scripts/                            # Executable scripts used by agents
 │   ├── git/
 │   │   ├── setup.sh                  # Install hooks, validate env, configure workflow
@@ -94,17 +117,16 @@ ai/
 │   │   ├── hooks/                    # Git hook shell shims (commit-msg, pre-push)
 │   │   └── tests/                    # pytest unit + integration tests
 │   └── resume/
-│       ├── generate_docx.py           # Generate ATS-optimized resume/cover letter docx
+│       ├── generate_docx.py           # Generate ATS-optimized resume/cover letter docx (Lato, royal blue)
 │       ├── parse_resumes.py           # Extract structured text from .docx files
 │       ├── create_templates.py        # Generate docx templates with named styles
-│       ├── pyproject.toml             # Python dependencies for resume scripts (managed by uv)
+│       ├── requirements.txt           # Python dependencies (python-docx)
 │       └── setup.sh                   # Initialize config (experience.json, venv, templates)
 ├── config/                             # Per-user configuration (personal data gitignored)
 │   └── resume/
 │       ├── experience.schema.json     # Schema for experience data (tracked)
 │       ├── experience.json            # Personal experience data (gitignored, created by setup.sh)
 │       └── templates/                 # Generated docx templates (gitignored)
-├── setup.sh                            # Generate local .kiro/ with symlinks
 ├── link.sh                             # Create .kiro/ in another project with symlinks back
 └── .gitignore
 ```
@@ -126,24 +148,12 @@ ai/
 Kiro CLI looks for `.kiro/` at the project root. Use the `link.sh` script to create one with symlinks back to this workspace:
 
 ```bash
-~/workspace/ai/link.sh /path/to/project
+~/workspace/ai/link.sh /path/to/project (defaults to ~/.kiro/)
 ```
 
 This creates `/path/to/project/.kiro/` containing symlinks to `agents/`, `steering/`, and `skills/`. Changes to any file are reflected immediately in all linked projects — no syncing needed.
 
-### Local setup (this repo as a project)
-
-To use Kiro CLI directly in this workspace:
-
-```bash
-./setup.sh
-```
-
-Creates `.kiro/` with symlinks to the sibling directories. Gitignored.
-
 ### Resume tooling setup
-
-If you plan to use the resume-builder, experience-parser, or job-scorer agents:
 
 ```bash
 ./scripts/resume/setup.sh
