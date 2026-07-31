@@ -8,6 +8,8 @@
     "dev:git": "tsx servers/git.ts",
     "dev:io": "tsx servers/io.ts",
     "dev:postgres": "tsx servers/postgres.ts",
+    "dev:linear": "tsx servers/linear.ts",
+    "dev:jira": "tsx servers/jira.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
