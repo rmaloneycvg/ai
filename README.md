@@ -85,6 +85,7 @@ ai/
 │   ├── sdlc-manager-1on1.md         # Personal 1:1 prep, win tracking, goals, review narratives
 │   ├── sdlc-meeting-debrief.md      # Post-meeting: store notes/transcripts, extract actions, route items
 │   ├── sdlc-meeting-prep.md          # Meeting preparation, scheduling, and "what's next" guidance
+│   ├── sdlc-meeting-schedule.md      # Full meeting schedule planning, registry, phase-to-meeting mapping
 │   ├── sdlc-people-management.md     # Coaching, improvement plans, escalation, promotion cases
 │   ├── sdlc-performance-log.md     # Win logging, disagreement receipts, goals, review narrative
 │   ├── sdlc-planning.md              # SDLC planning phase: debates, artifacts, meetings
@@ -92,6 +93,12 @@ ai/
 │   ├── sdlc-sprint-planning.md       # Sprint capacity, dependency tracking, timeline reports
 │   ├── sdlc-stack-selection.md       # SDLC design: stack evaluation, gap analysis, architecture docs
 │   ├── sdlc-team-metrics.md          # Sprint KPIs, thresholds, retro prep, estimate calibration
+│   ├── sdlc-implementation.md        # Sprint execution: story pickup, WIP, PR workflow, DoD, QA handoff
+│   ├── sdlc-testing-qa.md            # Test strategy, execution, defect management, QA sign-off
+│   ├── sdlc-deployment.md            # Staged rollout execution, health verification, rollback decisions
+│   ├── sdlc-observability.md         # SLO dashboards, alert rules, runbooks, error budget policy
+│   ├── sdlc-maintenance.md           # Dependency audits, security patching, tech debt, capacity planning
+│   ├── sdlc-incident-management.md   # Incident response: triage, mitigation, blameless RCA, action items
 │   ├── sdlc-tool-jira.md             # Jira-specific field mapping and import guidance
 │   └── sdlc-tool-linear.md           # Linear-specific field mapping and import guidance
 ├── agents/                             # Agent persona configs (JSON)
@@ -202,7 +209,7 @@ Each agent is a focused persona with specific tool access, steering context, and
 | `resume-builder` | `kiro --agent resume-builder` | Paste a JD → get tailored resume + cover letter (docx + pdf). Reads from experience.json. Delegates to content-writer sub-agent for high-reasoning work. | read, write, shell, glob, grep, subagent |
 | `resume-experience-parser` | `kiro --agent experience-parser` | Extract structured experience data from .docx resume files into experience.json format. | read, write, shell, glob, grep |
 | `resume-job-scorer` | `kiro --agent job-scorer` | Score a resume against a job description. Reports keyword match, gap analysis, and improvement suggestions. | read, glob, grep, io |
-| `sdlc-lead` | `kiro --agent sdlc-lead` | Full SDLC lifecycle: planning → stack selection → design → epics → sprints → release. Also handles metrics, people management, and meeting prep. Writes to `drafts/` and `docs/`. | read, write, glob, grep, code, git, io |
+| `sdlc-lead` | `kiro --agent sdlc-lead` | Full SDLC lifecycle: planning → stack selection → design → epics → sprints → implementation → QA → release → deployment → observability → maintenance. Also handles metrics, people management, meeting prep, and incident management. Writes to `drafts/` and `docs/`. | read, write, glob, grep, code, git, io |
 
 ### Sub-Agents (invoked by orchestrators, not directly)
 
@@ -253,13 +260,20 @@ Skills are on-demand capabilities loaded into agent context when triggered by us
 |-------|-------|--------------|
 | `sdlc-planning` | 1 | Facilitates planning debates, generates charter, stakeholder analysis |
 | `sdlc-stack-selection` | 2 | Technology evaluation: gap analysis, risk matrix, debate format, architecture doc |
-| `sdlc-detailed-design` | 3 | Workflow diagrams, ERDs, data flows, cloud architecture, API contracts |
+| `sdlc-detailed-design` | 3 | Workflow diagrams, ERDs, data flows, cloud architecture, SLO definitions, API contracts |
 | `sdlc-epic-planning` | 4 | Decomposes features into epics → stories → tasks with dependencies |
 | `sdlc-sprint-planning` | 5 | Capacity allocation, dependency tracking, timeline, risk identification |
-| `sdlc-release-planning` | 7 | Release criteria, rollback plan, monitoring, staged rollout gates |
+| `sdlc-implementation` | 6 (per sprint) | Sprint execution: story pickup, WIP limits, PR workflow, CI enforcement, DoD verification, QA handoff |
+| `sdlc-testing-qa` | 7 (per sprint) | Test strategy, test plans, execution, defect management, regression maintenance, QA sign-off |
+| `sdlc-release-planning` | 8 (per release) | Release criteria, rollback plan, monitoring plan, staged rollout gates |
+| `sdlc-deployment` | 9 (per release) | Staged rollout execution, health verification, smoke tests, rollback decisions |
+| `sdlc-observability` | 10 (per release) | SLO dashboard creation, alert rules, runbooks, error budget policy, capacity signals |
+| `sdlc-maintenance` | 11 (ongoing) | Dependency audits, security patching, tech debt tracking, deprecation management, capacity planning |
+| `sdlc-incident-management` | Standalone | Incident response: severity classification, war room, mitigation, blameless RCA, action items |
 | `sdlc-team-metrics` | Any | Sprint KPIs, velocity tracking, retro prep, estimate calibration |
 | `sdlc-people-management` | Any | Coaching, improvement plans, escalation paths, promotion case building |
-| `sdlc-meeting-prep` | Any | Meeting preparation: agenda, context gathering, scheduling, "what's next" |
+| `sdlc-meeting-prep` | Any | Meeting preparation: agenda, prep checklists, discussion questions, "what's next" |
+| `sdlc-meeting-schedule` | Any | Full meeting schedule planning, registry, phase-to-meeting mapping |
 | `sdlc-meeting-debrief` | Any | Post-meeting: store notes, extract action items, route to owners |
 | `sdlc-manager-1on1` | Any | Personal 1:1 prep: win tracking, goals, talking points, review narratives |
 | `sdlc-performance-log` | Any | Win logging, disagreement receipts, goal tracking, review narrative generation |
