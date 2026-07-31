@@ -1,0 +1,68 @@
+{
+  "name": "sdlc-lead",
+  "description": "SDLC planning and project management assistant. Guides through planning, architecture, epic decomposition, sprint scheduling, release prep, team metrics, and people management. Operates phase-by-phase with human gates between each.",
+  "prompt": "You are a senior engineering program manager and technical lead assistant. You guide software projects through the full SDLC — from planning through release. You work phase-by-phase, never skipping gates.\n\nBefore starting work, determine which SDLC phase the user needs. Ask if unclear.\n\nPhase order (see steering/orchestration/sdlc-pipeline.md):\n1. Planning → 2. Stack Selection → 3. Detailed Design → 4. Epic Planning → 5. Sprint Planning → 6. Implementation → 7. Release\n\nSupporting workflows (triggered any time):\n- Team metrics and retro prep\n- People management (coaching, escalation, promotion)\n- Meeting preparation\n- Tool export (Linear, Jira)\n\nRules:\n- Always check which phase artifacts already exist before starting\n- Never skip a phase gate\n- Ask for document locations — never assume paths\n- Write all output to <cwd>/drafts/<phase>/ unless user specifies otherwise\n- Present specs before writing — await approval\n- When the user asks about metrics or team performance, use sdlc-team-metrics\n- When the user asks about coaching, improvement plans, or promotions, use sdlc-people-management\n- When the user asks about meeting prep or scheduling, use sdlc-meeting-prep\n- For tool export (Linear/Jira), confirm epics.json exists first",
+  "mcpServers": {
+    "git": {
+      "command": "npx",
+      "args": ["tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/git.ts"],
+      "timeout": 30000
+    },
+    "io": {
+      "command": "npx",
+      "args": ["tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/io.ts"],
+      "timeout": 10000
+    },
+    "jira": {
+      "command": "npx",
+      "args": ["tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/jira.ts"],
+      "timeout": 30000
+    },
+    "linear": {
+      "command": "npx",
+      "args": ["tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/linear.ts"],
+      "timeout": 30000
+    }
+  },
+  "tools": ["read", "write", "glob", "grep", "code", "@git", "@io", "@jira", "@linear"],
+  "allowedTools": ["read", "write", "glob", "grep", "code", "@git/git_status", "@io/read_json", "@io/write_json", "@jira/jira_list_projects", "@jira/jira_search_issues", "@jira/jira_get_issue", "@jira/jira_list_sprints", "@jira/jira_get_sprint_metrics", "@linear/linear_list_teams", "@linear/linear_list_issues", "@linear/linear_get_issue", "@linear/linear_list_projects", "@linear/linear_list_cycles", "@linear/linear_get_cycle_metrics"],
+  "toolsSettings": {
+    "write": {
+      "allowedPaths": [
+        "**/drafts/**",
+        "**/docs/**",
+        "**/templates/**"
+      ]
+    }
+  },
+  "resources": [
+    "skill://../skills/sdlc-planning.md",
+    "skill://../skills/sdlc-stack-selection.md",
+    "skill://../skills/sdlc-detailed-design.md",
+    "skill://../skills/sdlc-epic-planning.md",
+    "skill://../skills/sdlc-sprint-planning.md",
+    "skill://../skills/sdlc-team-metrics.md",
+    "skill://../skills/sdlc-people-management.md",
+    "skill://../skills/sdlc-release-planning.md",
+    "skill://../skills/sdlc-meeting-prep.md",
+    "skill://../skills/sdlc-meeting-debrief.md",
+    "skill://../skills/sdlc-manager-1on1.md",
+    "skill://../skills/sdlc-performance-log.md",
+    "skill://../skills/sdlc-tool-linear.md",
+    "skill://../skills/sdlc-tool-jira.md",
+    "file://../steering/orchestration/sdlc-pipeline.md",
+    "file://../steering/conventions/release-gates.md"
+  ],
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "ls drafts/ 2>/dev/null | head -20 || echo 'no drafts directory'",
+        "timeout_ms": 3000
+      },
+      {
+        "command": "ls docs/planning/ 2>/dev/null | head -10 || echo 'no planning docs'",
+        "timeout_ms": 3000
+      }
+    ]
+  }
+}

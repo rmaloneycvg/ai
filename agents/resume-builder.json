@@ -39,8 +39,8 @@
       ]
     },
     "crew": {
-      "availableAgents": ["resume-content-writer", "job-scorer"],
-      "trustedAgents": ["resume-content-writer", "job-scorer"]
+      "availableAgents": ["resume-content-writer", "resume-job-scorer"],
+      "trustedAgents": ["resume-content-writer", "resume-job-scorer"]
     }
   },
   "resources": [

@@ -55,8 +55,8 @@
   "resources": [
     "skill://../skills/react-components.md",
     "skill://../skills/react-hooks-optimization.md",
-    "skill://../skills/refactor.md",
-    "skill://../skills/test.md",
+    "skill://../skills/general-refactor.md",
+    "skill://../skills/general-test.md",
     "skill://../skills/react-scaffold.md",
     "skill://../skills/react-architecture.md",
     "skill://../skills/react-styling.md",
