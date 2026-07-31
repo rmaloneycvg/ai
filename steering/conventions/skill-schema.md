@@ -2,7 +2,7 @@
 
 ## Why This Exists
 
-This document consolidates all skill authoring patterns, quality standards, and refactoring operations into a single authoritative reference. Both `create-kiro-skill` and `refactor-kiro-skill` reference this source of truth rather than duplicating schema definitions, quality checklists, and structural guidance inline.
+This document consolidates all skill authoring patterns, quality standards, and refactoring operations into a single authoritative reference. Both `kiro-create-skill` and `kiro-refactor-skill` reference this source of truth rather than duplicating schema definitions, quality checklists, and structural guidance inline.
 
 ---
 
@@ -410,8 +410,8 @@ If user cancels mid-implementation: revert Tiltfile, remove created Dockerfile a
 
 ## References
 
-- `steering/orchestration/local.md` — Tilt topology, nginx patterns, Docker multi-stage builds
-- `skills/project-readme-documentation.md` — README update after adding service
+- `steering/orchestration/local-dev.md` — Tilt topology, nginx patterns, Docker multi-stage builds
+- `skills/general-documentation.md` — README update after adding service
 ```
 
 ---
@@ -422,4 +422,4 @@ If user cancels mid-implementation: revert Tiltfile, remove created Dockerfile a
 - Put detailed patterns in steering docs, reference them from skills
 - Use `skill://` URI (not `file://`) so only metadata loads at startup
 - If a skill exceeds 300 lines, split it into two skills with narrower triggers
-- Exception: meta-skills (like create-kiro-skill) that teach skill creation may be larger since they're referenced infrequently and contain the full schema
+- Exception: meta-skills (like kiro-create-skill) that teach skill creation may be larger since they're referenced infrequently and contain the full schema

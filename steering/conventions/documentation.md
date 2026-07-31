@@ -2,7 +2,7 @@
 
 ## Why This Exists
 
-Documentation standards, Mermaid diagram templates, README structure, and staleness rules are reference material that multiple skills and agents need. Consolidating them here keeps the `project-readme-documentation` skill focused on workflow execution while providing a single source of truth for documentation conventions across all projects.
+Documentation standards, Mermaid diagram templates, README structure, and staleness rules are reference material that multiple skills and agents need. Consolidating them here keeps the `general-documentation` skill focused on workflow execution while providing a single source of truth for documentation conventions across all projects.
 
 ## README Structure (Required Order)
 
