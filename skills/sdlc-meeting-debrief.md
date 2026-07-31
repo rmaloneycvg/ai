@@ -1,6 +1,6 @@
 ---
 name: sdlc-meeting-debrief
-description: Use after a meeting to process notes, transcripts, or recordings into structured outputs. Stores meeting artifacts in an organized archive, extracts action items, identifies disagreements for receipt logging, generates follow-up emails with unanswered questions, and surfaces future talking points for upcoming meetings. Trigger phrases include "debrief this meeting", "process my meeting notes", "here's a transcript from today", "store this meeting", or "extract action items from this meeting". NOT for meeting prep (use sdlc-meeting-prep) or scheduling (use sdlc-meeting-prep Mode 2).
+description: Use after a meeting to process notes, transcripts, or recordings into structured outputs. Stores meeting artifacts in an organized archive, extracts action items, identifies disagreements for receipt logging, generates follow-up emails with unanswered questions, and surfaces future talking points for upcoming meetings. Trigger phrases include "debrief this meeting", "process my meeting notes", "here's a transcript from today", "store this meeting", or "extract action items from this meeting". NOT for meeting prep (use sdlc-meeting-prep) or scheduling (use sdlc-meeting-schedule).
 ---
 
 # Meeting Debrief & Archive
