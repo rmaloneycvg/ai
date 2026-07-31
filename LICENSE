@@ -1,0 +1,33 @@
+Copyright (c) 2024-2026 Ryan M. All rights reserved.
+
+PERSONAL USE LICENSE
+
+Permission is hereby granted to any person obtaining a copy of this software
+and associated documentation files (the "Software"), to use, copy, and modify
+the Software for personal, educational, and non-production evaluation purposes
+only, subject to the following conditions:
+
+1. PRODUCTION USE PROHIBITED. The Software may not be used, deployed, or
+   integrated into any production system, commercial product, or revenue-
+   generating service without a separate commercial license agreement.
+
+2. REDISTRIBUTION. Redistribution of the Software, in whole or in part, with
+   or without modification, is permitted only for non-production purposes and
+   must include this license notice in all copies or substantial portions.
+
+3. NO WARRANTY. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+4. LIMITATION OF LIABILITY. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT
+   OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+   THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+5. COMMERCIAL LICENSING. For production use, commercial licensing, or
+   enterprise deployment inquiries, contact the author directly via GitHub:
+   https://github.com/ryanm
+
+"Production use" is defined as any use in a system that serves end users,
+processes real customer data, or operates as part of a business workflow
+beyond personal evaluation.
