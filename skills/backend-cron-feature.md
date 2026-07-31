@@ -175,6 +175,6 @@ k8s_resource('celery-worker', port_forwards='5555:5555', labels=['background'])
 
 ## References
 
-- `steering/orchestration/local.md` — Tilt service topology, Celery worker setup, k8s CronJob patterns
-- `skills/deploy.md` — Deploying cron workers via Terraform
-- `skills/test.md` — Testing async jobs and scheduled tasks
+- `steering/orchestration/local-dev.md` — Tilt service topology, Celery worker setup, k8s CronJob patterns
+- `skills/general-deploy.md` — Deploying cron workers via Terraform
+- `skills/general-test.md` — Testing async jobs and scheduled tasks

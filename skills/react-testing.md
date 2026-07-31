@@ -1,6 +1,6 @@
 ---
 name: react-testing
-description: Pipeline sub-agent skill for frontend testing. Writes and runs Vitest unit tests, Playwright e2e specs, and Storybook stories. Validates code from upstream pipeline stages and reports results with detailed error information. Invoked by the react-frontend-orchestrator.
+description: Pipeline sub-agent skill for frontend testing. Writes and runs Vitest unit tests, Playwright e2e specs, and Storybook stories. Validates code from upstream pipeline stages and reports results with detailed error information. Invoked by the react-orchestrator.
 ---
 
 # Frontend Testing (Pipeline Sub-Agent)
@@ -162,5 +162,5 @@ test.describe('Feature Name', () => {
 ## References (read on demand)
 
 - `steering/preferences/stack/react/dependency-graph.md` — Testing stack (Vitest, Playwright, Testing Library, MSW, Storybook patterns)
-- `steering/conventions/react-pipeline-contract.md` — Pipeline I/O schema
+- `steering/orchestration/pipeline-contract.md` — Pipeline I/O schema
 - `steering/conventions/code-style.md` — Test file naming conventions

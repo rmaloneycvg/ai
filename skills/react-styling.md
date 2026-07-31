@@ -1,6 +1,6 @@
 ---
 name: react-styling
-description: Pipeline sub-agent skill for frontend styling. Applies Tailwind CSS classes, composes shadcn/ui primitives, implements responsive design, dark mode support, and accessibility styling (color contrast, focus states, touch targets). Invoked by the react-frontend-orchestrator.
+description: Pipeline sub-agent skill for frontend styling. Applies Tailwind CSS classes, composes shadcn/ui primitives, implements responsive design, dark mode support, and accessibility styling (color contrast, focus states, touch targets). Invoked by the react-orchestrator.
 ---
 
 # Frontend Styling (Pipeline Sub-Agent)
@@ -94,5 +94,5 @@ import { cn } from '@/lib/utils'
 ## References (read on demand)
 
 - `steering/preferences/stack/react/dependency-graph.md` — shadcn/ui rules, Tailwind conventions, cn() utility
-- `steering/conventions/react-pipeline-contract.md` — Pipeline I/O schema
+- `steering/orchestration/pipeline-contract.md` — Pipeline I/O schema
 - `steering/conventions/code-style.md` — Component patterns, className prop conventions

@@ -1,6 +1,6 @@
 ---
 name: react-scaffold
-description: Pipeline sub-agent skill for scaffolding React/Next.js components. Generates typed components, Storybook stories, Vitest tests, and barrel exports from structured pipeline input. Invoked by the react-frontend-orchestrator — not used directly.
+description: Pipeline sub-agent skill for scaffolding React/Next.js components. Generates typed components, Storybook stories, Vitest tests, and barrel exports from structured pipeline input. Invoked by the react-orchestrator — not used directly.
 ---
 
 # Frontend Scaffolding (Pipeline Sub-Agent)
@@ -114,5 +114,5 @@ If generating fails irrecoverably:
 ## References (read on demand)
 
 - `steering/conventions/code-style.md` — Naming, file organization, import ordering
-- `steering/conventions/react-pipeline-contract.md` — Pipeline I/O schema
+- `steering/orchestration/pipeline-contract.md` — Pipeline I/O schema
 - `steering/preferences/stack/react/dependency-graph.md` — Component patterns, shadcn/ui usage

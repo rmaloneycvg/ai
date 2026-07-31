@@ -1,6 +1,6 @@
 ---
 name: react-architecture
-description: Pipeline sub-agent skill for frontend UI architecture decisions. Analyzes requirements and produces component decomposition, server/client boundaries, data flow strategies, and state management placement. Read-only — does not write source files. Invoked by the react-frontend-orchestrator.
+description: Pipeline sub-agent skill for frontend UI architecture decisions. Analyzes requirements and produces component decomposition, server/client boundaries, data flow strategies, and state management placement. Read-only — does not write source files. Invoked by the react-orchestrator.
 ---
 
 # Frontend UI Architecture (Pipeline Sub-Agent)
@@ -104,4 +104,4 @@ Your `decisions_made` should be specific and actionable:
 - `steering/preferences/stack/nextjs/data-patterns.md` — ISR, Server Actions, Route Handlers, TanStack Query integration
 - `steering/preferences/stack/nextjs/app-router.md` — File-based routing, layouts, parallel routes
 - `steering/preferences/stack/react/dependency-graph.md` — Full stack decisions (state, forms, tables, charts)
-- `steering/conventions/react-pipeline-contract.md` — Pipeline I/O schema
+- `steering/orchestration/pipeline-contract.md` — Pipeline I/O schema

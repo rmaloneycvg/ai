@@ -214,4 +214,4 @@ If user cancels after partial generation: remove the dated output directory and 
 - `steering/preferences/resume/guardrails.md` — full guardrail details
 - `~/workspace/ai/scripts/resume/generate_docx.py` — docx generation script
 - `~/workspace/ai/scripts/resume/generate_docx.py --help` — platform-specific PDF conversion instructions
-- `skills/job-scorer.md` — scoring criteria details
+- `skills/resume-job-scorer.md` — scoring criteria details

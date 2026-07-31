@@ -173,5 +173,5 @@ describe('POST /api/widgets', () => {
 - `steering/security/policies.md` — OAuth2, RBAC, input validation, CORS, rate limiting
 - `steering/preferences/stack/node/api-caching.md` — Node.js caching patterns (Redis, in-memory, HTTP headers, stampede prevention)
 - `steering/preferences/stack/csharp/api-caching.md` — C# caching patterns (IDistributedCache, ResponseCache, output caching)
-- `steering/orchestration/local.md` — Tilt service setup, nginx routing, OAuth2/CORS configuration
+- `steering/orchestration/local-dev.md` — Tilt service setup, nginx routing, OAuth2/CORS configuration
 - `skills/react-components.md` — If building frontend to consume the API
