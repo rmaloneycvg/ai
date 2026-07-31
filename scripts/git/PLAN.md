@@ -244,10 +244,10 @@ Source: https://www.bavaga.com/blog/2025/01/27/my-ultimate-conventional-commit-t
 - **Test requirements:** Verify idempotent re-run; hooks installed correctly
 - **Demo:** `./scripts/git/setup.sh` installs everything, bad commit immediately rejected
 
-### Task 10: Create the skill file `skills/git-workflow.md` using the create-kiro-skill workflow
+### Task 10: Create the skill file `skills/git-workflow.md` using the kiro-create-skill workflow
 
-- **Objective:** Use the `create-kiro-skill` skill workflow to create the Kiro skill that ties everything together.
-- **Implementation guidance — follow create-kiro-skill execution workflow:**
+- **Objective:** Use the `kiro-create-skill` skill workflow to create the Kiro skill that ties everything together.
+- **Implementation guidance — follow kiro-create-skill execution workflow:**
   1. **Pre-Flight** — Check if `skills/git-workflow.md` exists. Run git status on .kiro/
   2. **Bounded Overlap Check** — List skills/, identify candidates (deploy.md, refactor.md). Read those to confirm no overlap.
   3. **Clarify** — No overlap expected (deploy covers terraform/infra, this covers git workflow)
@@ -262,7 +262,7 @@ Source: https://www.bavaga.com/blog/2025/01/27/my-ultimate-conventional-commit-t
      - Guardrails: never force-push without confirmation, never commit directly to prod/staging/dev, never skip hook validation, never use hotfix: type on non-hotfix branches
      - References: `steering/conventions/git-workflow.md`
   5. **Present for Approval** — Show draft to user
-  6. **Save & Register** — Write to `skills/git-workflow.md`, add `skill://../skills/git-workflow.md` to `agents/dev.json` and `agents/infra.json`
+  6. **Save & Register** — Write to `skills/git-workflow.md`, add `skill://../skills/git-workflow.md` to `agents/general-dev.json` and `agents/infra-dev.json`
   7. **Verify** — Confirm file parses, agent configs valid JSON
 
 ### Task 11: Update README.md and agent configuration
