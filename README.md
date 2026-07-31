@@ -317,11 +317,43 @@ MCP (Model Context Protocol) tools give agents structured access to external sys
 
 ### Environment Variables
 
+#### MCP Servers
+
 | Server | Required Variables | Where to Get |
 |--------|-------------------|--------------|
 | **jira** | `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN` | [Atlassian API tokens](https://id.atlassian.com/manage-profile/security/api-tokens) |
 | **linear** | `LINEAR_API_KEY` | [Linear Settings → API](https://linear.app/settings/api) |
-| **postgres** | `DATABASE_URL` or defaults to local | Local dev postgres |
+| **postgres** | `PGHOST`, `PGPORT`, `PGUSER`, `PGPASSWORD`, `PGDATABASE` | Standard [libpq env vars](https://www.postgresql.org/docs/current/libpq-envars.html). Defaults to local socket if unset. |
+
+#### Git Workflow Scripts
+
+| Variable | Required | Purpose |
+|----------|----------|---------|
+| `TICKET_SYSTEM_URL` | Optional | Enables ticket ID enforcement in branches/commits/PRs. Set to your project management URL (e.g., `https://mycompany.atlassian.net`). Without it, branches don't require ticket prefixes. |
+
+#### Example `.zshrc` / `.bashrc` Configuration
+
+```bash
+# MCP: Jira (required for sdlc-tool-jira)
+export JIRA_BASE_URL="https://yourcompany.atlassian.net"
+export JIRA_EMAIL="you@company.com"
+export JIRA_API_TOKEN="your-api-token"
+
+# MCP: Linear (required for sdlc-tool-linear)
+export LINEAR_API_KEY="lin_api_xxxxxxxxxxxx"
+
+# MCP: Postgres (required for postgres_query/postgres_seed tools)
+export PGHOST="localhost"
+export PGPORT="5432"
+export PGUSER="postgres"
+export PGPASSWORD="postgres"
+export PGDATABASE="postgres"
+
+# Git workflow scripts (optional — enables ticket enforcement)
+export TICKET_SYSTEM_URL="https://yourcompany.atlassian.net"
+```
+
+For secrets management in teams, use [Infisical](https://infisical.com), Vault, or dotenv files (gitignored). Never commit these values.
 
 ### Running MCP servers
 
