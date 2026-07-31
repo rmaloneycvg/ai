@@ -314,6 +314,9 @@ MCP (Model Context Protocol) tools give agents structured access to external sys
 | **jira** (`servers/jira.ts`) | `jira_list_projects`, `jira_search_issues`, `jira_get_issue`, `jira_create_issue`, `jira_create_issues_bulk`, `jira_list_sprints`, `jira_get_sprint_metrics`, `jira_create_sprint`, `jira_create_link`, `jira_transition_issue`, `jira_add_comment` | Jira Cloud REST API: issue CRUD, sprint management, metrics extraction, dependency linking |
 | **linear** (`servers/linear.ts`) | `linear_list_teams`, `linear_list_issues`, `linear_get_issue`, `linear_create_issue`, `linear_create_issues_bulk`, `linear_list_projects`, `linear_create_project`, `linear_list_cycles`, `linear_get_cycle_metrics`, `linear_create_cycle`, `linear_create_document`, `linear_create_relation` | Linear GraphQL API: issue CRUD, project/cycle management, metrics, documents, relations |
 | **postgres** (`servers/postgres.ts`) | `postgres_query`, `postgres_seed` | Parameterized read-only queries; run SQL seed files against local dev DB |
+| **prometheus** (`servers/prometheus.ts`) | `prometheus_query`, `prometheus_range_query`, `prometheus_metrics`, `prometheus_label_values`, `prometheus_alerts`, `prometheus_rules`, `prometheus_kiro_usage`, `prometheus_kiro_performance`, `prometheus_kiro_models`, `prometheus_kiro_context`, `prometheus_kiro_security`, `prometheus_error_rates`, `prometheus_release_compare` | Prometheus PromQL queries, metric discovery, alerting status, Kiro feature/model/context/security telemetry |
+| **jaeger** (`servers/jaeger.ts`) | `jaeger_services`, `jaeger_operations`, `jaeger_search_traces`, `jaeger_get_trace`, `jaeger_dependencies`, `jaeger_analyze_bottlenecks`, `jaeger_kiro_slow_sessions`, `jaeger_kiro_by_command`, `jaeger_kiro_by_model`, `jaeger_kiro_security_traces`, `jaeger_kiro_session_trace` | Jaeger distributed tracing: trace search, bottleneck analysis, Kiro session/model/security trace queries |
+| **grafana** (`servers/grafana.ts`) | `grafana_search_dashboards`, `grafana_get_dashboard`, `grafana_dashboard_versions`, `grafana_query`, `grafana_datasources`, `grafana_annotations`, `grafana_create_annotation`, `grafana_release_report`, `grafana_kiro_report`, `grafana_top10_report`, `grafana_create_ticket_from_telemetry`, `grafana_trigger_self_healing`, `grafana_kiro_failure_report` | Grafana dashboards, release comparison reports, Kiro telemetry reports, automatic ticket generation from alerts, self-healing triggers with audit trail |
 
 ### Environment Variables
 
@@ -324,6 +327,9 @@ MCP (Model Context Protocol) tools give agents structured access to external sys
 | **jira** | `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN` | [Atlassian API tokens](https://id.atlassian.com/manage-profile/security/api-tokens) |
 | **linear** | `LINEAR_API_KEY` | [Linear Settings → API](https://linear.app/settings/api) |
 | **postgres** | `PGHOST`, `PGPORT`, `PGUSER`, `PGPASSWORD`, `PGDATABASE` | Standard [libpq env vars](https://www.postgresql.org/docs/current/libpq-envars.html). Defaults to local socket if unset. |
+| **prometheus** | `PROMETHEUS_URL`, `PROMETHEUS_AUTH_TOKEN` (optional) | Your Prometheus instance URL (e.g., `http://localhost:9090`). Auth token only needed for secured instances. |
+| **jaeger** | `JAEGER_URL`, `JAEGER_AUTH_TOKEN` (optional) | Your Jaeger Query UI URL (e.g., `http://localhost:16686`). Auth token only needed for secured instances. |
+| **grafana** | `GRAFANA_URL`, `GRAFANA_API_KEY`, `GRAFANA_ORG_ID` (optional) | [Grafana Service Account tokens](https://grafana.com/docs/grafana/latest/administration/service-accounts/). Org ID only for multi-org setups. |
 
 #### Git Workflow Scripts
 
@@ -351,6 +357,19 @@ export PGDATABASE="postgres"
 
 # Git workflow scripts (optional — enables ticket enforcement)
 export TICKET_SYSTEM_URL="https://yourcompany.atlassian.net"
+
+# MCP: Prometheus (required for prometheus_query/prometheus_kiro_* tools)
+export PROMETHEUS_URL="http://localhost:9090"
+export PROMETHEUS_AUTH_TOKEN=""  # optional — only for secured instances
+
+# MCP: Jaeger (required for jaeger_search_traces/jaeger_kiro_* tools)
+export JAEGER_URL="http://localhost:16686"
+export JAEGER_AUTH_TOKEN=""  # optional — only for secured instances
+
+# MCP: Grafana (required for grafana_query/grafana_kiro_report/grafana_top10_report tools)
+export GRAFANA_URL="http://localhost:3000"
+export GRAFANA_API_KEY="glsa_xxxxxxxxxxxx"
+export GRAFANA_ORG_ID=""  # optional — only for multi-org setups
 ```
 
 For secrets management in teams, use [Infisical](https://infisical.com), Vault, or dotenv files (gitignored). Never commit these values.

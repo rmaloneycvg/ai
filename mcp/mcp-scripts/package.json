@@ -10,6 +10,9 @@
     "dev:postgres": "tsx servers/postgres.ts",
     "dev:linear": "tsx servers/linear.ts",
     "dev:jira": "tsx servers/jira.ts",
+    "dev:prometheus": "tsx servers/prometheus.ts",
+    "dev:jaeger": "tsx servers/jaeger.ts",
+    "dev:grafana": "tsx servers/grafana.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
