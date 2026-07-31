@@ -34,7 +34,7 @@ At the start of execution, ASK the user where the completed planning documents l
 > 2. Technical Feasibility Checklist
 > 3. Risk Register
 >
-> These may be in `docs/planning/`, a shared drive, or another location."
+> These may be in `drafts/planning/`, a shared drive, or another location."
 
 Accept any path the user provides. Read from that location.
 

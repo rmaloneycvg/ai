@@ -15,7 +15,7 @@ Act as a senior technical program manager with experience leading 0-to-1 product
 
 ## Workflow
 
-1. **Check Existing State** — Does a `docs/planning/` directory exist with a project charter? If yes, determine if new project or update. Report findings.
+1. **Check Existing State** — Does `<cwd>/drafts/planning/` exist with a project charter? If yes, determine if new project or update. Report findings.
 
 2. **Gather Context** — Ask the user for:
    - Project name and elevator pitch
@@ -44,7 +44,7 @@ Act as a senior technical program manager with experience leading 0-to-1 product
 
 5. **Await Approval** — Present artifact plan. Do NOT write until user confirms.
 
-6. **Produce Artifacts** — Generate each using templates below. Write to `docs/planning/` or user-specified location.
+6. **Produce Artifacts** — Generate each using templates below. Write to `<cwd>/drafts/planning/` or user-specified location.
 
 7. **Generate Meeting Plan** — Produce agendas for required planning meetings.
 
@@ -65,7 +65,7 @@ Act as a senior technical program manager with experience leading 0-to-1 product
 
 ### Rollback
 
-If user cancels: list and delete files created in `docs/planning/`, confirm clean state.
+If user cancels: list and delete files created in `<cwd>/drafts/planning/`, confirm clean state.
 
 ---
 

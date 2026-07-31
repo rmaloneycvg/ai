@@ -77,22 +77,41 @@ ASK the user for the location of these documents before proceeding.
    - Security (IAM, secrets, encryption, WAF)
    - Cost annotations per service (estimated monthly)
 
-10. **Cross-Reference All Diagrams** — Add navigation links between related documents:
+10. **Define Service Level Objectives** — For each user-facing service, define:
+
+    | Service | SLI | SLO Target | Error Budget (30-day) | Measurement | Alert Threshold |
+    |---------|-----|------------|----------------------|-------------|-----------------|
+    | [Service] | Availability | 99.9% | 43.2 min downtime | Health check + synthetic monitor | < 99.5% over 5 min |
+    | [Service] | Latency (p95) | < 200ms | N/A (target, not budget) | Request duration histogram | > 500ms for 5 min |
+    | [Service] | Error rate (5xx) | < 0.1% | 0.9% budget per 30 days | Response status codes | > 1% for 5 min |
+    | [Service] | Throughput | > 1000 rps | N/A | Request counter | < 500 rps (unexpected drop) |
+
+    For each SLO:
+    - **SLI definition** — What exactly is measured and how
+    - **Target** — The threshold that defines acceptable performance
+    - **Error budget** — How much failure is tolerable per window (rolling 30-day)
+    - **Measurement method** — Which tool/endpoint/metric provides the data
+    - **Alert thresholds** — Warning and critical levels that trigger response
+    - **Error budget policy** — What happens when budget is exhausted (feature freeze, reliability focus)
+
+    Write to `<cwd>/drafts/design/detailed/observability/slo-definitions.md`.
+
+11. **Cross-Reference All Diagrams** — Add navigation links between related documents:
     - Each workflow links to its data flow
     - Each data flow links to relevant ERD entities
     - Network diagram references security policies
     - Cloud architecture links to infrastructure cost estimates
 
-11. **Verify Diagrams** — Run `npx mmdc -i <file> -o /tmp/check.svg` on every produced file. Enter failure recovery if any fail.
+12. **Verify Diagrams** — Run `npx mmdc -i <file> -o /tmp/check.svg` on every produced file. Enter failure recovery if any fail.
 
-12. **Update Risk Register** — Document new risks discovered during detailed design:
+13. **Update Risk Register** — Document new risks discovered during detailed design:
     - Integration complexity risks (unexpected protocol mismatches)
     - Data model risks (normalization trade-offs, migration concerns)
     - Network/latency risks (cross-region calls, chatty services)
     - Cost risks (updated estimates from cloud architecture)
     - Add to project risk register with owners and mitigations.
 
-13. **Await Approval** — Present complete documentation set for architecture review via the **Detailed Design Walkthrough** meeting.
+14. **Await Approval** — Present complete documentation set for architecture review via the **Detailed Design Walkthrough** meeting.
 
 ---
 
@@ -118,6 +137,7 @@ Before proceeding to `sdlc-epic-planning`, the following must be true:
 - [ ] Every data flow links to its parent workflow
 - [ ] Network topology documents all service-to-service paths
 - [ ] Cloud architecture has cost estimates
+- [ ] SLOs defined for all user-facing services
 - [ ] Engineering team has reviewed and has no blocking questions
 - [ ] Wireframes/mockups are available for all user-facing use cases (or explicitly marked as "in progress" with completion date)
 - [ ] Risk register updated with design-phase discoveries
@@ -127,10 +147,10 @@ If wireframes are not complete, epic planning MAY begin for backend/infrastructu
 
 ### Failure Recovery (max 3 retries)
 
-11a. Read mmdc error output — identify failing diagram
-11b. Fix Mermaid syntax
-11c. Re-validate
-11d. After 3 failures → present error to user
+12a. Read mmdc error output — identify failing diagram
+12b. Fix Mermaid syntax
+12c. Re-validate
+12d. After 3 failures → present error to user
 
 ### Rollback
 
@@ -163,6 +183,8 @@ If user cancels: delete all files created in `<cwd>/drafts/design/detailed/`, co
 └── cloud/
     ├── architecture.md
     └── cost-estimate.md
+├── observability/
+│   └── slo-definitions.md
 ```
 
 ---
@@ -276,3 +298,4 @@ ADRs are stored in `<cwd>/drafts/design/detailed/adrs/` (or project-specific loc
 - `steering/conventions/documentation.md` — Mermaid validation
 - `steering/security/policies.md` — Security architecture patterns
 - `steering/orchestration/local-dev.md` — Infrastructure topology reference
+- `skills/sdlc-observability.md` — Implements and monitors SLOs defined here
