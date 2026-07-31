@@ -1,0 +1,398 @@
+{
+  "project": "[Project Name]",
+  "generatedAt": "YYYY-MM-DDTHH:mm:ssZ",
+  "version": "1.0",
+  "sprintCadence": {
+    "lengthDays": 14,
+    "startDay": "Monday",
+    "ceremonies": {
+      "planning": "Day 1, 60 min",
+      "standup": "Daily, 15 min",
+      "review": "Last day, 30 min",
+      "retro": "Last day, 45 min"
+    }
+  },
+  "team": [
+    {
+      "name": "[Name]",
+      "role": "[Frontend Engineer | Backend Engineer | Full-Stack | DevOps | QA | Design]",
+      "skills": ["TypeScript", "React", "Node.js"],
+      "capacityHoursPerSprint": 60,
+      "pto": ["2026-08-15", "2026-08-16"]
+    }
+  ],
+  "holidays": ["2026-09-01", "2026-11-26", "2026-12-25"],
+  "epics": [
+    {
+      "id": "E000",
+      "title": "Repository & CI/CD Foundation",
+      "description": "Set up repository structure, branching strategy, CI/CD pipelines, and automated workflows for each microservice. This is a blocking foundation epic — all other work depends on working automation.",
+      "dependencies": [],
+      "priority": "critical",
+      "blocking": true,
+      "timeEstimate": {
+        "totalHours": 0,
+        "devHours": 0,
+        "testHours": 0,
+        "reviewHours": 0
+      },
+      "relatedDocs": [],
+      "wireframes": [],
+      "stories": [
+        {
+          "id": "E000-S001",
+          "title": "Repository Workflow & Automation Setup: [service-name]",
+          "description": "Configure repository structure, branch protection, CI/CD pipeline, automated testing, linting, and deployment workflow for [service-name]. This story is a prerequisite for all feature work in this service.",
+          "relatedDocs": [
+            "drafts/design/detailed/cloud/architecture.md",
+            "drafts/design/detailed/network/topology.md"
+          ],
+          "wireframes": [],
+          "timeEstimate": {
+            "totalHours": 0,
+            "devHours": 0,
+            "testHours": 0,
+            "reviewHours": 0
+          },
+          "assignedTo": "",
+          "sprint": "",
+          "acceptanceCriteria": [
+            "Repository created with standard structure",
+            "Branch protection rules enforced (no direct push to main/dev)",
+            "CI pipeline runs on every PR: lint, typecheck, unit tests, build",
+            "CD pipeline deploys to staging on merge to dev",
+            "CD pipeline deploys to production on merge to main (with approval gate)",
+            "Code coverage threshold enforced (>= 80%)",
+            "Security scanning (dependency audit, SAST) runs on every PR",
+            "Docker build and push automated",
+            "Infrastructure as Code for service deployment included",
+            "README with local development setup instructions"
+          ],
+          "risks": [
+            "Cloud provider permissions may need escalation",
+            "Docker registry setup may have organizational approval process"
+          ],
+          "subtasks": [
+            {
+              "id": "E000-S001-T001",
+              "type": "task",
+              "title": "Initialize repository with standard structure",
+              "description": "Create repository with folder structure, .gitignore, README stub, package.json/pyproject.toml, tsconfig, and editor config.",
+              "assignedTo": "",
+              "followers": [],
+              "dependsOn": [],
+              "timeEstimate": { "devHours": 2, "testHours": 0.5, "reviewHours": 0.5 },
+              "inputs": "Architecture docs, language/framework selection",
+              "outputs": "Repository with standard structure committed",
+              "scope": "Root-level config files, src/ directory structure",
+              "acceptanceCriteria": [
+                "Folder structure matches architecture conventions",
+                "All config files present and valid",
+                "README documents local setup"
+              ],
+              "testPlans": [
+                {
+                  "type": "integration",
+                  "description": "Clone repo, run install, verify no errors",
+                  "inputs": ["fresh clone"],
+                  "expectedOutputs": ["successful dependency install", "successful build"]
+                }
+              ],
+              "apiExamples": null,
+              "notes": "Use organizational template if one exists"
+            },
+            {
+              "id": "E000-S001-T002",
+              "type": "task",
+              "title": "Configure branch protection and branching strategy",
+              "description": "Set up branch protection rules for main and dev branches. Configure required reviewers, status checks, and merge strategy (squash + rebase).",
+              "assignedTo": "",
+              "followers": [],
+              "dependsOn": ["E000-S001-T001"],
+              "timeEstimate": { "devHours": 1, "testHours": 0.5, "reviewHours": 0.5 },
+              "inputs": "Repository from T001, git workflow conventions",
+              "outputs": "Protected branches with enforced rules",
+              "scope": "Repository settings, .github/ or .gitlab/ config",
+              "acceptanceCriteria": [
+                "Direct push to main blocked",
+                "Direct push to dev blocked",
+                "PR requires at least 1 approval",
+                "PR requires CI passing before merge",
+                "Squash merge enforced"
+              ],
+              "testPlans": [
+                {
+                  "type": "integration",
+                  "description": "Attempt direct push to protected branch, verify rejection",
+                  "inputs": ["direct push attempt"],
+                  "expectedOutputs": ["push rejected with protection message"]
+                }
+              ],
+              "apiExamples": null,
+              "notes": "May require admin access to repository settings"
+            },
+            {
+              "id": "E000-S001-T003",
+              "type": "task",
+              "title": "Create CI pipeline (lint, typecheck, test, build)",
+              "description": "Configure CI pipeline that runs on every PR. Steps: install deps, lint, typecheck, run unit tests with coverage, build.",
+              "assignedTo": "",
+              "followers": [],
+              "dependsOn": ["E000-S001-T001"],
+              "timeEstimate": { "devHours": 4, "testHours": 1, "reviewHours": 1 },
+              "inputs": "Repository structure, selected CI tool",
+              "outputs": "Working CI pipeline config committed",
+              "scope": ".github/workflows/ or .gitlab-ci.yml or equivalent",
+              "acceptanceCriteria": [
+                "Pipeline triggers on PR to dev and main",
+                "Lint step fails pipeline on violations",
+                "Typecheck step fails pipeline on errors",
+                "Test step fails pipeline if coverage below threshold",
+                "Build step produces deployable artifact",
+                "Pipeline completes in under 5 minutes for empty project"
+              ],
+              "testPlans": [
+                {
+                  "type": "integration",
+                  "description": "Open PR with lint error, verify pipeline fails",
+                  "inputs": ["PR with intentional lint violation"],
+                  "expectedOutputs": ["pipeline fails at lint step"]
+                },
+                {
+                  "type": "integration",
+                  "description": "Open clean PR, verify pipeline passes",
+                  "inputs": ["PR with valid code"],
+                  "expectedOutputs": ["all steps pass, artifact produced"]
+                }
+              ],
+              "apiExamples": null,
+              "notes": "Cache dependencies between runs for speed"
+            },
+            {
+              "id": "E000-S001-T004",
+              "type": "task",
+              "title": "Create CD pipeline (staging deploy on merge to dev)",
+              "description": "Configure continuous deployment to staging environment when PRs merge to dev branch. Include health check verification after deploy.",
+              "assignedTo": "",
+              "followers": [],
+              "dependsOn": ["E000-S001-T003"],
+              "timeEstimate": { "devHours": 4, "testHours": 2, "reviewHours": 1 },
+              "inputs": "CI pipeline, cloud infrastructure, container registry",
+              "outputs": "Automated staging deployment on merge to dev",
+              "scope": "CI/CD config, deployment manifests, health check endpoint",
+              "acceptanceCriteria": [
+                "Merge to dev triggers automatic deploy to staging",
+                "Deploy builds and pushes container image",
+                "Deploy updates staging environment with new image",
+                "Health check runs after deploy and fails pipeline if unhealthy",
+                "Rollback to previous version on health check failure",
+                "Deploy notification sent to team channel"
+              ],
+              "testPlans": [
+                {
+                  "type": "integration",
+                  "description": "Merge to dev, verify staging updated",
+                  "inputs": ["merged PR to dev"],
+                  "expectedOutputs": ["staging environment running new version", "health check passing"]
+                }
+              ],
+              "apiExamples": null,
+              "notes": "Production deploy (merge to main) should require manual approval gate"
+            },
+            {
+              "id": "E000-S001-T005",
+              "type": "task",
+              "title": "Add security scanning to CI pipeline",
+              "description": "Add dependency vulnerability scanning and static analysis security testing (SAST) to the CI pipeline. Fail on high/critical vulnerabilities.",
+              "assignedTo": "",
+              "followers": [],
+              "dependsOn": ["E000-S001-T003"],
+              "timeEstimate": { "devHours": 2, "testHours": 1, "reviewHours": 0.5 },
+              "inputs": "CI pipeline config",
+              "outputs": "Security scanning integrated into CI",
+              "scope": "CI config, security tool config files",
+              "acceptanceCriteria": [
+                "Dependency audit runs on every PR",
+                "Pipeline fails on high or critical vulnerabilities",
+                "SAST scan runs on source code",
+                "Results visible in PR comments or CI output",
+                "Suppressions require justification comment"
+              ],
+              "testPlans": [
+                {
+                  "type": "integration",
+                  "description": "Add known-vulnerable dependency, verify pipeline fails",
+                  "inputs": ["package with known critical CVE"],
+                  "expectedOutputs": ["pipeline fails at security scan step"]
+                }
+              ],
+              "apiExamples": null,
+              "notes": "Use tools appropriate to stack: npm audit, trivy, semgrep, etc."
+            },
+            {
+              "id": "E000-S001-T006",
+              "type": "task",
+              "title": "Create Dockerfile and container build config",
+              "description": "Create multi-stage Dockerfile following security best practices (non-root user, minimal base image, pinned versions). Configure container registry push in CI.",
+              "assignedTo": "",
+              "followers": [],
+              "dependsOn": ["E000-S001-T001"],
+              "timeEstimate": { "devHours": 2, "testHours": 1, "reviewHours": 0.5 },
+              "inputs": "Application code structure, base image selection",
+              "outputs": "Dockerfile, .dockerignore, registry push config",
+              "scope": "Dockerfile, .dockerignore, CI config updates",
+              "acceptanceCriteria": [
+                "Multi-stage build (deps → build → runtime)",
+                "Non-root user in final stage",
+                "Minimal base image (slim/alpine/distroless)",
+                "No secrets in image layers",
+                "Image builds in under 3 minutes (cold cache)",
+                "Image size under 200MB for Node, under 100MB for Go"
+              ],
+              "testPlans": [
+                {
+                  "type": "integration",
+                  "description": "Build image, run container, verify health endpoint",
+                  "inputs": ["docker build ."],
+                  "expectedOutputs": ["image builds successfully", "container starts", "health check responds 200"]
+                }
+              ],
+              "apiExamples": null,
+              "notes": "Follow steering/orchestration/local-dev.md Docker patterns"
+            },
+            {
+              "id": "E000-S001-T007",
+              "type": "task",
+              "title": "Create IaC for service deployment",
+              "description": "Write infrastructure-as-code for deploying this service to the target environment. Include compute, networking, secrets, and observability configuration.",
+              "assignedTo": "",
+              "followers": [],
+              "dependsOn": ["E000-S001-T004", "E000-S001-T006"],
+              "timeEstimate": { "devHours": 6, "testHours": 2, "reviewHours": 1 },
+              "inputs": "Cloud architecture docs, network topology, selected IaC tool",
+              "outputs": "Terraform/Pulumi/CDK modules for service",
+              "scope": "terraform/ or infrastructure/ directory",
+              "acceptanceCriteria": [
+                "Service deployable with single command/pipeline",
+                "Secrets injected from secret manager (never hardcoded)",
+                "Observability (logging, metrics, tracing) configured",
+                "Resource limits and autoscaling defined",
+                "Network security groups restrict access appropriately",
+                "terraform plan shows expected resources with no errors"
+              ],
+              "testPlans": [
+                {
+                  "type": "integration",
+                  "description": "Run plan/preview, verify no errors and expected resources",
+                  "inputs": ["terraform plan or equivalent"],
+                  "expectedOutputs": ["plan succeeds", "expected resource count matches"]
+                }
+              ],
+              "apiExamples": null,
+              "notes": "Do NOT apply to production without approval. Plan only for verification."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E001",
+      "title": "[Epic Title]",
+      "description": "[What this epic delivers and why it matters to users]",
+      "dependencies": ["E000"],
+      "priority": "high",
+      "blocking": false,
+      "timeEstimate": {
+        "totalHours": 0,
+        "devHours": 0,
+        "testHours": 0,
+        "reviewHours": 0
+      },
+      "relatedDocs": [
+        "drafts/design/detailed/use-cases/uc-001.md"
+      ],
+      "wireframes": ["https://figma.com/file/..."],
+      "stories": [
+        {
+          "id": "E001-S001",
+          "title": "[Story Title — vertical slice of user value]",
+          "description": "[What the user can do after this story is complete]",
+          "relatedDocs": [
+            "drafts/design/detailed/use-cases/uc-001.md",
+            "drafts/design/detailed/data-flows/df-001.md",
+            "drafts/design/detailed/erd/core-domain.md"
+          ],
+          "wireframes": ["https://figma.com/file/...#frame-name"],
+          "timeEstimate": {
+            "totalHours": 0,
+            "devHours": 0,
+            "testHours": 0,
+            "reviewHours": 0
+          },
+          "assignedTo": "",
+          "sprint": "",
+          "acceptanceCriteria": [
+            "GIVEN [context] WHEN [action] THEN [expected result]",
+            "GIVEN [context] WHEN [error condition] THEN [error handling]",
+            "Idempotent: operation safe to retry without side effects",
+            "PII encrypted: [list fields] at rest and in transit",
+            "Performance: p95 response time < [target]ms",
+            "Storybook: story created/updated for [component name]",
+            "Performance test: load test for [endpoint] at [target] rps"
+          ],
+          "risks": [
+            "[Risk from risk register that applies to this story]",
+            "[Dependency risk: depends on [external thing]]"
+          ],
+          "subtasks": [
+            {
+              "id": "E001-S001-T001",
+              "type": "task",
+              "title": "[Commit-sized: specific implementation description]",
+              "description": "[Detailed: what file(s) to create/modify, what logic to implement, what patterns to follow]",
+              "assignedTo": "",
+              "followers": [],
+              "dependsOn": [],
+              "timeEstimate": { "devHours": 0, "testHours": 0, "reviewHours": 0 },
+              "inputs": "[What data/state this task receives or reads]",
+              "outputs": "[What data/state this task produces or modifies]",
+              "scope": "[Specific files or modules affected: src/features/x/api.ts, src/features/x/schema.ts]",
+              "acceptanceCriteria": [
+                "[Specific testable criterion for this task]",
+                "Unit test covers: [list scenarios]",
+                "Error handling: [what happens on failure]"
+              ],
+              "testPlans": [
+                {
+                  "type": "unit",
+                  "description": "[What behavior to test]",
+                  "inputs": ["[valid input example]", "[invalid input example]", "[edge case]"],
+                  "expectedOutputs": ["[expected for valid]", "[expected for invalid]", "[expected for edge]"]
+                },
+                {
+                  "type": "integration",
+                  "description": "[End-to-end scenario to verify]",
+                  "inputs": ["[full request example]"],
+                  "expectedOutputs": ["[full response example]"]
+                }
+              ],
+              "apiExamples": {
+                "request": {
+                  "method": "POST",
+                  "path": "/api/v1/[resource]",
+                  "headers": { "Authorization": "Bearer <token>", "Content-Type": "application/json" },
+                  "body": { "field": "value" }
+                },
+                "response": {
+                  "status": 201,
+                  "body": { "id": "uuid", "field": "value", "createdAt": "2026-01-01T00:00:00Z" }
+                }
+              },
+              "notes": "[Implementation hints, gotchas, links to relevant architecture docs]"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
