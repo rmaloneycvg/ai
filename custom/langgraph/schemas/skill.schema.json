@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SkillSpec",
+  "description": "Schema for a Kiro-format skill file specification.",
+  "type": "object",
+  "required": ["name", "description", "role_tone", "environment_scope", "workflow", "guardrails"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "kebab-case skill identifier"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 500,
+      "description": "Precise activation trigger for intent detection"
+    },
+    "role_tone": {
+      "type": "string",
+      "description": "Agent persona and communication style"
+    },
+    "environment_scope": {
+      "type": "string",
+      "enum": ["write-only", "write+validate", "write+execute"],
+      "description": "Execution scope declaration"
+    },
+    "workflow": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["step", "description"],
+        "properties": {
+          "step": {"type": "integer", "minimum": 1},
+          "name": {"type": "string"},
+          "description": {"type": "string"}
+        }
+      },
+      "description": "Ordered workflow steps with approval gates"
+    },
+    "failure_recovery": {
+      "type": "object",
+      "properties": {
+        "max_retries": {"type": "integer", "minimum": 1, "maximum": 5, "default": 3},
+        "escalation": {"type": "string"}
+      }
+    },
+    "rollback": {
+      "type": "string",
+      "description": "Procedure for reverting partial changes"
+    },
+    "guardrails": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string"},
+      "description": "Absolute constraints (NEVER statements)"
+    },
+    "references": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Paths to related steering docs or skills"
+    }
+  }
+}

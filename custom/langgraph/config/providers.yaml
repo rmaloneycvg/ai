@@ -1,0 +1,79 @@
+# LLM Provider Configuration
+# Models are resolved in order: env vars > CLI args > this file
+
+defaults:
+  provider: ollama
+  model: llama3.1:8b
+
+providers:
+  ollama:
+    base_url: ${OLLAMA_BASE_URL:-http://localhost:11434}
+    models:
+      llama3.1:8b:
+        context_window: 8192
+        supports_tools: true
+        supports_structured_output: true
+      llama3.1:70b:
+        context_window: 32768
+        supports_tools: true
+        supports_structured_output: true
+      qwen2.5:7b:
+        context_window: 32768
+        supports_tools: true
+        supports_structured_output: true
+      qwen2.5:14b:
+        context_window: 32768
+        supports_tools: true
+        supports_structured_output: true
+      qwen2.5:72b:
+        context_window: 32768
+        supports_tools: true
+        supports_structured_output: true
+      mistral:7b:
+        context_window: 8192
+        supports_tools: true
+        supports_structured_output: false
+      deepseek-coder-v2:16b:
+        context_window: 16384
+        supports_tools: true
+        supports_structured_output: true
+      phi-2:
+        context_window: 2048
+        supports_tools: false
+        supports_structured_output: false
+      tinyllama:
+        context_window: 2048
+        supports_tools: false
+        supports_structured_output: false
+
+  openai:
+    api_key: ${OPENAI_API_KEY}
+    models:
+      gpt-4o:
+        context_window: 128000
+        supports_tools: true
+        supports_structured_output: true
+      gpt-4o-mini:
+        context_window: 128000
+        supports_tools: true
+        supports_structured_output: true
+
+  anthropic:
+    api_key: ${ANTHROPIC_API_KEY}
+    models:
+      claude-sonnet-4-20250514:
+        context_window: 200000
+        supports_tools: true
+        supports_structured_output: true
+      claude-haiku-3-20240307:
+        context_window: 200000
+        supports_tools: true
+        supports_structured_output: true
+
+  vllm:
+    base_url: ${VLLM_BASE_URL:-http://localhost:8000/v1}
+    models: {}  # Auto-detected from running vLLM server
+
+  llamacpp:
+    model_path: ${LLAMACPP_MODEL_PATH}
+    models: {}  # Configured per model file
