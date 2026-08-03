@@ -29,12 +29,25 @@ async def calibrate_and_save(provider: LLMProvider) -> ModelProfile:
     """Run full calibration pipeline: calibrate → score → strategize → save.
 
     Returns the generated ModelProfile.
+
+    Raises:
+        RuntimeError: If any calibration probe failed due to transport/auth errors.
     """
     capabilities = provider.get_capabilities()
 
     # Run calibration
     calibrator = ModelCalibrator(provider)
     results = await calibrator.run_all()
+
+    # Refuse to persist if any probe failed (transport/auth errors)
+    failed = [r for r in results if r.error is not None]
+    if failed:
+        names = [f"{r.task_name} ({r.error})" for r in failed]
+        raise RuntimeError(
+            f"Calibration aborted: {len(failed)} probe(s) failed due to provider errors. "
+            f"Failed probes: {', '.join(names)}. "
+            f"Fix connectivity/auth and retry."
+        )
 
     # Score results
     scores = score_results(results)
