@@ -40,7 +40,7 @@ flowchart TD
 ## Key Features
 
 - **Multi-backend LLM support** — Ollama, OpenAI, Claude, vLLM, llama.cpp via pluggable providers
-- **Adaptive context window** — 8K–32K for local models, unlimited for external, all configurable per-model
+- **Adaptive context window** — 8K–32K for local models, configurable per-model (defaults to 8192 when unconfigured)
 - **Model profiling** — empirical calibration sends test prompts on first use, generates reusable strategy profiles
 - **Prompt compilation DSL** — abstract instructions compiled to model-optimized prompts at runtime (CoT, examples, format)
 - **Progressive disclosure** — three-tier resource loading (metadata → summary → full) adapts to model capacity
@@ -49,6 +49,7 @@ flowchart TD
 - **Phase-based tool activation** — only relevant tools exposed per task phase (reduces schema token cost by 71%)
 - **Dual interface** — CLI (Typer) for one-off commands + server (FastAPI REST + WebSocket) for persistent sessions
 - **Full tool mirror** — Python equivalents of all Kiro MCP tools (git, io, postgres, prometheus, jaeger, grafana, jira, linear, shell)
+- **Security hardening** — shell commands tokenized and validated against structured allowlist (no shell=True), resource paths checked for traversal, calibration failures prevent profile persistence
 
 ---
 
@@ -148,15 +149,19 @@ The profiler runs 8 calibration tasks against a model and scores it on 5 axes:
 ```mermaid
 flowchart LR
     A[Send 8 calibration prompts] --> B[Score responses\nheuristic grading]
-    B --> C[Map scores\nto strategies]
-    C --> D[Save profile JSON\nconfig/model-profiles/]
-    C --> E[Generate steering doc\nsteering-local/model-strategies/]
+    B --> C{Any probe failures?}
+    C -->|Yes| FAIL[Abort — refuse to persist\nreport errors to caller]
+    C -->|No| D[Map scores\nto strategies]
+    D --> E[Save profile JSON\nconfig/model-profiles/]
+    D --> F[Generate steering doc\nsteering-local/model-strategies/]
 
     style A fill:#3498db,color:#fff
     style B fill:#e67e22,color:#fff
-    style C fill:#8e44ad,color:#fff
-    style D fill:#27ae60,color:#fff
+    style C fill:#e74c3c,color:#fff
+    style FAIL fill:#c0392b,color:#fff
+    style D fill:#8e44ad,color:#fff
     style E fill:#27ae60,color:#fff
+    style F fill:#27ae60,color:#fff
 ```
 
 ```bash
@@ -544,7 +549,7 @@ All Kiro MCP tools mirrored as LangGraph-compatible Python `@tool` functions:
 | **grafana** | `grafana_search_dashboards`, `grafana_query`, `grafana_annotations` | `GRAFANA_URL`, `GRAFANA_API_KEY` |
 | **jira** | `jira_search_issues`, `jira_create_issue`, `jira_list_sprints` | `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN` |
 | **linear** | `linear_list_issues`, `linear_create_issue`, `linear_list_cycles` | `LINEAR_API_KEY` |
-| **shell** | `run_command` (allowlist-enforced) | — |
+| **shell** | `run_command` (structured allowlist, shell=False) | — |
 
 ### Phase-based activation
 
@@ -608,7 +613,7 @@ tests/
 
 ### `config/providers.yaml`
 
-LLM backend configurations with per-model metadata:
+LLM backend configurations with per-model metadata. Models not listed here use the provider class's own constructor defaults (e.g., vLLM defaults to `context_window=32768`, `supports_tools=True`). Only explicitly configured values override those defaults.
 
 ```yaml
 defaults:
@@ -651,12 +656,12 @@ layers:
     min_tokens: 1000
   # ...
 
-# Per-model context window caps
+# Per-model context window caps (defaults to 8192 when not configured)
 overrides:
   "llama3.1:8b":
     max_context: 8192      # Hard cap for local models
   "gpt-4o":
-    max_context: null       # No limit for external models
+    max_context: null       # Uses provider-reported window (caller must supply it)
 ```
 
 ### `config/model-profiles/<model>.json`
@@ -704,7 +709,7 @@ config/model-profiles/
 │   │   ├── openai.py           # ChatOpenAI + tiktoken
 │   │   ├── anthropic.py        # ChatAnthropic wrapper
 │   │   ├── vllm.py             # OpenAI-compatible vLLM
-│   │   ├── llamacpp.py         # Direct GGUF model loading
+│   │   ├── llamacpp.py         # Direct GGUF model loading (async via thread offload)
 │   │   └── registry.py         # Factory: config + env → provider
 │   ├── context/                # Context engineering engine
 │   │   ├── budget.py           # Per-layer token allocation + overflow
@@ -733,7 +738,7 @@ config/model-profiles/
 │   │   ├── profile.py          # ModelProfile, ModelScores, ModelStrategies
 │   │   └── generate.py         # Schema → Pydantic code generation
 │   └── resources/              # Steering resource management
-│       └── resolver.py         # Symlink + overlay resolution
+│       └── resolver.py         # Symlink + overlay resolution with path containment
 ├── output/                     # Generated artifacts
 │   ├── skills/                 # Created skill markdown files
 │   ├── agents/                 # Created agent JSON configs
@@ -1167,6 +1172,12 @@ src/rag/
 | **Subgraphs with state isolation** | Prevents context contamination between sub-agents |
 | **Command(goto=) routing** | Typed, auditable routing decisions visible in state history |
 | **chars/4 token approximation for local models** | No tokenizer available for arbitrary Ollama models; accurate enough for budgeting |
+| **shell=False + shlex tokenization** | Eliminates shell injection entirely; structured allowlist validates executable and args independently |
+| **Path containment with symlink resolution** | Prevents directory traversal and absolute path injection even through symlinked roots |
+| **Calibration failure = no persistence** | A single network error during profiling no longer produces a stored profile that understates the model |
+| **asyncio.to_thread for llama.cpp** | Synchronous C++ inference must not block the shared event loop; queue-based streaming preserves incremental delivery |
+| **Provider defaults respected when unconfigured** | Registry only overrides constructor args when model is explicitly listed in providers.yaml |
+| **Conservative 8192 budget fallback** | Prevents budget guards from being bypassed for small-context local models with no config entry |
 
 ---
 
