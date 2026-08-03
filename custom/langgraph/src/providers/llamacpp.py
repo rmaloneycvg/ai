@@ -64,6 +64,17 @@ class LlamaCppProvider(LLMProvider):
         tools: list | None = None,
         response_format: dict | None = None,
     ) -> ChatResponse:
+        if tools:
+            raise NotImplementedError(
+                "LlamaCppProvider does not support tool calling. "
+                "Use a provider with supports_tool_calling=True (e.g., Ollama, OpenAI)."
+            )
+        if response_format:
+            raise NotImplementedError(
+                "LlamaCppProvider does not support structured output / response_format. "
+                "Use a provider with supports_structured_output=True."
+            )
+
         # llama-cpp-python is sync; wrap for async interface
         prompt = "\n".join(f"{m.type}: {m.content}" for m in messages if m.content)
         response = self._llm.invoke(prompt, temperature=temperature)
@@ -85,6 +96,12 @@ class LlamaCppProvider(LLMProvider):
         max_tokens: int | None = None,
         tools: list | None = None,
     ) -> AsyncIterator[str]:
+        if tools:
+            raise NotImplementedError(
+                "LlamaCppProvider does not support tool calling. "
+                "Use a provider with supports_tool_calling=True (e.g., Ollama, OpenAI)."
+            )
+
         # llama-cpp-python streaming is sync; yield chunks
         prompt = "\n".join(f"{m.type}: {m.content}" for m in messages if m.content)
         for chunk in self._llm.stream(prompt, temperature=temperature):
