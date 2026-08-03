@@ -503,6 +503,97 @@ ollama pull qwen2.5:14b      # 32K context, strong local model
 ollama pull tinyllama         # Tiny model for integration tests
 ```
 
+### Ollama on Windows (for WSL2 development)
+
+If you're running this project inside WSL2 but want GPU-accelerated inference, install Ollama on the **Windows host** and access it from WSL2 over the network.
+
+#### Install Ollama on Windows
+
+1. Download the installer from [ollama.com/download/windows](https://ollama.com/download/windows)
+2. Run the installer — Ollama starts as a system tray application
+3. Pull models from PowerShell or CMD:
+
+```powershell
+ollama pull llama3.1:8b
+ollama pull qwen2.5:14b
+ollama pull tinyllama
+```
+
+#### Configure Ollama to accept network connections
+
+By default, Ollama binds to `127.0.0.1` (Windows host only). To expose it to WSL2:
+
+1. Set the environment variable (System → Advanced → Environment Variables, or PowerShell):
+
+```powershell
+# PowerShell (persistent — requires Ollama restart)
+[System.Environment]::SetEnvironmentVariable("OLLAMA_HOST", "0.0.0.0", "User")
+```
+
+2. Restart Ollama (right-click tray icon → Quit, then relaunch)
+3. Verify from WSL2:
+
+```bash
+curl http://localhost:11434/api/tags
+```
+
+#### WSL2 network access
+
+With **WSL2 mirrored networking** (Windows 11 22H2+), `localhost` in WSL2 reaches the Windows host automatically. If you're on an older build or using NAT mode:
+
+```bash
+# Find the Windows host IP from inside WSL2
+export WINDOWS_HOST=$(ip route show default | awk '{print $3}')
+
+# Set in your .env
+echo "OLLAMA_BASE_URL=http://${WINDOWS_HOST}:11434" >> .env
+
+# Or export directly
+export OLLAMA_BASE_URL="http://${WINDOWS_HOST}:11434"
+```
+
+#### Windows Firewall
+
+If WSL2 can't reach Ollama, add a firewall rule (run as Administrator):
+
+```powershell
+New-NetFirewallRule -DisplayName "Ollama WSL2" -Direction Inbound -Protocol TCP -LocalPort 11434 -Action Allow
+```
+
+#### GPU support (AMD Radeon / NVIDIA)
+
+| GPU | Support | Notes |
+|-----|---------|-------|
+| NVIDIA (RTX 20xx+) | ✅ Full | Works out of the box with Ollama for Windows |
+| AMD Radeon (RX 6000+) | ✅ ROCm | Ollama auto-detects AMD GPUs on Windows. Requires Adrenalin drivers 23.40+ |
+| AMD Radeon (older) | ⚠️ Limited | Falls back to CPU. Vulkan support is experimental |
+| Intel Arc | ⚠️ Experimental | Requires Ollama 0.4+ with IPEX-LLM backend |
+
+Verify GPU is detected:
+
+```bash
+# From WSL2
+curl http://localhost:11434/api/ps
+
+# From Windows PowerShell
+ollama ps
+```
+
+If models run on CPU despite having a supported GPU, ensure:
+- Latest GPU drivers are installed (not just Windows Update defaults)
+- Ollama is updated to the latest version
+- No other process is holding the GPU (close GPU-heavy apps)
+
+#### Recommended models by GPU VRAM
+
+| VRAM | Recommended Models | Context |
+|------|-------------------|---------|
+| 4 GB | `tinyllama`, `phi-2` | 2K |
+| 6 GB | `llama3.1:8b` (Q4), `mistral:7b` | 8K |
+| 8 GB | `llama3.1:8b`, `qwen2.5:7b` | 8–32K |
+| 12 GB | `qwen2.5:14b`, `deepseek-coder-v2:16b` | 16–32K |
+| 16+ GB | `qwen2.5:14b` (full), `llama3.1:70b` (Q4) | 32K |
+
 ---
 
 ## Usage
