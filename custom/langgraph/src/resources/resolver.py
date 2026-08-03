@@ -16,6 +16,21 @@ STEERING_LOCAL = PROJECT_ROOT / "steering-local"
 STEERING_SYMLINK = PROJECT_ROOT / "steering"
 
 
+def _is_contained(root: Path, candidate: Path) -> bool:
+    """Check that candidate is contained within root after resolving symlinks.
+
+    Returns False for path traversal attempts (../) and absolute paths that
+    escape the root.
+    """
+    try:
+        resolved_root = root.resolve(strict=False)
+        resolved_candidate = candidate.resolve(strict=False)
+        # Use is_relative_to (Python 3.9+) to check containment
+        return resolved_candidate.is_relative_to(resolved_root)
+    except (OSError, ValueError):
+        return False
+
+
 class ResourceResolver:
     """Resolves steering resources with overlay priority."""
 
@@ -31,16 +46,17 @@ class ResourceResolver:
         """Resolve a relative steering path with overlay priority.
 
         Checks local override first, then base symlink.
-        Returns None if not found in either location.
+        Returns None if not found in either location or if the path
+        escapes the root directories.
         """
         # Check local override
         local_path = self._local / relative_path
-        if local_path.exists():
+        if _is_contained(self._local, local_path) and local_path.exists():
             return local_path
 
         # Fall back to symlinked base
         base_path = self._base / relative_path
-        if base_path.exists():
+        if _is_contained(self._base, base_path) and base_path.exists():
             return base_path
 
         return None
@@ -62,7 +78,7 @@ class ResourceResolver:
 
         # Local first (higher priority)
         local_dir = self._local / subdirectory
-        if local_dir.exists():
+        if _is_contained(self._local, local_dir) and local_dir.exists():
             for path in sorted(local_dir.rglob("*.md")):
                 rel = str(path.relative_to(self._local))
                 if rel not in seen:
@@ -71,7 +87,7 @@ class ResourceResolver:
 
         # Then base (lower priority, skip duplicates)
         base_dir = self._base / subdirectory
-        if base_dir.exists():
+        if _is_contained(self._base, base_dir) and base_dir.exists():
             for path in sorted(base_dir.rglob("*.md")):
                 rel = str(path.relative_to(self._base))
                 if rel not in seen:
