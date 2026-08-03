@@ -12,7 +12,7 @@ test-integration:
 	uv run pytest tests/integration/ -v -m integration
 
 test-live:
-	env $$(cat .env.test | grep -v '^#' | xargs) uv run pytest tests/integration/test_tools_live.py -v -m integration
+	uv run pytest tests/integration/test_tools_live.py -v -m integration
 
 lint:
 	uv run ruff check src/ tests/

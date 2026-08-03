@@ -6,9 +6,16 @@ from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
+from dotenv import load_dotenv
 
 from src.models.profile import ModelProfile, ModelScores, ModelStrategies, ReasoningLevel
 from src.providers.base import ChatResponse, LLMProvider, ModelCapabilities
+
+# Load .env.test (if present) so integration tests pick up service connection vars.
+# Values from shell exports / .zshrc take precedence (override=False).
+_env_test = Path(__file__).parent.parent / ".env.test"
+if _env_test.exists():
+    load_dotenv(_env_test, override=False)
 
 
 @pytest.fixture

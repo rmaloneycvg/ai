@@ -16,17 +16,10 @@ pytestmark = pytest.mark.integration
 
 
 @pytest.fixture(autouse=True)
-def _set_env(monkeypatch):
-    """Set env vars for Docker services (non-default ports)."""
-    monkeypatch.setenv("PGHOST", os.environ.get("PGHOST", "localhost"))
-    monkeypatch.setenv("PGPORT", os.environ.get("PGPORT", "5433"))
-    monkeypatch.setenv("PGUSER", os.environ.get("PGUSER", "postgres"))
-    monkeypatch.setenv("PGPASSWORD", os.environ.get("PGPASSWORD", "postgres"))
-    monkeypatch.setenv("PGDATABASE", os.environ.get("PGDATABASE", "langgraph_test"))
-    monkeypatch.setenv("PROMETHEUS_URL", os.environ.get("PROMETHEUS_URL", "http://localhost:9091"))
-    monkeypatch.setenv("JAEGER_URL", os.environ.get("JAEGER_URL", "http://localhost:16687"))
-    monkeypatch.setenv("GRAFANA_URL", os.environ.get("GRAFANA_URL", "http://localhost:3001"))
-    monkeypatch.setenv("WORKSPACE_ROOT", os.environ.get("WORKSPACE_ROOT", "."))
+def _require_env():
+    """Skip if required env vars are missing (no .env.test and no shell exports)."""
+    if not os.environ.get("PGHOST"):
+        pytest.skip("PGHOST not set — source .env.test or export from shell")
 
 
 # ---------------------------------------------------------------------------
@@ -44,13 +37,13 @@ class TestPostgresTools:
         importlib.reload(pg)
         return pg
 
-    def test_simple_query(self, _set_env):
+    def test_simple_query(self):
         pg = self._reload_module()
         result = pg.postgres_query.invoke({"sql": "SELECT 1 AS value"})
         data = json.loads(result)
         assert data[0]["value"] == 1
 
-    def test_parameterized_query(self, _set_env):
+    def test_parameterized_query(self):
         pg = self._reload_module()
         result = pg.postgres_query.invoke({
             "sql": "SELECT $1::text AS greeting",
@@ -59,7 +52,7 @@ class TestPostgresTools:
         data = json.loads(result)
         assert data[0]["greeting"] == "hello"
 
-    def test_parameterized_query_multiple_params(self, _set_env):
+    def test_parameterized_query_multiple_params(self):
         pg = self._reload_module()
         result = pg.postgres_query.invoke({
             "sql": "SELECT $1::int + $2::int AS total",
@@ -68,7 +61,7 @@ class TestPostgresTools:
         data = json.loads(result)
         assert data[0]["total"] == 10
 
-    def test_select_from_seeded_table(self, _set_env):
+    def test_select_from_seeded_table(self):
         pg = self._reload_module()
         result = pg.postgres_query.invoke({
             "sql": "SELECT title FROM documents WHERE title = $1",
@@ -78,7 +71,7 @@ class TestPostgresTools:
         assert len(data) == 1
         assert data[0]["title"] == "README"
 
-    def test_write_operations_blocked(self, _set_env):
+    def test_write_operations_blocked(self):
         pg = self._reload_module()
         result = pg.postgres_query.invoke({
             "sql": "DELETE FROM documents WHERE id = 1",
@@ -87,13 +80,13 @@ class TestPostgresTools:
         assert "error" in data
         assert "blocked" in data["error"].lower()
 
-    def test_invalid_sql_returns_error(self, _set_env):
+    def test_invalid_sql_returns_error(self):
         pg = self._reload_module()
         result = pg.postgres_query.invoke({"sql": "SELECT * FROM nonexistent_table_xyz"})
         data = json.loads(result)
         assert "error" in data
 
-    def test_invalid_params_returns_error(self, _set_env):
+    def test_invalid_params_returns_error(self):
         pg = self._reload_module()
         result = pg.postgres_query.invoke({
             "sql": "SELECT $1",
@@ -102,12 +95,7 @@ class TestPostgresTools:
         data = json.loads(result)
         assert "error" in data
 
-    def test_seed_file(self, _set_env, tmp_path):
-        import shutil
-
-        if not shutil.which("psql"):
-            pytest.skip("psql CLI not installed")
-
+    def test_seed_file(self, tmp_path):
         pg = self._reload_module()
         seed_file = tmp_path / "test_seed.sql"
         seed_file.write_text(
@@ -142,14 +130,14 @@ class TestPrometheusTools:
         importlib.reload(prom)
         return prom
 
-    def test_instant_query(self, _set_env):
+    def test_instant_query(self):
         prom = self._reload_module()
         result = prom.prometheus_query.invoke({"query": "up"})
         data = json.loads(result)
         assert data.get("status") == "success"
         assert "data" in data
 
-    def test_metrics_list(self, _set_env):
+    def test_metrics_list(self):
         prom = self._reload_module()
         result = prom.prometheus_metrics.invoke({})
         data = json.loads(result)
@@ -157,13 +145,13 @@ class TestPrometheusTools:
         # Prometheus self-scrape should have metrics
         assert len(data.get("data", [])) > 0
 
-    def test_alerts_endpoint(self, _set_env):
+    def test_alerts_endpoint(self):
         prom = self._reload_module()
         result = prom.prometheus_alerts.invoke({})
         data = json.loads(result)
         assert data.get("status") == "success"
 
-    def test_range_query(self, _set_env):
+    def test_range_query(self):
         prom = self._reload_module()
         # Use a narrow time range to stay under Prometheus max resolution
         import time
@@ -193,14 +181,14 @@ class TestJaegerTools:
         importlib.reload(jg)
         return jg
 
-    def test_list_services(self, _set_env):
+    def test_list_services(self):
         jg = self._reload_module()
         result = jg.jaeger_services.invoke({})
         data = json.loads(result)
         # Should return a data field (even if empty — no traces yet)
         assert "data" in data or "errors" not in data
 
-    def test_search_traces_no_crash(self, _set_env):
+    def test_search_traces_no_crash(self):
         jg = self._reload_module()
         result = jg.jaeger_search_traces.invoke({"service": "nonexistent"})
         # Should not raise — returns empty or error gracefully
@@ -221,7 +209,7 @@ class TestGrafanaTools:
         importlib.reload(gf)
         return gf
 
-    def test_search_dashboards(self, _set_env):
+    def test_search_dashboards(self):
         gf = self._reload_module()
         result = gf.grafana_search_dashboards.invoke({})
         data = json.loads(result)
@@ -230,14 +218,14 @@ class TestGrafanaTools:
         titles = [d.get("title", "") for d in data]
         assert "Integration Test Dashboard" in titles
 
-    def test_search_dashboards_with_query(self, _set_env):
+    def test_search_dashboards_with_query(self):
         gf = self._reload_module()
         result = gf.grafana_search_dashboards.invoke({"query": "Integration"})
         data = json.loads(result)
         assert isinstance(data, list)
         assert len(data) >= 1
 
-    def test_annotations_endpoint(self, _set_env):
+    def test_annotations_endpoint(self):
         gf = self._reload_module()
         result = gf.grafana_annotations.invoke({})
         data = json.loads(result)
