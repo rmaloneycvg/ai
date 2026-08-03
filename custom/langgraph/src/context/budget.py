@@ -95,6 +95,12 @@ class ContextBudgetManager:
         self._layers: dict[str, LayerBudget] = {}
         self._allocate()
 
+        if not self._layers:
+            raise ValueError(
+                f"No context layers defined. Check that {BUDGETS_PATH} exists and "
+                f"contains a 'layers' section with at least one entry."
+            )
+
     def _load_config(self) -> dict:
         if BUDGETS_PATH.exists():
             with open(BUDGETS_PATH) as f:
@@ -119,9 +125,9 @@ class ContextBudgetManager:
             max_ctx = None
 
         if max_ctx is None:
-            # No limit / not configured — use a generous default
-            # In practice, the provider reports the real window
-            return 128000
+            # Not configured — use the conservative documented default.
+            # Callers that know the real window should pass it explicitly.
+            return 8192
 
         return int(max_ctx)
 

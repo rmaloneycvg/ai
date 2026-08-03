@@ -2,6 +2,10 @@
 
 Wraps langchain-ollama's ChatOllama for local model inference.
 Token counting uses chars/4 approximation (no tokenizer available locally).
+
+NOTE: For GPU acceleration on WSL2 with AMD Radeon, run Ollama on the
+Windows host and access from WSL2 via localhost (network mirroring) or
+the gateway IP. Set OLLAMA_BASE_URL if localhost doesn't reach the host.
 """
 
 from __future__ import annotations
@@ -31,10 +35,24 @@ class OllamaProvider(LLMProvider):
         self._context_window = context_window
         self._supports_tools = supports_tools
         self._supports_structured_output = supports_structured_output
-        self._llm = ChatOllama(
-            model=model,
+
+    def _build_llm(
+        self,
+        *,
+        temperature: float = 0.0,
+        max_tokens: int | None = None,
+    ) -> ChatOllama:
+        """Construct a ChatOllama instance with runtime parameters.
+
+        langchain-ollama>=0.3 requires temperature/num_predict as constructor
+        args rather than ainvoke kwargs.
+        """
+        return ChatOllama(
+            model=self._model,
             base_url=self._base_url,
-            num_ctx=context_window,
+            num_ctx=self._context_window,
+            temperature=temperature,
+            num_predict=max_tokens or -1,
         )
 
     async def chat(
@@ -46,17 +64,14 @@ class OllamaProvider(LLMProvider):
         tools: list | None = None,
         response_format: dict | None = None,
     ) -> ChatResponse:
-        kwargs: dict = {"temperature": temperature}
-        if max_tokens:
-            kwargs["max_tokens"] = max_tokens
+        llm = self._build_llm(temperature=temperature, max_tokens=max_tokens)
 
-        llm = self._llm
         if tools:
             llm = llm.bind_tools(tools)
         if response_format:
             llm = llm.bind(format=response_format.get("type", "json"))
 
-        response = await llm.ainvoke(messages, **kwargs)
+        response = await llm.ainvoke(messages)
         content = response.content if isinstance(response.content, str) else ""
 
         # Ollama doesn't report token usage consistently; approximate
@@ -79,15 +94,12 @@ class OllamaProvider(LLMProvider):
         max_tokens: int | None = None,
         tools: list | None = None,
     ) -> AsyncIterator[str]:
-        kwargs: dict = {"temperature": temperature}
-        if max_tokens:
-            kwargs["max_tokens"] = max_tokens
+        llm = self._build_llm(temperature=temperature, max_tokens=max_tokens)
 
-        llm = self._llm
         if tools:
             llm = llm.bind_tools(tools)
 
-        async for chunk in llm.astream(messages, **kwargs):
+        async for chunk in llm.astream(messages):
             if chunk.content:
                 yield chunk.content
 
@@ -107,4 +119,5 @@ class OllamaProvider(LLMProvider):
         )
 
     def get_chat_model(self) -> ChatOllama:
-        return self._llm
+        """Return a default ChatOllama instance for LangGraph node usage."""
+        return self._build_llm()

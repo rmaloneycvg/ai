@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from langchain_core.tools import tool
+
+from src.tools._paths import path_error, resolve_safe
 
 
 @tool
@@ -15,8 +16,10 @@ def read_json(path: str) -> str:
     Args:
         path: Path to the JSON file to read.
     """
+    p = resolve_safe(path)
+    if p is None:
+        return json.dumps({"success": False, "error": path_error(path)})
     try:
-        p = Path(path).expanduser()
         if not p.exists():
             return json.dumps({"success": False, "error": f"File not found: {path}"})
         content = p.read_text()
@@ -37,9 +40,11 @@ def write_json(path: str, data: str, indent: int = 2) -> str:
         data: JSON string to write (will be parsed to validate).
         indent: Indentation spaces (default: 2).
     """
+    p = resolve_safe(path)
+    if p is None:
+        return json.dumps({"success": False, "error": path_error(path)})
     try:
         parsed = json.loads(data)
-        p = Path(path).expanduser()
         p.parent.mkdir(parents=True, exist_ok=True)
         with open(p, "w") as f:
             json.dump(parsed, f, indent=indent)
@@ -58,8 +63,10 @@ def read_file(path: str, max_lines: int = 0) -> str:
         path: Path to the file.
         max_lines: Maximum lines to read (0 = all).
     """
+    p = resolve_safe(path)
+    if p is None:
+        return f"Error: {path_error(path)}"
     try:
-        p = Path(path).expanduser()
         if not p.exists():
             return f"Error: File not found: {path}"
         content = p.read_text()
@@ -79,8 +86,10 @@ def write_file(path: str, content: str) -> str:
         path: Path to write the file.
         content: Text content to write.
     """
+    p = resolve_safe(path)
+    if p is None:
+        return json.dumps({"success": False, "error": path_error(path)})
     try:
-        p = Path(path).expanduser()
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(content)
         return json.dumps({"success": True, "path": str(p), "bytes": len(content)})

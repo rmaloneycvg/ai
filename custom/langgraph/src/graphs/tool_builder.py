@@ -77,8 +77,11 @@ def scaffold_tool_node(state: SubAgentState) -> dict:
     func_name = _derive_func_name(description)
     func_name.replace("_", "-")
 
+    # Escape description for safe interpolation into triple-quoted docstrings
+    safe_desc = description.replace("\\", "\\\\").replace('"""', '\\"\\"\\"')
+
     # Generate the tool file content
-    content = f'''"""{description}"""
+    content = f'''"""{safe_desc}"""
 
 from __future__ import annotations
 
@@ -90,7 +93,7 @@ from langchain_core.tools import tool
 
 @tool
 def {func_name}(input_data: str = "") -> str:
-    """{description}
+    """{safe_desc}
 
     Args:
         input_data: Input parameters as JSON string.

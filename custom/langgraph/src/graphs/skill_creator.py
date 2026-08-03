@@ -120,8 +120,8 @@ def check_overlap_node(state: SubAgentState) -> dict:
             overlap_warnings.append(f"Potential overlap with: {skill}")
 
     if overlap_warnings:
-        return {"validation_errors": overlap_warnings}
-    return {"validation_errors": []}
+        return {"overlap_warnings": overlap_warnings}
+    return {}
 
 
 def draft_spec_node(state: SubAgentState) -> dict:
@@ -154,6 +154,11 @@ def validate_node(state: SubAgentState) -> dict:
     """Validate the draft skill content."""
     content = state.get("draft_content", "")
     errors: list[str] = []
+
+    # Carry forward overlap warnings from check_overlap_node
+    overlap = state.get("overlap_warnings", [])
+    if overlap:
+        errors.extend(overlap)
 
     # Check required sections
     required_sections = ["## Role & Tone", "## Workflow", "## Guardrails"]

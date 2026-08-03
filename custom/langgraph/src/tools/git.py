@@ -6,6 +6,8 @@ import subprocess
 
 from langchain_core.tools import tool
 
+from src.tools._paths import path_error, resolve_safe
+
 
 @tool
 def git_status(cwd: str = ".") -> str:
@@ -14,12 +16,15 @@ def git_status(cwd: str = ".") -> str:
     Args:
         cwd: Working directory (defaults to current).
     """
+    safe_cwd = resolve_safe(cwd)
+    if safe_cwd is None:
+        return f"Error: {path_error(cwd)}"
     try:
         result = subprocess.run(
             ["git", "status", "--porcelain"],
             capture_output=True,
             text=True,
-            cwd=cwd,
+            cwd=str(safe_cwd),
             timeout=10,
         )
         if result.returncode != 0:
@@ -68,6 +73,10 @@ def git_diff(path: str = "", staged: bool = False, cwd: str = ".") -> str:
         staged: If True, show staged changes (--cached).
         cwd: Working directory.
     """
+    safe_cwd = resolve_safe(cwd)
+    if safe_cwd is None:
+        return f"Error: {path_error(cwd)}"
+
     cmd = ["git", "diff"]
     if staged:
         cmd.append("--cached")
@@ -79,7 +88,7 @@ def git_diff(path: str = "", staged: bool = False, cwd: str = ".") -> str:
             cmd,
             capture_output=True,
             text=True,
-            cwd=cwd,
+            cwd=str(safe_cwd),
             timeout=10,
         )
         return result.stdout or "(no diff)"
@@ -96,6 +105,10 @@ def git_log(count: int = 10, oneline: bool = True, cwd: str = ".") -> str:
         oneline: If True, show compact one-line format.
         cwd: Working directory.
     """
+    safe_cwd = resolve_safe(cwd)
+    if safe_cwd is None:
+        return f"Error: {path_error(cwd)}"
+
     cmd = ["git", "log", f"-{count}"]
     if oneline:
         cmd.append("--oneline")
@@ -105,7 +118,7 @@ def git_log(count: int = 10, oneline: bool = True, cwd: str = ".") -> str:
             cmd,
             capture_output=True,
             text=True,
-            cwd=cwd,
+            cwd=str(safe_cwd),
             timeout=10,
         )
         return result.stdout or "(no commits)"

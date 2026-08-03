@@ -64,4 +64,6 @@ class SubAgentState(TypedDict):
     # Internal working state
     draft_content: str
     validation_errors: list[str]
+    overlap_warnings: list[str]
     attempt_count: int
+    tool_preset: str

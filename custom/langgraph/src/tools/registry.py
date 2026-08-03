@@ -110,15 +110,25 @@ PHASES: dict[str, ToolPhase] = {
 class ToolRegistry:
     """Provides phase-based tool activation and schema compression."""
 
+    # Phases exempt from the per-call tool limit (need all their declared tools)
+    _UNLIMITED_PHASES = frozenset({"full", "observability"})
+
     def __init__(self, max_tools_per_call: int = 8):
         self._max_tools = max_tools_per_call
 
     def get_tools(self, phase: str) -> list[BaseTool]:
-        """Get tools for a specific phase, respecting max_tools limit."""
+        """Get tools for a specific phase, respecting max_tools limit.
+
+        The 'full' and 'observability' phases are exempt from the limit
+        since they require access to all their declared tools.
+        """
         tool_phase = PHASES.get(phase)
         if not tool_phase:
             # Fallback to skill_create (safe default)
             tool_phase = PHASES["skill_create"]
+
+        if phase in self._UNLIMITED_PHASES:
+            return tool_phase.tools
 
         tools = tool_phase.tools[: self._max_tools]
         return tools

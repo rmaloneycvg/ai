@@ -65,7 +65,7 @@ def determine_scope_node(state: SubAgentState) -> dict:
     else:
         preset = "development"
 
-    return {"draft_content": json.dumps({"preset": preset})}
+    return {"tool_preset": preset}
 
 
 def draft_config_node(state: SubAgentState) -> dict:
@@ -73,9 +73,8 @@ def draft_config_node(state: SubAgentState) -> dict:
     pipeline_input = state.get("pipeline_input")
     description = pipeline_input.input.description if pipeline_input else ""
 
-    # Parse preset from previous node
-    preset_data = json.loads(state.get("draft_content", "{}"))
-    preset = preset_data.get("preset", "development")
+    # Read preset from dedicated state field
+    preset = state.get("tool_preset", "development") or "development"
     tool_config = TOOL_PRESETS[preset]
 
     # Derive agent name
@@ -168,7 +167,7 @@ def write_output_node(state: SubAgentState) -> dict:
                 files_created=[str(output_path)],
                 decisions_made=[
                     f"Created agent '{name}'",
-                    f"Tool preset: {json.loads(state.get('draft_content', '{}')).get('preset', 'development') if '{' not in state.get('draft_content', '')[:2] else 'development'}",
+                    f"Tool preset: {state.get('tool_preset', 'development')}",
                     f"Tools: {', '.join(config.get('tools', []))}",
                 ],
                 retry_context=RetryContext(attempts_made=1, max_attempts=3),

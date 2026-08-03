@@ -77,13 +77,12 @@ def get_provider(
     # Get model-specific config from yaml
     model_config = _get_model_config(config, provider_name, model_name)
 
-    # Build constructor kwargs
-    ctor_kwargs: dict = {
-        "model": model_name,
-        "context_window": model_config.get("context_window", 8192),
-        "supports_tools": model_config.get("supports_tools", False),
-        "supports_structured_output": model_config.get("supports_structured_output", False),
-    }
+    # Build constructor kwargs, only overriding provider defaults when the
+    # model is explicitly configured in providers.yaml.
+    ctor_kwargs: dict = {"model": model_name}
+    for key in ("context_window", "supports_tools", "supports_structured_output"):
+        if key in model_config:
+            ctor_kwargs[key] = model_config[key]
 
     # Provider-specific connection args
     if provider_name == "ollama":

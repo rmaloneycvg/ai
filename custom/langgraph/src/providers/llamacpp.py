@@ -9,6 +9,7 @@ platform-specific build requirements).
 
 from __future__ import annotations
 
+import asyncio
 import os
 from typing import AsyncIterator
 
@@ -64,9 +65,20 @@ class LlamaCppProvider(LLMProvider):
         tools: list | None = None,
         response_format: dict | None = None,
     ) -> ChatResponse:
-        # llama-cpp-python is sync; wrap for async interface
+        if tools:
+            raise NotImplementedError(
+                "LlamaCppProvider does not support tool calling. "
+                "Use a provider with supports_tool_calling=True (e.g., Ollama, OpenAI)."
+            )
+        if response_format:
+            raise NotImplementedError(
+                "LlamaCppProvider does not support structured output / response_format. "
+                "Use a provider with supports_structured_output=True."
+            )
+
+        # llama-cpp-python is sync; offload to thread to avoid blocking event loop
         prompt = "\n".join(f"{m.type}: {m.content}" for m in messages if m.content)
-        response = self._llm.invoke(prompt, temperature=temperature)
+        response = await asyncio.to_thread(self._llm.invoke, prompt, temperature=temperature)
         content = response if isinstance(response, str) else str(response)
 
         return ChatResponse(
@@ -85,11 +97,36 @@ class LlamaCppProvider(LLMProvider):
         max_tokens: int | None = None,
         tools: list | None = None,
     ) -> AsyncIterator[str]:
-        # llama-cpp-python streaming is sync; yield chunks
+        if tools:
+            raise NotImplementedError(
+                "LlamaCppProvider does not support tool calling. "
+                "Use a provider with supports_tool_calling=True (e.g., Ollama, OpenAI)."
+            )
+
+        # llama-cpp-python streaming is sync; offload iteration to a thread
+        # and deliver chunks incrementally via an asyncio.Queue.
         prompt = "\n".join(f"{m.type}: {m.content}" for m in messages if m.content)
-        for chunk in self._llm.stream(prompt, temperature=temperature):
-            if chunk:
-                yield chunk
+        queue: asyncio.Queue[str | None] = asyncio.Queue()
+
+        def _stream_in_thread() -> None:
+            try:
+                for chunk in self._llm.stream(prompt, temperature=temperature):
+                    if chunk:
+                        queue.put_nowait(chunk)
+            finally:
+                queue.put_nowait(None)  # sentinel
+
+        loop = asyncio.get_running_loop()
+        task = loop.run_in_executor(None, _stream_in_thread)
+
+        while True:
+            item = await queue.get()
+            if item is None:
+                break
+            yield item
+
+        # Ensure the thread task completed (propagate exceptions)
+        await task
 
     def count_tokens(self, text: str) -> int:
         """Approximate: chars / 4."""

@@ -78,7 +78,7 @@ async def run_task(request: RunRequest):
         "routing_history": [],
     }
 
-    result = graph.invoke(initial_state, config={"recursion_limit": 20})
+    result = await graph.ainvoke(initial_state, config={"recursion_limit": 20})
 
     output = result.get("pipeline_output")
     if output:
@@ -107,46 +107,57 @@ async def websocket_stream(websocket: WebSocket):
     await websocket.accept()
     try:
         while True:
-            data = await websocket.receive_json()
-            task = data.get("task", "")
+            try:
+                data = await websocket.receive_json()
+                task = data.get("task", "")
 
-            if not task:
-                await websocket.send_json({"error": "No task provided"})
-                continue
+                if not task:
+                    await websocket.send_json({"error": "No task provided"})
+                    continue
 
-            # Stream supervisor execution
-            await websocket.send_json({"type": "status", "content": "classifying..."})
+                # Stream supervisor execution
+                await websocket.send_json({"type": "status", "content": "classifying..."})
 
-            graph = app.state.graph
-            initial_state = {
-                "messages": [HumanMessage(content=task)],
-                "task_type": None,
-                "current_phase": "",
-                "model_profile": None,
-                "pipeline_input": None,
-                "pipeline_output": None,
-                "completion_flags": {},
-                "error_log": [],
-                "routing_history": [],
-            }
+                graph = app.state.graph
+                initial_state = {
+                    "messages": [HumanMessage(content=task)],
+                    "task_type": None,
+                    "current_phase": "",
+                    "model_profile": None,
+                    "pipeline_input": None,
+                    "pipeline_output": None,
+                    "completion_flags": {},
+                    "error_log": [],
+                    "routing_history": [],
+                }
 
-            result = graph.invoke(initial_state, config={"recursion_limit": 20})
+                result = await graph.ainvoke(initial_state, config={"recursion_limit": 20})
 
-            output = result.get("pipeline_output")
-            if output:
-                await websocket.send_json(
-                    {
-                        "type": "result",
-                        "task_type": output.task_type.value,
-                        "status": output.output.status.value,
-                        "decisions": output.output.decisions_made,
-                    }
-                )
-            else:
+                output = result.get("pipeline_output")
+                if output:
+                    await websocket.send_json(
+                        {
+                            "type": "result",
+                            "task_type": output.task_type.value,
+                            "status": output.output.status.value,
+                            "decisions": output.output.decisions_made,
+                        }
+                    )
+                else:
+                    await websocket.send_json(
+                        {
+                            "type": "error",
+                            "content": "No output produced",
+                        }
+                    )
+
+            except WebSocketDisconnect:
+                raise
+            except Exception as exc:
                 await websocket.send_json(
                     {
                         "type": "error",
-                        "content": "No output produced",
+                        "content": f"Internal error: {exc}",
                     }
                 )
 

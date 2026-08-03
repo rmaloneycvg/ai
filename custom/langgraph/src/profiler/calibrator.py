@@ -35,6 +35,7 @@ class CalibrationResult:
     expected_format: str
     input_tokens: int
     output_tokens: int
+    error: str | None = None
 
 
 # Calibration task battery
@@ -168,10 +169,12 @@ class ModelCalibrator:
             content = response.content
             input_tokens = response.input_tokens
             output_tokens = response.output_tokens
+            error = None
         except Exception as e:
-            content = f"ERROR: {e}"
+            content = ""
             input_tokens = 0
             output_tokens = 0
+            error = str(e)
 
         return CalibrationResult(
             task_name=task.name,
@@ -180,4 +183,5 @@ class ModelCalibrator:
             expected_format=task.expected_format,
             input_tokens=input_tokens,
             output_tokens=output_tokens,
+            error=error,
         )
