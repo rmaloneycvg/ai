@@ -168,9 +168,11 @@ class PromptCompiler:
         )
 
         context_tokens = 0
+        selected_blocks: list[ContextBlock] = []
         for block in sorted_blocks:
             if context_tokens + block.tokens <= remaining_budget:
                 blocks_included.append(block.name)
+                selected_blocks.append(block)
                 context_tokens += block.tokens
             else:
                 # Try truncation for high-priority blocks
@@ -178,26 +180,26 @@ class PromptCompiler:
                     available = remaining_budget - context_tokens
                     if available > 200:
                         # Truncate to fit
-                        truncated = self._truncate_content(block.content, available)
-                        block = ContextBlock(
+                        truncated_content = self._truncate_content(block.content, available)
+                        truncated_block = ContextBlock(
                             name=block.name,
-                            content=truncated,
+                            content=truncated_content,
                             priority=block.priority,
-                            tokens=self._tokenizer.count(truncated),
+                            tokens=self._tokenizer.count(truncated_content),
                         )
                         blocks_included.append(f"{block.name} (truncated)")
-                        context_tokens += block.tokens
+                        selected_blocks.append(truncated_block)
+                        context_tokens += truncated_block.tokens
                     else:
                         blocks_truncated.append(block.name)
                 else:
                     blocks_truncated.append(block.name)
 
-        # Build context message
-        if blocks_included:
-            context_parts = []
-            for block in sorted_blocks:
-                if block.name in blocks_included or f"{block.name} (truncated)" in blocks_included:
-                    context_parts.append(f"## {block.name.title()}\n\n{block.content}")
+        # Build context message from the selected (possibly truncated) blocks
+        if selected_blocks:
+            context_parts = [
+                f"## {block.name.title()}\n\n{block.content}" for block in selected_blocks
+            ]
             context_text = "\n\n---\n\n".join(context_parts)
             messages.append(SystemMessage(content=context_text))
             budget_breakdown["context"] = context_tokens
