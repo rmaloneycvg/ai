@@ -186,7 +186,7 @@ def route_to_agent(
 ) -> Command[
     Literal[
         "skill_creator", "agent_creator", "steering_writer",
-        "tool_builder", "rag_manager", "__end__"
+        "tool_builder", "rag_manager", "finalize"
     ]
 ]:
     """Route to the appropriate sub-agent based on classified task type."""
@@ -200,7 +200,7 @@ def route_to_agent(
         TaskType.RAG_MANAGE: "rag_manager",
     }
 
-    target = route_map.get(task_type, "__end__")
+    target = route_map.get(task_type, "finalize")
     return Command(
         goto=target,
         update={"routing_history": [f"Routed to {target}"]},
@@ -277,7 +277,9 @@ def _subagent_wrapper(build_fn):
             "pipeline_output": None,
             "draft_content": "",
             "validation_errors": [],
+            "overlap_warnings": [],
             "attempt_count": 0,
+            "tool_preset": "",
         }
 
         # Run the subgraph
