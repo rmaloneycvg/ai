@@ -6,23 +6,36 @@ import json
 import os
 import subprocess
 
+import psycopg
 from langchain_core.tools import tool
 
 
+def _connect_params(database: str = "") -> dict:
+    """Build psycopg connection parameters from environment."""
+    return {
+        "host": os.environ.get("PGHOST", "localhost"),
+        "port": int(os.environ.get("PGPORT", "5432")),
+        "user": os.environ.get("PGUSER", "postgres"),
+        "password": os.environ.get("PGPASSWORD", ""),
+        "dbname": database or os.environ.get("PGDATABASE", "postgres"),
+    }
+
+
 @tool
-def postgres_query(sql: str, database: str = "", params: str = "[]") -> str:
+def postgres_query(sql: str, params: str = "[]", database: str = "") -> str:
     """Execute a read-only parameterized SQL query against postgres.
 
-    Args:
-        sql: SQL query (read-only; write operations are blocked).
-        database: Database name (defaults to PGDATABASE env var).
-        params: JSON array of query parameters.
-    """
-    db = database or os.environ.get("PGDATABASE", "postgres")
-    host = os.environ.get("PGHOST", "localhost")
-    port = os.environ.get("PGPORT", "5432")
-    user = os.environ.get("PGUSER", "postgres")
+    Parameters are bound safely via psycopg (server-side parameterization),
+    preventing SQL injection. Use $1, $2, etc. as placeholders in the SQL.
 
+    Write operations (INSERT, UPDATE, DELETE, DROP, ALTER, CREATE, TRUNCATE)
+    are blocked. Use postgres_seed for mutations.
+
+    Args:
+        sql: SQL query with $1/$2/... placeholders (read-only; writes blocked).
+        params: JSON array of query parameters bound to $1, $2, etc.
+        database: Database name (defaults to PGDATABASE env var).
+    """
     # Block write operations
     sql_upper = sql.strip().upper()
     if any(
@@ -33,28 +46,39 @@ def postgres_query(sql: str, database: str = "", params: str = "[]") -> str:
             {"error": "Write operations are blocked. Use postgres_seed for mutations."}
         )
 
+    # Parse params
     try:
-        cmd = [
-            "psql",
-            "-h",
-            host,
-            "-p",
-            port,
-            "-U",
-            user,
-            "-d",
-            db,
-            "-t",
-            "-A",
-            "-c",
-            sql,
-        ]
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
-        if result.returncode != 0:
-            return json.dumps({"error": result.stderr.strip()})
-        return result.stdout.strip() or "(no results)"
-    except subprocess.TimeoutExpired:
-        return json.dumps({"error": "Query timed out (30s limit)"})
+        param_list = json.loads(params)
+        if not isinstance(param_list, list):
+            return json.dumps({"error": "params must be a JSON array"})
+    except json.JSONDecodeError as e:
+        return json.dumps({"error": f"Invalid params JSON: {e}"})
+
+    # Convert $1/$2 placeholders to psycopg %s style (positional)
+    # psycopg uses %s for positional params, but we accept $N for postgres familiarity
+    converted_sql = sql
+    for i in range(len(param_list), 0, -1):
+        converted_sql = converted_sql.replace(f"${i}", "%s")
+
+    try:
+        conn_params = _connect_params(database)
+        with psycopg.connect(**conn_params, connect_timeout=5) as conn:
+            conn.autocommit = True
+            with conn.cursor() as cur:
+                cur.execute("SET statement_timeout = '30s'")
+                cur.execute(converted_sql, param_list if param_list else None)
+                if cur.description is None:
+                    return "(no results)"
+                columns = [desc.name for desc in cur.description]
+                rows = cur.fetchall()
+                if not rows:
+                    return "(no results)"
+                results = [dict(zip(columns, row)) for row in rows]
+                return json.dumps(results, default=str)
+    except psycopg.OperationalError as e:
+        return json.dumps({"error": f"Connection failed: {e}"})
+    except psycopg.Error as e:
+        return json.dumps({"error": str(e)})
     except Exception as e:
         return json.dumps({"error": str(e)})
 
@@ -67,6 +91,12 @@ def postgres_seed(file: str, database: str = "") -> str:
         file: Path to the .sql seed file.
         database: Database name (defaults to PGDATABASE env var).
     """
+    from src.tools._paths import path_error, resolve_safe
+
+    safe_path = resolve_safe(file)
+    if safe_path is None:
+        return json.dumps({"error": path_error(file)})
+
     db = database or os.environ.get("PGDATABASE", "postgres")
     host = os.environ.get("PGHOST", "localhost")
     port = os.environ.get("PGPORT", "5432")
@@ -85,7 +115,7 @@ def postgres_seed(file: str, database: str = "") -> str:
             db,
             "-1",
             "-f",
-            file,
+            str(safe_path),
         ]
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
         if result.returncode != 0:

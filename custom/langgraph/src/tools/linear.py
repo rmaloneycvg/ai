@@ -28,22 +28,28 @@ def linear_list_issues(team_id: str = "", state: str = "", limit: int = 20) -> s
     if not _API_KEY:
         return json.dumps({"error": "LINEAR_API_KEY not configured"})
 
-    filters = []
-    if team_id:
-        filters.append(f'team: {{ id: {{ eq: "{team_id}" }} }}')
-    if state:
-        filters.append(f'state: {{ name: {{ eq: "{state}" }} }}')
-
-    filter_str = ", ".join(filters)
-    filter_clause = f"filter: {{ {filter_str} }}" if filter_str else ""
-
-    query = f"""
-    query {{ issues(first: {limit}, {filter_clause}) {{
-        nodes {{ id identifier title state {{ name }} priority assignee {{ name }} }}
-    }} }}
+    query = """
+    query($first: Int!, $filter: IssueFilter) {
+        issues(first: $first, filter: $filter) {
+            nodes { id identifier title state { name } priority assignee { name } }
+        }
+    }
     """
+    # Build filter object only for provided values
+    issue_filter: dict = {}
+    if team_id:
+        issue_filter["team"] = {"id": {"eq": team_id}}
+    if state:
+        issue_filter["state"] = {"name": {"eq": state}}
+
+    variables: dict = {"first": limit}
+    if issue_filter:
+        variables["filter"] = issue_filter
+
     try:
-        resp = httpx.post(_API_URL, json={"query": query}, headers=_headers(), timeout=15)
+        resp = httpx.post(
+            _API_URL, json={"query": query, "variables": variables}, headers=_headers(), timeout=15
+        )
         return resp.text
     except Exception as e:
         return json.dumps({"error": str(e)})
@@ -97,15 +103,18 @@ def linear_list_cycles(team_id: str) -> str:
     if not _API_KEY:
         return json.dumps({"error": "LINEAR_API_KEY not configured"})
 
-    query = f"""
-    query {{ team(id: "{team_id}") {{
-        cycles(first: 10, orderBy: createdAt) {{
-            nodes {{ id number name startsAt endsAt completedAt progress }}
-        }}
-    }} }}
+    query = """
+    query($teamId: String!) { team(id: $teamId) {
+        cycles(first: 10, orderBy: createdAt) {
+            nodes { id number name startsAt endsAt completedAt progress }
+        }
+    } }
     """
+    variables = {"teamId": team_id}
     try:
-        resp = httpx.post(_API_URL, json={"query": query}, headers=_headers(), timeout=15)
+        resp = httpx.post(
+            _API_URL, json={"query": query, "variables": variables}, headers=_headers(), timeout=15
+        )
         return resp.text
     except Exception as e:
         return json.dumps({"error": str(e)})
