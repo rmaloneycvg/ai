@@ -17,8 +17,20 @@ class TestToolRegistry:
 
     def test_max_tools_limit_enforced(self):
         registry = ToolRegistry(max_tools_per_call=3)
-        tools = registry.get_tools("full")
+        # Limit applies to non-exempt phases
+        tools = registry.get_tools("rag_manage")
         assert len(tools) <= 3
+
+    def test_unlimited_phases_return_all_tools(self):
+        registry = ToolRegistry(max_tools_per_call=3)
+        # 'full' and 'observability' are exempt from the limit
+        full_tools = registry.get_tools("full")
+        assert len(full_tools) == len(PHASES["full"].tools)
+        assert len(full_tools) > 3
+
+        obs_tools = registry.get_tools("observability")
+        assert len(obs_tools) == len(PHASES["observability"].tools)
+        assert len(obs_tools) > 3
 
     def test_compressed_schemas_smaller(self):
         registry = ToolRegistry()
