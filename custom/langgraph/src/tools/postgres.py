@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 import os
-import subprocess
 
 import psycopg
 from langchain_core.tools import tool
@@ -97,29 +96,19 @@ def postgres_seed(file: str, database: str = "") -> str:
     if safe_path is None:
         return json.dumps({"error": path_error(file)})
 
-    db = database or os.environ.get("PGDATABASE", "postgres")
-    host = os.environ.get("PGHOST", "localhost")
-    port = os.environ.get("PGPORT", "5432")
-    user = os.environ.get("PGUSER", "postgres")
+    if not safe_path.exists():
+        return json.dumps({"error": f"File not found: {file}"})
+
+    sql = safe_path.read_text()
 
     try:
-        cmd = [
-            "psql",
-            "-h",
-            host,
-            "-p",
-            port,
-            "-U",
-            user,
-            "-d",
-            db,
-            "-1",
-            "-f",
-            str(safe_path),
-        ]
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
-        if result.returncode != 0:
-            return json.dumps({"error": result.stderr.strip()})
-        return json.dumps({"success": True, "output": result.stdout.strip()})
+        conn_params = _connect_params(database)
+        with psycopg.connect(**conn_params, connect_timeout=5) as conn:
+            with conn.cursor() as cur:
+                cur.execute(sql)
+            conn.commit()
+        return json.dumps({"success": True, "output": f"Executed {safe_path.name}"})
+    except psycopg.Error as e:
+        return json.dumps({"error": str(e)})
     except Exception as e:
         return json.dumps({"error": str(e)})
