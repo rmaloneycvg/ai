@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ToolResult",
+  "description": "Standard response format from all tools.",
+  "type": "object",
+  "required": ["success"],
+  "properties": {
+    "success": {
+      "type": "boolean"
+    },
+    "data": {
+      "description": "Result data (type varies by tool)"
+    },
+    "error": {
+      "type": "string",
+      "description": "Error message if success is false"
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "tool_name": {"type": "string"},
+        "execution_time_ms": {"type": "number"},
+        "truncated": {"type": "boolean"}
+      }
+    }
+  }
+}
