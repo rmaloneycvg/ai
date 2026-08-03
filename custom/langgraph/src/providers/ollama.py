@@ -47,8 +47,8 @@ class OllamaProvider(LLMProvider):
         response_format: dict | None = None,
     ) -> ChatResponse:
         kwargs: dict = {"temperature": temperature}
-        if max_tokens:
-            kwargs["max_tokens"] = max_tokens
+        if max_tokens is not None:
+            kwargs["num_predict"] = max_tokens
 
         llm = self._llm
         if tools:
@@ -80,8 +80,8 @@ class OllamaProvider(LLMProvider):
         tools: list | None = None,
     ) -> AsyncIterator[str]:
         kwargs: dict = {"temperature": temperature}
-        if max_tokens:
-            kwargs["max_tokens"] = max_tokens
+        if max_tokens is not None:
+            kwargs["num_predict"] = max_tokens
 
         llm = self._llm
         if tools:
