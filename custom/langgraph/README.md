@@ -2,6 +2,433 @@
 
 Local LangGraph agent system for workspace artifact generation. Replicates the Kiro AI workspace architecture (skills, agents, orchestration, tools, steering) optimized for local LLMs with adaptive context management, model-specific prompt compilation, and empirical model profiling.
 
+---
+
+## Use Cases & Examples
+
+### 1. Create a Skill (Workflow Definition)
+
+Skills are on-demand capability files that define step-by-step agent behaviors with triggers, guardrails, and failure recovery.
+
+```bash
+# Create a debugging skill for Python applications
+uv run python -m src.main run "Create a skill for debugging Python applications"
+
+# Create a skill for database migration workflows
+uv run python -m src.main run "Create a skill for managing PostgreSQL schema migrations"
+
+# Create a skill for code review automation
+uv run python -m src.main run "Create a skill for reviewing pull requests and suggesting improvements"
+```
+
+**What happens:**
+1. Supervisor classifies intent → routes to `skill_creator` subgraph
+2. Skill creator loads `skill-schema.md` steering via progressive disclosure
+3. Checks existing skills for naming/scope overlap
+4. Drafts YAML frontmatter + markdown body (Role & Tone, Workflow, Guardrails)
+5. Validates required sections exist
+6. Writes to `output/skills/<name>.md`
+
+**Example output:** `output/skills/debug-python.md`
+```markdown
+---
+name: debug-python
+description: Use when debugging a failing Python application. Covers reproduction,
+  isolation, root cause diagnosis, fix implementation, and regression test creation.
+---
+
+# Debug Python
+
+## Role & Tone
+Act as a senior Python engineer. Be systematic and methodical...
+
+## Workflow
+1. **Check Existing State** — Is there a stack trace or error message?
+2. **Reproduce** — Identify minimal reproduction steps...
+3. **Isolate** — Narrow to the failing module/function...
+4. **Diagnose** — Identify root cause...
+5. **Fix** — Apply targeted fix...
+6. **Verify** — Run test suite, confirm fix...
+7. **Document** — Add regression test...
+
+## Guardrails
+- NEVER modify code without reproducing the issue first
+- NEVER skip test creation after a fix
+...
+```
+
+---
+
+### 2. Create an Agent (Persona Configuration)
+
+Agents are JSON configs that compose a focused persona from steering, skills, tools, and file access restrictions.
+
+```bash
+# Create an agent for data pipeline management
+uv run python -m src.main run "Create an agent for data pipeline management"
+
+# Create a read-only documentation agent
+uv run python -m src.main run "Create an agent that helps navigate and search project documentation"
+
+# Create an infrastructure agent for Terraform and Kubernetes
+uv run python -m src.main run "Create an agent for managing Terraform modules and Kubernetes manifests"
+```
+
+**What happens:**
+1. Supervisor classifies intent → routes to `agent_creator` subgraph
+2. Agent creator classifies agent type (read-only, development, infrastructure)
+3. Selects tool preset and file access restrictions based on classification
+4. Generates JSON config with steering references, skills, tools, and prompt
+5. Validates JSON structure and tool consistency
+6. Writes to `output/agents/<name>.json`
+
+**Example output:** `output/agents/data-pipeline.json`
+```json
+{
+  "name": "data-pipeline",
+  "description": "Manages ETL pipelines, Airflow DAGs, and data quality checks",
+  "prompt": "You are a data engineering specialist...",
+  "tools": ["read", "write", "shell", "glob", "grep", "postgres"],
+  "allowedTools": ["read", "glob", "grep"],
+  "resources": [
+    "file://pyproject.toml",
+    "skill://../skills/backend-cron-feature.md",
+    "skill://../skills/general-debug.md"
+  ],
+  "toolsSettings": {
+    "write": {
+      "allowedPaths": ["dags/", "pipelines/", "tests/"]
+    },
+    "shell": {
+      "allowedCommands": ["airflow", "pytest", "python"]
+    }
+  }
+}
+```
+
+---
+
+### 3. Write Steering (Conventions & Patterns)
+
+Steering docs are prescriptive references loaded into agent context at startup — technology choices, patterns, security rules, naming conventions.
+
+```bash
+# Write a steering doc for API naming conventions
+uv run python -m src.main run "Write a steering doc for API naming conventions"
+
+# Create a steering doc for error handling patterns
+uv run python -m src.main run "Write a steering doc for error handling and retry patterns in distributed systems"
+
+# Document database access patterns
+uv run python -m src.main run "Create a steering convention for database query patterns and connection management"
+```
+
+**What happens:**
+1. Supervisor classifies intent → routes to `steering_writer` subgraph
+2. Steering writer determines category (conventions, security, orchestration, preferences)
+3. Generates markdown following documentation conventions template
+4. Includes Why This Exists, Rules, Examples, Anti-Patterns sections
+5. Writes to `output/steering/<category>/<name>.md`
+
+**Example output:** `output/steering/conventions/api-naming.md`
+```markdown
+# API Naming Conventions
+
+## Why This Exists
+Without standardized API naming, endpoints proliferate with inconsistent
+casing, verb usage, and resource nesting...
+
+## URL Structure
+| Pattern | Example | When |
+|---------|---------|------|
+| Collection | GET /api/projects | List resources |
+| Resource | GET /api/projects/:id | Single resource |
+| Sub-resource | GET /api/projects/:id/members | Nested relationship |
+| Action | POST /api/projects/:id/archive | Non-CRUD operations |
+
+## Rules
+- Use kebab-case for URL paths: `/api/user-profiles` not `/api/userProfiles`
+- Use camelCase for JSON body fields: `{ "firstName": "..." }`
+- Plural nouns for collections: `/projects` not `/project`
+...
+
+## Anti-Patterns
+- ❌ Verbs in URL paths: `/api/getProjects` (use HTTP methods instead)
+- ❌ Mixing casing: `/api/userProfiles/:id/work_history`
+...
+```
+
+---
+
+### 4. Build a Tool (LangGraph @tool Function)
+
+Tools are Python functions exposed to agents for interacting with external systems (APIs, databases, shell commands).
+
+```bash
+# Build a tool for querying Elasticsearch
+uv run python -m src.main run "Build a tool for querying Elasticsearch"
+
+# Build a tool for sending Slack notifications
+uv run python -m src.main run "Build a tool for sending messages to Slack channels"
+
+# Build a tool for checking service health endpoints
+uv run python -m src.main run "Build a tool for checking HTTP health endpoints and reporting status"
+```
+
+**What happens:**
+1. Supervisor classifies intent → routes to `tool_builder` subgraph
+2. Tool builder detects import requirements (HTTP client, DB driver, etc.)
+3. Scaffolds Python file with `@tool` decorator, type hints, docstring
+4. Validates syntax via `compile()`
+5. Writes to `output/tools/<func_name>.py`
+
+**Example output:** `output/tools/elasticsearch_query.py`
+```python
+"""Elasticsearch query tool for LangGraph agents."""
+
+from __future__ import annotations
+
+import os
+
+import httpx
+from langchain_core.tools import tool
+
+
+@tool
+async def elasticsearch_query(
+    index: str,
+    query: str,
+    size: int = 10,
+) -> dict:
+    """Search an Elasticsearch index with a query string.
+
+    Args:
+        index: Elasticsearch index name to search.
+        query: Query string (Lucene syntax).
+        size: Maximum results to return (default 10, max 100).
+
+    Returns:
+        Dict with 'hits' array and 'total' count.
+    """
+    base_url = os.environ.get("ELASTICSEARCH_URL", "http://localhost:9200")
+    size = min(size, 100)
+
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        response = await client.post(
+            f"{base_url}/{index}/_search",
+            json={
+                "query": {"query_string": {"query": query}},
+                "size": size,
+            },
+        )
+        response.raise_for_status()
+        data = response.json()
+
+    return {
+        "total": data["hits"]["total"]["value"],
+        "hits": [
+            {"id": hit["_id"], "score": hit["_score"], "source": hit["_source"]}
+            for hit in data["hits"]["hits"]
+        ],
+    }
+```
+
+---
+
+### 5. Profile a Model (Calibration & Strategy Generation)
+
+Profiling runs empirical tests against a model to determine its capabilities and generates optimized prompt strategies.
+
+```bash
+# Profile your default local model
+uv run python -m src.main profile --model llama3.1:8b
+
+# Profile a larger model
+uv run python -m src.main profile --model qwen2.5:14b
+
+# Profile with a specific provider
+uv run python -m src.main profile --model gpt-4o --provider openai
+```
+
+**What happens:**
+1. Sends 8 calibration prompts (reasoning, instruction following, JSON output, tool calling, etc.)
+2. Scores responses deterministically (no LLM-as-judge — reproducible heuristics)
+3. Maps scores to prompt strategies (CoT level, example count, format preferences)
+4. Saves profile JSON to `config/model-profiles/<model>.json`
+5. Generates human-readable steering doc at `steering-local/model-strategies/<model>.md`
+
+**Example output:**
+```
+🔬 Calibrating llama3.1:8b...
+   Running 8 calibration tasks...
+
+✓ Calibration complete!
+  Strength tier: medium
+  Overall score: 6.5/10
+
+  Scores:
+    Reasoning:             6.5/10
+    Instruction following: 7.0/10
+    Structured output:     6.0/10
+    Tool calling:          5.5/10
+    Creativity:            7.5/10
+
+  Strategies:
+    CoT needed:      false
+    JSON mode:       false
+    Examples needed: 1
+```
+
+---
+
+### 6. Manage RAG (Vector Knowledge Base)
+
+Set up and manage a pgvector-based knowledge base for semantic retrieval of steering documents.
+
+```bash
+# Set up RAG infrastructure
+uv run python -m src.main run "Setup RAG for the steering knowledge base"
+
+# Ingest steering documents
+uv run python -m src.main run "Ingest all steering documents into the vector database"
+
+# Check RAG status
+uv run python -m src.main run "Show RAG ingestion status and chunk statistics"
+```
+
+**What happens:**
+1. Supervisor classifies intent → routes to `rag_manager` subgraph
+2. RAG manager assesses whether RAG is warranted (collection size >= 20 docs)
+3. Checks existing pgvector schema and chunk statistics
+4. Creates migration SQL or reports current ingestion state
+5. Validates retrieval quality with test queries
+6. Produces migration/status output
+
+---
+
+### 7. Inspect Context Budget (Debugging)
+
+Understand how token budget is allocated for a given model before running tasks.
+
+```bash
+# Show budget breakdown for a local model
+uv run python -m src.main budget-report --model llama3.1:8b
+
+# Show budget for a larger context model
+uv run python -m src.main budget-report --model qwen2.5:14b
+
+# See what gets disclosed for a specific query
+uv run python -m src.main disclose --model llama3.1:8b --query "skill schema conventions"
+```
+
+**Example output (budget-report):**
+```
+Token Budget Report: llama3.1:8b (8192 tokens)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  System (5%):       409 tokens  [protected]
+  Tools (12%):       983 tokens
+  Retrieved (35%):  2,867 tokens
+  History (25%):    2,048 tokens
+  Scratchpad (13%): 1,064 tokens
+  Current Turn (5%):  409 tokens  [protected]
+  Reserve (5%):       409 tokens  [protected]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Example output (disclose):**
+```
+Progressive Disclosure: "skill schema conventions"
+Model: llama3.1:8b | Budget: 2,867 tokens (retrieved layer)
+
+Loaded resources:
+  [FULL]    steering/conventions/skill-schema.md     (2,140 tokens)
+  [SUMMARY] steering/conventions/code-style.md       (320 tokens)
+  [META]    steering/conventions/documentation.md    (12 tokens)
+
+Total: 2,472 / 2,867 tokens used
+Tier: Summary (8K-16K model)
+```
+
+---
+
+### 8. List Tools & Providers
+
+Inspect available tools for a task phase, or check configured providers and models.
+
+```bash
+# List tools available during skill creation
+uv run python -m src.main tools --phase skill_create
+
+# List all configured providers and their models
+uv run python -m src.main providers
+
+# Test provider connection
+uv run python -m src.main provider-test --model llama3.1:8b
+```
+
+---
+
+### 9. Server Mode (REST + WebSocket)
+
+Run as a persistent server for integration with editors, UIs, or other systems.
+
+```bash
+# Start the server
+uv run python -m src.main serve --port 8765
+```
+
+```bash
+# Submit a task via REST
+curl -X POST http://localhost:8765/api/run \
+  -H "Content-Type: application/json" \
+  -d '{"task": "Create a skill for testing React components"}'
+
+# List available models
+curl http://localhost:8765/api/models
+
+# Health check
+curl http://localhost:8765/api/health
+```
+
+```javascript
+// WebSocket streaming (any WS client)
+const ws = new WebSocket("ws://localhost:8765/ws");
+ws.send(JSON.stringify({ task: "Create an agent for frontend development" }));
+ws.onmessage = (event) => {
+  const msg = JSON.parse(event.data);
+  // { type: "status", content: "classifying..." }
+  // { type: "status", content: "routing to agent_creator..." }
+  // { type: "result", content: { status: "success", files_created: [...] } }
+};
+```
+
+---
+
+### 10. Chaining Tasks (Typical Workflow)
+
+A realistic workflow combining multiple capabilities:
+
+```bash
+# 1. Profile your model first (so prompts are optimized)
+uv run python -m src.main profile --model qwen2.5:14b
+
+# 2. Create a steering doc defining your API patterns
+uv run python -m src.main run "Write a steering doc for GraphQL resolver patterns with error handling"
+
+# 3. Create a skill that references that steering
+uv run python -m src.main run "Create a skill for scaffolding new GraphQL resolvers"
+
+# 4. Create a tool the skill might use
+uv run python -m src.main run "Build a tool for validating GraphQL schemas against a remote endpoint"
+
+# 5. Create an agent that ties them all together
+uv run python -m src.main run "Create an agent for GraphQL API development with access to the resolver skill and schema validation tool"
+```
+
+Each step produces artifacts in `output/` that reference each other — the agent config points to the skill, the skill references the steering doc, and the tool is available in the agent's tool set.
+
+---
+
 ## Architecture
 
 ```mermaid
