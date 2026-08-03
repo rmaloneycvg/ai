@@ -1,0 +1,24 @@
+{
+  "model_name": "tinyllama",
+  "provider": "ollama",
+  "context_window": 2048,
+  "scores": {
+    "reasoning": 3.0,
+    "instruction_following": 3.75,
+    "structured_output": 5.0,
+    "tool_calling": 7.0,
+    "creativity": 6.5
+  },
+  "strategies": {
+    "cot_needed": true,
+    "json_mode": false,
+    "xml_preferred": false,
+    "max_tools_per_call": 8,
+    "prompt_length_sweet_spot": 614,
+    "examples_needed": 3,
+    "reasoning_scaffolding": "full"
+  },
+  "calibrated_at": "2026-08-03T15:07:43.012083",
+  "version": 1,
+  "notes": ""
+}

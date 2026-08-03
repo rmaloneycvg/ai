@@ -1,0 +1,24 @@
+{
+  "model_name": "mistral:7b",
+  "provider": "ollama",
+  "context_window": 8192,
+  "scores": {
+    "reasoning": 4.0,
+    "instruction_following": 7.0,
+    "structured_output": 10.0,
+    "tool_calling": 7.0,
+    "creativity": 9.0
+  },
+  "strategies": {
+    "cot_needed": true,
+    "json_mode": true,
+    "xml_preferred": false,
+    "max_tools_per_call": 8,
+    "prompt_length_sweet_spot": 3276,
+    "examples_needed": 1,
+    "reasoning_scaffolding": "full"
+  },
+  "calibrated_at": "2026-08-03T15:03:54.289360",
+  "version": 1,
+  "notes": ""
+}
