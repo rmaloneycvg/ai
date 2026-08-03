@@ -1,4 +1,4 @@
-.PHONY: test test-unit test-integration lint profile serve generate-models clean
+.PHONY: test test-unit test-integration test-live lint profile serve generate-models clean infra-up infra-down infra-logs
 
 # All commands use uv run — no pip, no activation needed.
 
@@ -10,6 +10,9 @@ test-unit:
 
 test-integration:
 	uv run pytest tests/integration/ -v -m integration
+
+test-live:
+	env $$(cat .env.test | grep -v '^#' | xargs) uv run pytest tests/integration/test_tools_live.py -v -m integration
 
 lint:
 	uv run ruff check src/ tests/
@@ -32,6 +35,17 @@ providers:
 
 generate-models:
 	uv run python -m src.models.generate
+
+# --- Infrastructure ---
+
+infra-up:
+	docker compose up -d --wait
+
+infra-down:
+	docker compose down -v
+
+infra-logs:
+	docker compose logs -f
 
 clean:
 	rm -rf .pytest_cache __pycache__ src/__pycache__ tests/__pycache__
