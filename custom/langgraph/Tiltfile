@@ -1,0 +1,58 @@
+# Tiltfile — integration test infrastructure for langgraph tools
+#
+# Usage:
+#   tilt up                    # Start all services
+#   tilt up -- --no-grafana    # Skip Grafana (faster startup)
+#   tilt down                  # Tear down
+#
+# Once services are healthy, run integration tests:
+#   uv run pytest tests/integration/ -v -m integration
+
+config.define_bool("no-grafana")
+cfg = config.parse()
+skip_grafana = cfg.get("no-grafana", False)
+
+# --- Docker Compose services ---
+
+docker_compose("docker-compose.yml")
+
+# --- Resource configuration ---
+
+dc_resource("postgres", labels=["infra"],
+    resource_deps=[],
+)
+
+dc_resource("prometheus", labels=["telemetry"],
+    resource_deps=[],
+)
+
+dc_resource("jaeger", labels=["telemetry"],
+    resource_deps=[],
+)
+
+if not skip_grafana:
+    dc_resource("grafana", labels=["telemetry"],
+        resource_deps=["prometheus"],
+    )
+
+# --- Integration test runner (manual trigger) ---
+
+local_resource(
+    "integration-tests",
+    cmd="uv run pytest tests/integration/ -v -m integration --tb=short",
+    auto_init=False,
+    trigger_mode=TRIGGER_MODE_MANUAL,
+    resource_deps=["postgres", "prometheus", "jaeger"] + (["grafana"] if not skip_grafana else []),
+    labels=["tests"],
+)
+
+# --- Postgres seed (manual trigger) ---
+
+local_resource(
+    "db-seed",
+    cmd="PGHOST=localhost PGPORT=5433 PGUSER=postgres PGPASSWORD=postgres PGDATABASE=langgraph_test psql -f tests/fixtures/sql/seed.sql",
+    auto_init=False,
+    trigger_mode=TRIGGER_MODE_MANUAL,
+    resource_deps=["postgres"],
+    labels=["infra"],
+)

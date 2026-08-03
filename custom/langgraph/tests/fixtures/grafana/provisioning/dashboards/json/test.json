@@ -1,0 +1,20 @@
+{
+  "uid": "test-dashboard",
+  "title": "Integration Test Dashboard",
+  "tags": ["test"],
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Up",
+      "type": "stat",
+      "datasource": "Prometheus",
+      "targets": [
+        { "expr": "up", "refId": "A" }
+      ],
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 }
+    }
+  ],
+  "schemaVersion": 38,
+  "version": 1
+}
