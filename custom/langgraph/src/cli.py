@@ -234,6 +234,151 @@ def disclose(
 
 
 @app.command()
+def execute(
+    task: str = typer.Argument(help="Task/message for the agent or skill"),
+    agent: Optional[str] = typer.Option(None, "--agent", "-a", help="Agent name to execute"),
+    skill: Optional[str] = typer.Option(None, "--skill", "-s", help="Skill name to execute"),
+    model: Optional[str] = typer.Option(None, help="Override model selection"),
+    interactive: bool = typer.Option(True, help="Enable human-in-the-loop"),
+):
+    """Execute a Kiro artifact (agent or skill) using local models.
+
+    Examples:
+        uv run python -m src.main execute --agent react-frontend "Add a UserProfile component"
+        uv run python -m src.main execute --skill general-debug "API returns 500 on /users"
+    """
+    from src.runtime.agent_runtime import AgentRuntime
+
+    if not agent and not skill:
+        typer.echo("Error: Specify --agent or --skill", err=True)
+        raise typer.Exit(1)
+
+    async def _execute():
+        runtime = AgentRuntime()
+
+        if agent:
+            # Check if it's an orchestrator
+            from src.runtime.loader import ArtifactLoader
+            loader = ArtifactLoader()
+            try:
+                loaded = loader.load_agent(agent)
+            except FileNotFoundError:
+                typer.echo(f"Error: Agent '{agent}' not found", err=True)
+                raise typer.Exit(1)
+
+            if loaded.is_orchestrator:
+                from src.runtime.orchestrator import OrchestratorRuntime
+
+                typer.echo(f"🎭 Executing orchestrator: {agent}")
+                typer.echo(f"   Sub-agents: {loaded.available_sub_agents}")
+                orch_runtime = OrchestratorRuntime()
+                orch_result = await orch_runtime.execute(
+                    orchestrator_name=agent,
+                    task=task,
+                    model_override=model,
+                    interactive=interactive,
+                )
+                result = ExecutionResult(
+                    success=orch_result.success,
+                    messages=orch_result.messages,
+                    files_created=orch_result.files_created,
+                    files_modified=orch_result.files_modified,
+                    error=orch_result.error,
+                )
+                if orch_result.success:
+                    typer.echo(f"  Stages completed: {orch_result.stages_completed}/{orch_result.total_stages}")
+            else:
+                typer.echo(f"🤖 Executing agent: {agent}")
+                result = await runtime.execute(
+                    agent_name=agent,
+                    task=task,
+                    model_override=model,
+                    interactive=interactive,
+                )
+        else:
+            from src.runtime.skill_runtime import SkillRuntime
+
+            typer.echo(f"📋 Executing skill: {skill}")
+            skill_runtime = SkillRuntime()
+            skill_result = await skill_runtime.execute(
+                skill_name=skill,
+                task=task,
+                model_override=model,
+                interactive=interactive,
+            )
+            # Adapt to common display format
+            result = ExecutionResult(
+                success=skill_result.success,
+                messages=skill_result.messages,
+                error=skill_result.error,
+            )
+            if skill_result.success:
+                typer.echo(f"  Steps completed: {skill_result.steps_completed}/{skill_result.total_steps}")
+
+        # Display result
+        if result.success:
+            typer.echo("\n✓ Execution complete")
+            # Show the last AI message
+            for msg in reversed(result.messages):
+                if hasattr(msg, "type") and msg.type == "ai" and msg.content:
+                    typer.echo(f"\n{msg.content}")
+                    break
+            if result.files_created:
+                typer.echo(f"\n  Files created: {result.files_created}")
+            if result.files_modified:
+                typer.echo(f"\n  Files modified: {result.files_modified}")
+        else:
+            typer.echo(f"\n✗ Execution failed: {result.error}", err=True)
+
+    asyncio.run(_execute())
+
+
+@app.command("list-agents")
+def list_agents():
+    """List available agents from the workspace."""
+    from src.runtime.loader import ArtifactLoader
+
+    loader = ArtifactLoader()
+    agents = loader.list_agents()
+
+    if not agents:
+        typer.echo("No agents found.")
+        return
+
+    typer.echo(f"\n🤖 Available Agents ({len(agents)}):\n")
+    for name in agents:
+        try:
+            agent = loader.load_agent(name)
+            desc = agent.description[:70] + "..." if len(agent.description) > 70 else agent.description
+            orch_marker = " [orchestrator]" if agent.is_orchestrator else ""
+            typer.echo(f"  {name:<30} {desc}{orch_marker}")
+        except Exception:
+            typer.echo(f"  {name:<30} (failed to load)")
+
+
+@app.command("list-skills")
+def list_skills():
+    """List available skills from the workspace."""
+    from src.runtime.loader import ArtifactLoader
+
+    loader = ArtifactLoader()
+    skills = loader.list_skills()
+
+    if not skills:
+        typer.echo("No skills found.")
+        return
+
+    typer.echo(f"\n📋 Available Skills ({len(skills)}):\n")
+    for name in skills:
+        try:
+            skill = loader.load_skill(name)
+            desc = skill.description[:70] + "..." if len(skill.description) > 70 else skill.description
+            typer.echo(f"  {name:<35} {desc}")
+        except Exception:
+            typer.echo(f"  {name:<35} (failed to load)")
+
+
+@app.command()
 def serve(
     host: str = typer.Option("0.0.0.0", help="Server host"),
     port: int = typer.Option(8765, help="Server port"),

@@ -1,0 +1,27 @@
+# Model Mapping — maps Kiro cloud model references to local equivalents
+#
+# Kiro agent configs reference cloud models (claude-opus-4.8, gpt-4o).
+# This file maps those to locally-available models by capability tier.
+#
+# Tiers:
+#   strong — best reasoning, architecture decisions, complex multi-step tasks
+#   medium — balanced performance for most tasks
+#   fast   — speed priority, simple scaffolding, boilerplate generation
+
+# Default model when no tier mapping matches
+default: llama3.1:8b
+
+# Tier → local model
+tiers:
+  strong: llama3.1:8b
+  medium: llama3.1:8b
+  fast: llama3.1:8b
+
+# Direct overrides (takes precedence over tier mapping)
+# Uncomment and customize when you have multiple models available:
+# overrides:
+#   claude-opus-4.8: qwen2.5:14b
+#   claude-sonnet-5: qwen2.5:14b
+#   claude-haiku-4.5: llama3.1:8b
+#   gpt-4o: qwen2.5:14b
+#   gpt-4o-mini: llama3.1:8b
