@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # useDebugValue Steering
 
 ## When to Use

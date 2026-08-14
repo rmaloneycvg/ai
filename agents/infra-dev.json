@@ -83,7 +83,9 @@
     "skill://../skills/general-debug.md",
     "file://Tiltfile",
     "file://docker-compose*.yml",
-    "file://k8s/*.yaml"
+    "file://k8s/*.yaml",
+    "file://../steering/orchestration/local-dev.md",
+    "file://../steering/security/policies.md"
   ],
   "hooks": {
     "agentSpawn": [

@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Next.js Stack Overview
 
 ## Base Stack Inheritance

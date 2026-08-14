@@ -12,6 +12,11 @@
       "command": "npx",
       "args": ["tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/io.ts"],
       "timeout": 10000
+    },
+    "rag": {
+      "command": "npx",
+      "args": ["tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/rag.ts"],
+      "timeout": 30000
     }
   },
   "tools": [
@@ -22,7 +27,8 @@
     "grep",
     "code",
     "@git",
-    "@io"
+    "@io",
+    "@rag"
   ],
   "allowedTools": [
     "read",
@@ -30,7 +36,9 @@
     "grep",
     "code",
     "@git/git_status",
-    "@io/read_json"
+    "@io/read_json",
+    "@rag/rag_search",
+    "@rag/rag_status"
   ],
   "toolsSettings": {
     "shell": {
@@ -52,8 +60,7 @@
   },
   "resources": [
     "skill://../skills/git-workflow.md",
-    "file://package.json",
-    "file://tsconfig.json"
+    "skill://../skills/mermaid-diagram.md"
   ],
   "hooks": {
     "agentSpawn": [

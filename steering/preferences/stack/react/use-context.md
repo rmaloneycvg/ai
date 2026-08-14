@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # useContext Steering
 
 > **Zustand is the default for global state.** useContext is the fallback for narrow, infrequently-updated shared data where adding a store is overkill.

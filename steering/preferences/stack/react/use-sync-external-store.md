@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # useSyncExternalStore Steering
 
 ## When to Use

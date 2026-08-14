@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # useImperativeHandle Steering
 
 ## When to Use

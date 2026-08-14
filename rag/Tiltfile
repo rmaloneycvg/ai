@@ -1,0 +1,45 @@
+# RAG Triple-Vector Store — Local Development
+# Usage: cd rag && tilt up
+#
+# Architecture:
+#   rag-db      — PostgreSQL 16 + pgvector (port 5433)
+#   rag-watcher — Daemon watching ../rag_steering/**/*.md for changes
+#                 Generates triple embeddings via Ollama (Windows Docker)
+#                 Vectors: folder (domain) + hierarchy (heading tree) + content (text)
+#
+# Prerequisites:
+#   - Ollama running on Windows with bge-m3 pulled
+#   - ollama pull bge-m3
+#
+# To add a doc: cp doc.md ../rag_steering/<domain>/
+
+docker_compose('./docker-compose.yml')
+
+# Check Ollama is reachable (manual trigger)
+local_resource(
+    'rag-ollama-check',
+    cmd='curl -sf ${OLLAMA_BASE_URL:-http://localhost:11434}/api/tags | python3 -c "import sys,json; tags=json.load(sys.stdin); models=[m[\"name\"] for m in tags.get(\"models\",[])]; print(f\"Models: {models}\"); assert any(\"bge\" in m for m in models), \"bge-m3 not found\""',
+    auto_init=True,
+    trigger_mode=TRIGGER_MODE_MANUAL,
+    labels=['health'],
+)
+
+# Force re-ingest all files (manual trigger)
+local_resource(
+    'rag-ingest-force',
+    cmd='cd .. && cd rag && uv run python ingest.py --force',
+    resource_deps=['rag-db'],
+    auto_init=False,
+    trigger_mode=TRIGGER_MODE_MANUAL,
+    labels=['tooling'],
+)
+
+# Status check (manual trigger)
+local_resource(
+    'rag-status',
+    cmd='cd .. && cd rag && uv run python search_cli.py --status',
+    resource_deps=['rag-db'],
+    auto_init=False,
+    trigger_mode=TRIGGER_MODE_MANUAL,
+    labels=['tooling'],
+)

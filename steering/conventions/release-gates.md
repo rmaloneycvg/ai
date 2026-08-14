@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Release Gates
 
 ## Why This Exists

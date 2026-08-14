@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # C# API Caching Patterns
 
 ## Why This Exists

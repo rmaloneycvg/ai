@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # SDLC Pipeline Orchestration
 
 ## Why This Exists

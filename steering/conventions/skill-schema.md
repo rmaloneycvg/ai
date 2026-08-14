@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Kiro Skill Schema & Patterns
 
 ## Why This Exists

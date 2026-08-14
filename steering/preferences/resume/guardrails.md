@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Resume & Cover Letter Guardrails
 
 ## Why This Exists

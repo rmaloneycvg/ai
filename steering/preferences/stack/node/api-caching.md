@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Node.js API Caching Patterns
 
 ## Why This Exists

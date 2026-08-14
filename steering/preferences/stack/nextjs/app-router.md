@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # App Router Steering
 
 ## Mandate

@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Server Components vs Client Components
 
 ## Default: Server Components

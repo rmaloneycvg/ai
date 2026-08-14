@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # React Router Hooks Steering
 
 > Hooks for navigation, params, and data loading in React Router v6+. Type-safe params with Zod. Prefetch data in loaders with TanStack Query.
