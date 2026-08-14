@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Custom Hooks Steering
 
 ## When to Extract a Custom Hook

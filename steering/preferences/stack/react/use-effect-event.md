@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # useEffectEvent Steering
 
 > **Status: Experimental (React Canary).** This API is not stable. Do not use in production code until it ships in a stable React release. Include this hook in new projects only if already on React Canary.

@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Data Patterns
 
 ## Overview: What Next.js Replaces

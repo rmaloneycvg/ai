@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # useReducer Steering
 
 ## When to Use useReducer

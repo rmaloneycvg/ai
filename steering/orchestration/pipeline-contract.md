@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Pipeline Contract
 
 ## Why This Exists

@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # useLayoutEffect Steering
 
 ## When to Use

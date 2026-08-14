@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Security Policies
 
 ## Why This Exists

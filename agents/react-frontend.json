@@ -62,10 +62,16 @@
     "skill://../skills/react-styling.md",
     "skill://../skills/react-testing.md",
     "skill://../skills/react-refactor.md",
+    "skill://../skills/mermaid-diagram.md",
     "file://package.json",
     "file://tsconfig.json",
     "file://tailwind.config.ts",
-    "file://components.json"
+    "file://components.json",
+    "file://../steering/preferences/stack/react/dependency-graph.md",
+    "file://../steering/preferences/stack/react/custom-hooks.md",
+    "file://../steering/preferences/stack/nextjs/overview.md",
+    "file://../steering/preferences/stack/nextjs/server-components.md",
+    "file://../steering/preferences/stack/nextjs/app-router.md"
   ],
   "hooks": {
     "agentSpawn": [

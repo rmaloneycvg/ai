@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # useOptimistic Steering
 
 ## When to Use

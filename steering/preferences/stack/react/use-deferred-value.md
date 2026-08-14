@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # useDeferredValue Steering
 
 ## When to Use

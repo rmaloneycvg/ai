@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # useTransition Steering
 
 ## When to Use

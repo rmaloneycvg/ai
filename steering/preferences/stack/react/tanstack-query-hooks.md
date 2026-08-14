@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # TanStack Query Hooks Steering
 
 > All server state lives in TanStack Query. Never duplicate it into Zustand or useState. Hooks are the interface; query key factories are the backbone.

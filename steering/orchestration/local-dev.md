@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Local Development Orchestration
 
 ## Steering Summary

@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # React Technology Stack — AI Agent Steering
 
 > Standard dependency choices, patterns, and conventions for all React projects. Follow prescriptively when generating code.
