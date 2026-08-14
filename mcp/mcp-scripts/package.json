@@ -13,6 +13,7 @@
     "dev:prometheus": "tsx servers/prometheus.ts",
     "dev:jaeger": "tsx servers/jaeger.ts",
     "dev:grafana": "tsx servers/grafana.ts",
+    "dev:rag": "tsx servers/rag.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },

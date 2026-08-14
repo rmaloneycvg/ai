@@ -1,0 +1,8 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+uv.lock
+
+# Docker volumes
+rag-data/
