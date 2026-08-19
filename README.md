@@ -24,6 +24,7 @@ ai/
 │       │   ├── react/
 │       │   │   ├── dependency-graph.md    # React stack choices (shadcn, Zustand, TQ, etc.)
 │       │   │   ├── custom-hooks.md        # Custom hook extraction patterns
+│       │   │   ├── legacy-react-component.md # Class component lifecycle reference
 │       │   │   ├── tanstack-query-hooks.md # TanStack Query hook patterns
 │       │   │   ├── react-router-hooks.md  # React Router v6+ hook patterns
 │       │   │   ├── use-callback.md        # useCallback steering
@@ -48,14 +49,24 @@ ai/
 │       │   │   └── middleware.md          # Auth, redirects, A/B testing at the edge
 │       │   ├── node/
 │       │   │   └── api-caching.md         # Layered caching (HTTP, Redis, in-memory)
-│       │   └── csharp/
-│       │       └── api-caching.md         # Response/output cache, IDistributedCache
+│       │   ├── csharp/
+│       │   │   ├── api-caching.md         # Response/output cache, IDistributedCache
+│       │   │   ├── dotnet-architecture-cheatsheet.md # .NET architecture patterns, CQRS, DDD, resilience
+│       │   │   ├── efcore-query-patterns.md  # EF Core query diagnostic framework & patterns
+│       │   │   ├── efcore-antipatterns.md    # EF Core anti-pattern catalog
+│       │   │   └── dapper-antipatterns.md    # Dapper anti-pattern catalog
+│       │   └── mssql/
+│       │       ├── mssql-cheatsheet.md    # SQL Server comprehensive patterns reference
+│       │       └── query-performance.md   # Query performance decision hierarchies & DMVs
 │       └── resume/
 │           └── guardrails.md              # Resume/cover letter generation guardrails
 ├── skills/                             # On-demand capability files (YAML frontmatter)
 │   ├── backend-cron-feature.md         # Cron job / scheduled task setup
 │   ├── backend-rest-api-feature.md     # REST API endpoint scaffolding
 │   ├── codility-prep.md               # Coding interview preparation
+│   ├── dapper-antipattern-refactor.md  # Refactor Dapper anti-patterns in C# code
+│   ├── efcore-antipattern-refactor.md  # Refactor EF Core anti-patterns in C# code
+│   ├── efcore-query-author.md          # Interactive EF Core query generation with diagnostics
 │   ├── general-debug.md               # Debugging workflow
 │   ├── general-deploy.md              # Deployment workflow
 │   ├── general-documentation.md       # README generation and maintenance
@@ -69,6 +80,8 @@ ai/
 │   ├── kiro-refactor-orchestration.md # Orchestration pipeline editing
 │   ├── kiro-refactor-skill.md         # Skill refactoring operations
 │   ├── kiro-workflow-guidelines.md    # AI workspace architecture rules
+│   ├── mermaid-diagram.md             # Mermaid diagram authoring (all diagram types)
+│   ├── mssql-query-performance.md     # SQL Server query performance analysis
 │   ├── react-architecture.md          # Pipeline: UI architecture decisions
 │   ├── react-components.md            # React component generation
 │   ├── react-hooks-optimization.md    # Audit React hooks, extract custom hooks
@@ -102,6 +115,7 @@ ai/
 │   ├── sdlc-tool-jira.md             # Jira-specific field mapping and import guidance
 │   └── sdlc-tool-linear.md           # Linear-specific field mapping and import guidance
 ├── agents/                             # Agent persona configs (JSON)
+│   ├── dotnet-dev.json                 # .NET backend: EF Core, Dapper, CQRS, SQL Server
 │   ├── general-dev.json                # Full-stack: all steering, broad tool access
 │   ├── infra-dev.json                  # Infrastructure/DevOps focused
 │   ├── react-architecture.json         # Sub-agent: UI architecture decisions (opus)
@@ -116,6 +130,18 @@ ai/
 │   ├── resume-experience-parser.json   # Extract experience from .docx resumes
 │   ├── resume-job-scorer.json          # Score resume fit against a job description
 │   └── sdlc-lead.json                  # SDLC planning, architecture, sprints, release, metrics
+├── rag/                                # Semantic search over steering documents
+│   ├── chunker.py                     # Markdown → heading-aware chunks
+│   ├── embedder.py                    # Ollama embedding via nomic-embed-text
+│   ├── ingest.py                      # Watch steering/ and ingest into pgvector
+│   ├── search_cli.py                  # CLI for testing triple-vector search
+│   ├── init.sql                       # pgvector schema (chunks, embeddings)
+│   ├── docker-compose.yml             # PostgreSQL + pgvector container
+│   ├── Tiltfile                       # Local dev orchestration for RAG stack
+│   ├── Dockerfile.watcher             # File watcher container for auto-ingest
+│   ├── setup.sh                       # One-command RAG system setup
+│   ├── pyproject.toml                 # Python dependencies (uv-managed)
+│   └── test_chunker.py               # Tests for chunking logic
 ├── mcp/                                # MCP server definitions + tool scripts
 │   └── mcp-scripts/
 │       ├── servers/                    # MCP server entry points
@@ -123,7 +149,8 @@ ai/
 │       │   ├── io.ts                  # read_json, write_json tools
 │       │   ├── jira.ts               # Jira Cloud API (issues, sprints, metrics, links)
 │       │   ├── linear.ts             # Linear GraphQL API (issues, cycles, projects, docs)
-│       │   └── postgres.ts            # postgres_query, postgres_seed tools
+│       │   ├── postgres.ts            # postgres_query, postgres_seed tools
+│       │   └── rag.ts                 # rag_search, rag_status (semantic search over steering)
 │       ├── lib/
 │       │   └── exec-python.ts         # Python execution helper
 │       ├── git/status.ts              # Parsed git status implementation
@@ -203,6 +230,7 @@ Each agent is a focused persona with specific tool access, steering context, and
 | Agent | Command | Purpose | Tools |
 |-------|---------|---------|-------|
 | `general-dev` | `kiro --agent dev` | Full-stack development. Broad access, asks before destructive ops. Suggests specialized agents when relevant. | read, write, shell, glob, grep, code, git, io |
+| `dotnet-dev` | `kiro --agent dotnet` | .NET 9+ backend: EF Core, Dapper, CQRS, Minimal APIs, SQL Server query performance, anti-pattern refactoring. Shell access for dotnet CLI. | read, write, shell, glob, grep, code, git, io, rag |
 | `react-frontend` | `kiro --agent react-frontend` | React/Next.js development. No shell or database access. Writes restricted to `src/`. | read, write, glob, grep, code |
 | `infra-dev` | `kiro --agent infra` | Terraform, Docker, Kubernetes, Tilt, nginx. Shell access for infra commands. Writes restricted to infra files. | read, write, shell, glob, grep, git, io, postgres |
 | `react-orchestrator` | `kiro --agent react-orchestrator` | Multi-agent pipeline for frontend work. Classifies intent and delegates to sub-agents (architecture → scaffold → styling → testing). Never writes code directly. | read, glob, grep, code, subagent |
@@ -242,6 +270,11 @@ Skills are on-demand capabilities loaded into agent context when triggered by us
 | `react-testing` | "Write tests for X" | Pipeline stage: Vitest + Playwright + Storybook story creation |
 | `react-refactor` | "Refactor this" / "extract" | Pipeline stage: component/hook extraction, state migration |
 | `codility-prep` | "Prepare for coding interview" | Structured practice: problem analysis, optimal solution, edge cases, complexity |
+| `efcore-antipattern-refactor` | "Fix EF Core anti-patterns" | Detects and refactors N+1, missing projections, DbContext misuse, tracking overhead |
+| `dapper-antipattern-refactor` | "Fix Dapper anti-patterns" | Detects and refactors SQL injection, connection leaks, N+1 loops, missing cancellation |
+| `efcore-query-author` | "Write an EF Core query" | Interactive diagnostic → optimal pattern selection → code generation |
+| `mssql-query-performance` | "Analyze SQL performance" | Anti-pattern detection, index recommendations, DMV diagnostic queries |
+| `mermaid-diagram` | "Create a diagram" | Authors Mermaid diagrams (flowchart, sequence, state, ER, class, Gantt) with rendering validation |
 
 ### General Workflows
 
@@ -314,6 +347,7 @@ MCP (Model Context Protocol) tools give agents structured access to external sys
 | **jira** (`servers/jira.ts`) | `jira_list_projects`, `jira_search_issues`, `jira_get_issue`, `jira_create_issue`, `jira_create_issues_bulk`, `jira_list_sprints`, `jira_get_sprint_metrics`, `jira_create_sprint`, `jira_create_link`, `jira_transition_issue`, `jira_add_comment` | Jira Cloud REST API: issue CRUD, sprint management, metrics extraction, dependency linking |
 | **linear** (`servers/linear.ts`) | `linear_list_teams`, `linear_list_issues`, `linear_get_issue`, `linear_create_issue`, `linear_create_issues_bulk`, `linear_list_projects`, `linear_create_project`, `linear_list_cycles`, `linear_get_cycle_metrics`, `linear_create_cycle`, `linear_create_document`, `linear_create_relation` | Linear GraphQL API: issue CRUD, project/cycle management, metrics, documents, relations |
 | **postgres** (`servers/postgres.ts`) | `postgres_query`, `postgres_seed` | Parameterized read-only queries; run SQL seed files against local dev DB |
+| **rag** (`servers/rag.ts`) | `rag_search`, `rag_status` | Triple-vector semantic search over steering documents (folder 30% + heading hierarchy 30% + content 40%). Session-aware deduplication. |
 | **prometheus** (`servers/prometheus.ts`) | `prometheus_query`, `prometheus_range_query`, `prometheus_metrics`, `prometheus_label_values`, `prometheus_alerts`, `prometheus_rules`, `prometheus_kiro_usage`, `prometheus_kiro_performance`, `prometheus_kiro_models`, `prometheus_kiro_context`, `prometheus_kiro_security`, `prometheus_error_rates`, `prometheus_release_compare` | Prometheus PromQL queries, metric discovery, alerting status, Kiro feature/model/context/security telemetry |
 | **jaeger** (`servers/jaeger.ts`) | `jaeger_services`, `jaeger_operations`, `jaeger_search_traces`, `jaeger_get_trace`, `jaeger_dependencies`, `jaeger_analyze_bottlenecks`, `jaeger_kiro_slow_sessions`, `jaeger_kiro_by_command`, `jaeger_kiro_by_model`, `jaeger_kiro_security_traces`, `jaeger_kiro_session_trace` | Jaeger distributed tracing: trace search, bottleneck analysis, Kiro session/model/security trace queries |
 | **grafana** (`servers/grafana.ts`) | `grafana_search_dashboards`, `grafana_get_dashboard`, `grafana_dashboard_versions`, `grafana_query`, `grafana_datasources`, `grafana_annotations`, `grafana_create_annotation`, `grafana_release_report`, `grafana_kiro_report`, `grafana_top10_report`, `grafana_create_ticket_from_telemetry`, `grafana_trigger_self_healing`, `grafana_kiro_failure_report` | Grafana dashboards, release comparison reports, Kiro telemetry reports, automatic ticket generation from alerts, self-healing triggers with audit trail |
@@ -432,10 +466,11 @@ Steering docs are loaded into agent context at startup. They define how the agen
 
 | Directory | Coverage |
 |-----------|----------|
-| `react/` | Dependency graph (shadcn, Zustand, TanStack Query, RHF+Zod, AG Grid, Recharts), every React hook with when/how/anti-patterns, custom hook extraction |
+| `react/` | Dependency graph (shadcn, Zustand, TanStack Query, RHF+Zod, AG Grid, Recharts), every React hook with when/how/anti-patterns, custom hook extraction, legacy class component lifecycle reference |
 | `nextjs/` | App Router (file-based routing, layouts, parallel routes), Server Components vs Client, data patterns (ISR, Server Actions, Route Handlers), middleware (auth, geo, A/B) |
 | `node/` | Layered API caching: HTTP headers → nginx proxy_cache → Redis → in-memory LRU → request dedup → stampede prevention |
-| `csharp/` | Response caching, output caching (.NET 7+), IDistributedCache (Redis), IMemoryCache, stampede prevention with SemaphoreSlim |
+| `csharp/` | .NET architecture cheatsheet (CQRS, DDD, resilience, serverless, clean arch, decorators, CORS/security), EF Core query diagnostic framework & patterns, EF Core anti-pattern catalog, Dapper anti-pattern catalog, response/output caching, IDistributedCache (Redis), IMemoryCache, stampede prevention |
+| `mssql/` | SQL Server comprehensive patterns (indexing, APPLY vs JOIN, query hints, window functions, CTEs, execution plans, locking, anti-patterns, troubleshooting), query performance decision hierarchies & DMV diagnostics |
 | `resume/` | ATS formatting rules, section order, keyword optimization, cover letter structure, truthfulness constraints, voice/personality |
 
 ---
@@ -476,6 +511,7 @@ Changes to any file here are reflected immediately in all linked projects.
 
 ```bash
 kiro --agent dev                 # Full-stack, broad access
+kiro --agent dotnet              # .NET 9+ backend (EF Core, Dapper, CQRS, SQL Server)
 kiro --agent react-frontend      # React/Next.js scoped (no shell)
 kiro --agent infra               # Terraform, Docker, k8s, Tilt
 kiro --agent react-orchestrator  # Multi-agent frontend pipeline
