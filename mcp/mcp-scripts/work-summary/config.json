@@ -1,0 +1,19 @@
+{
+  "workspacePaths": ["~/workspace"],
+  "author": {
+    "name": "Ryan Maloney",
+    "email": "rsmaloney@gmail.com"
+  },
+  "sessionGapMinutes": 30,
+  "outputDir": "~/workspace/work-summaries",
+  "collectors": {
+    "git": { "enabled": true },
+    "kiro": { "enabled": true },
+    "chrome": { "enabled": true },
+    "teams": { "enabled": false, "config": { "clientId": "", "tenantId": "", "clientSecret": "" } },
+    "google-meet": { "enabled": false, "config": { "credentialsPath": "", "calendarId": "primary" } },
+    "zoom": { "enabled": false, "config": { "accountId": "", "clientId": "", "clientSecret": "" } },
+    "slack": { "enabled": false, "config": { "botToken": "", "userToken": "" } },
+    "outlook": { "enabled": false, "config": { "clientId": "", "tenantId": "", "clientSecret": "" } }
+  }
+}
