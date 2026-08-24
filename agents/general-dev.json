@@ -1,68 +1,93 @@
 {
   "name": "general-dev",
- "description": "General-purpose full-stack development agent. Has broad tool access but requires approval for destructive operations (shell commands, database writes).",
+  "description": "General-purpose full-stack development agent. Has broad tool access but requires approval for destructive operations (shell commands, database writes).",
   "prompt": "You are a full-stack development assistant. Prefer non-destructive operations. Ensure you step through problems logically. If you need to perform state-modifying shell commands (like git resets or database writes), verify the command with the user first. Suggest available specialized agents when future prompts are related to their domains.",
-  "mcpServers": {
-    "git": {
-      "command": "npx",
-      "args": [
-        "tsx",
-        "~/workspace/ai/mcp/mcp-scripts/servers/git.ts"
-      ],
-      "timeout": 30000
-    }
-  },
   "tools": [
-    "read",
-    "shell",
-    "write",
+    "file_search",
     "glob",
     "grep",
-    "file_search",
-    "web_search"
-  ],  
+    "read",
+    "shell",
+    "web",
+    "web_search",
+    "write"
+  ],
   "permissions": {
     "rules": [
-      { 
-        "capability": "shell", 
-        "match": ["rm -rf*", "sudo *"], 
-        "effect": "deny" 
+      {
+        "capability": "shell",
+        "match": [
+          "rm -rf*",
+          "sudo *"
+        ],
+        "effect": "deny"
       },
-      { 
-        "capability": "shell", 
-        "match": ["git status", "git diff", "git log", "git branch"], 
-        "effect": "allow" 
+      {
+        "capability": "shell",
+        "match": [
+          "git status",
+          "git diff",
+          "git log",
+          "git branch"
+        ],
+        "effect": "allow"
       },
-      { 
-        "capability": "shell", 
-        "match": ["git *", "npm *", "npx *", "tilt *"], 
-        "exclude": ["git push*", "git reset*", "git clean*", "npm publish*"],
-        "effect": "ask" 
+      {
+        "capability": "shell",
+        "match": [
+          "git *",
+          "npm *",
+          "npx *",
+          "tilt *"
+        ],
+        "exclude": [
+          "git push*",
+          "git reset*",
+          "git clean*",
+          "npm publish*"
+        ],
+        "effect": "ask"
       },
-      { 
-        "capability": "shell", 
-        "match": ["grep *", "cat *", "ls *", "find *"], 
-        "effect": "allow" 
+      {
+        "capability": "shell",
+        "match": [
+          "grep *",
+          "cat *",
+          "ls *",
+          "find *"
+        ],
+        "effect": "allow"
       },
-      { 
-        "capability": "fs_read", 
-        "match": ["**/.env*", "secrets/**", "**/*.pem", "**/*.key"], 
-        "effect": "deny" 
+      {
+        "capability": "fs_read",
+        "match": [
+          "**/.env*",
+          "secrets/**",
+          "**/*.pem",
+          "**/*.key"
+        ],
+        "effect": "deny"
       },
-      { 
-        "capability": "fs_write", 
-        "match": ["**/*.lock"], 
-        "effect": "deny" 
+      {
+        "capability": "fs_write",
+        "match": [
+          "**/*.lock"
+        ],
+        "effect": "deny"
       },
-      { 
-        "capability": "web_fetch", 
-        "match": ["*"], 
-        "effect": "allow" 
+      {
+        "capability": "web_fetch",
+        "match": [
+          "*"
+        ],
+        "effect": "allow"
       },
-      { 
-        "capability": "file_search", 
-        "match": ["*"], 
-        "effect": "allow" 
+      {
+        "capability": "file_search",
+        "match": [
+          "*"
+        ],
+        "effect": "allow"
       }
     ]
   },
