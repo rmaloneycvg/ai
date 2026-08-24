@@ -91,7 +91,7 @@ except ImportError:
     sys.exit(1)
 
 
-TEMPLATE_DIR = Path(__file__).resolve().parent.parent.parent / "config" / "resume" / "templates"
+TEMPLATE_DIR = Path.home() / "workspace" / "resume" / "templates"
 
 # ATS formatting constants
 FONT_NAME = "Lato"

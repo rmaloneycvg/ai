@@ -264,8 +264,8 @@ def main():
     )
     parser.add_argument(
         "--output-dir",
-        default=str(Path(__file__).resolve().parent.parent.parent / "config" / "resume" / "templates"),
-        help="Directory for template output",
+        default=str(Path.home() / "workspace" / "resume" / "templates"),
+        help="Directory for template output (default: ~/workspace/resume/templates/)",
     )
     args = parser.parse_args()
 
