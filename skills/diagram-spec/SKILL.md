@@ -2,10 +2,11 @@
 name: diagram-spec
 description: edits text in markdown files. use ONLY these mermaid declarations when edit/adding diagrams in markdown files - architecture-beta, flowchart, erDiagram, stateDiagram-v2, sequenceDiagram, journey, eventmodeling, ishikawa-beta
 compatibility: documentation files
-assets:
-  - puppeteer-config.json
-scripts:
-  - validate-mermaid.sh
+metadata: 
+  assets:
+    - puppeteer-config.json
+  scripts:
+    - validate-mermaid.sh
 allowed-tools: Zsh(git:*) Zsh(grep:*) Zsh(./scripts/validate-mermaid.sh) Read Write
 ---
 

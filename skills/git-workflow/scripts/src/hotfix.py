@@ -165,9 +165,16 @@ def _create_pr(branch_name: str) -> None:
     console.print(f"  Head: {branch_name}")
 
     if click.confirm("\nCreate this PR?", default=True):
-        result = _run(["gh", "pr", "create", "--title", pr_title, "--base", "prod", "--fill"])
+        import subprocess
+        result = subprocess.run(
+            ["gh", "pr", "create", "--title", pr_title, "--base", "prod", "--fill"],
+            capture_output=True,
+            text=True,
+        )
         if result.returncode == 0:
             console.print(f"✅ PR created successfully.")
+            if result.stdout.strip():
+                console.print(f"  {result.stdout.strip()}")
         else:
             console.print(f"❌ Failed to create PR: {result.stderr}")
 

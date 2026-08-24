@@ -3,8 +3,8 @@
 # Idempotent: safe to re-run at any time.
 #
 # Usage:
-#   ./scripts/git/setup.sh              # From repo root
-#   ./setup.sh                          # From scripts/git/
+#   ./scripts/setup.sh              # From skill root
+#   cd scripts && ./setup.sh        # From scripts/
 #
 # What it does:
 #   1. Checks prerequisites (git, python, uv)
@@ -30,7 +30,8 @@ error() { echo -e "${RED}❌ $1${NC}"; }
 
 # Find script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-HOOKS_DIR="$SCRIPT_DIR/hooks"
+SKILL_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+HOOKS_DIR="$SKILL_DIR/hooks"
 
 # Find repo root
 REPO_ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null || true)"

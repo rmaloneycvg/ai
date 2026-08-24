@@ -2,7 +2,7 @@
 
 import pytest
 
-from src.lib.conventional import validate, parse, rewrite_message, is_hotfix_allowed, VALID_TYPES
+from src.lib.conventional import validate, parse, rewrite_message, is_hotfix_allowed, VALID_TYPES, MAX_HEADER_LENGTH
 
 
 @pytest.mark.unit
@@ -52,6 +52,26 @@ class TestValidate:
 
     def test_valid_hotfix_type(self):
         assert validate("hotfix: fix payment timeout") is True
+
+    def test_invalid_header_too_long(self):
+        long_desc = "a" * 60  # type + colon + space + 60 = 67, still valid
+        assert validate(f"feat: {long_desc}") is True
+        # Over 72 chars total
+        too_long = "a" * 70
+        assert validate(f"feat: {too_long}") is False
+
+    def test_exactly_72_chars_valid(self):
+        # "feat: " = 6 chars, so description can be 66 chars
+        desc = "a" * 66
+        msg = f"feat: {desc}"
+        assert len(msg) == 72
+        assert validate(msg) is True
+
+    def test_73_chars_invalid(self):
+        desc = "a" * 67
+        msg = f"feat: {desc}"
+        assert len(msg) == 73
+        assert validate(msg) is False
 
 
 @pytest.mark.unit

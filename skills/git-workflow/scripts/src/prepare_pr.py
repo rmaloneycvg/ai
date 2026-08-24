@@ -82,18 +82,48 @@ def main(target: str, dry_run: bool, force: bool) -> None:
         console.print(f"❌ Could not find merge base with '{target}'.")
         sys.exit(1)
 
-    # Soft reset to merge base (keeps changes staged)
-    result = _run(["reset", "--soft", merge_base])
+    # Collect the file paths belonging to each type group BEFORE resetting
+    # We need to know which files each commit touched
+    group_files: dict[str, set[str]] = {}
+    for commit_type, group_commits in type_groups.items():
+        files: set[str] = set()
+        for c in group_commits:
+            # Get files changed in this commit
+            diff_result = _run(["diff-tree", "--no-commit-id", "--name-only", "-r", c.sha])
+            if diff_result.returncode == 0:
+                for f in diff_result.stdout.strip().splitlines():
+                    if f:
+                        files.add(f)
+        group_files[commit_type] = files
+
+    # Soft reset to merge base (keeps changes in working tree but unstaged)
+    result = _run(["reset", merge_base])
     if result.returncode != 0:
         console.print(f"❌ Reset failed: {result.stderr}")
         sys.exit(1)
 
-    # Recommit grouped by type
+    # Recommit grouped by type, staging only relevant files
     new_commits = []
     for commit_type, group_commits in sorted(
         type_groups.items(),
         key=lambda x: list(VALID_TYPES).index(x[0]) if x[0] in VALID_TYPES else 99,
     ):
+        files = group_files.get(commit_type, set())
+        if not files:
+            continue
+
+        # Stage only the files belonging to this type group
+        # Filter to files that actually exist (could have been deleted)
+        existing_files = [f for f in files if _file_has_changes(f)]
+        if not existing_files:
+            continue
+
+        stage_result = _run(["add"] + list(existing_files))
+        if stage_result.returncode != 0:
+            # Try adding one by one (some may be deleted)
+            for f in existing_files:
+                _run(["add", f])
+
         # Compose a new message for this group
         messages = [c.message for c in group_commits]
         new_message = _compose_group_message(commit_type, messages)
@@ -105,14 +135,13 @@ def main(target: str, dry_run: bool, force: bool) -> None:
             if edited.strip():
                 new_message = edited.strip()
 
-        # Commit (all changes are staged from the soft reset)
-        result = _run(["commit", "-m", new_message, "--allow-empty"])
+        # Commit staged files
+        result = _run(["commit", "-m", new_message])
         if result.returncode != 0:
-            # If nothing to commit for this group (all changes in other groups), skip
             if "nothing to commit" in result.stdout + result.stderr:
                 continue
             console.print(f"  ❌ Commit failed: {result.stderr}")
-            console.print("  Run 'git rebase --abort' or 'git reflog' to recover.")
+            console.print("  Run 'git reflog' to recover.")
             sys.exit(1)
 
         new_commits.append(new_message)
@@ -196,6 +225,13 @@ def _get_merge_base(target: str) -> str | None:
     if result.returncode != 0:
         return None
     return result.stdout.strip()
+
+
+def _file_has_changes(file_path: str) -> bool:
+    """Check if a file has changes (modified, added, or deleted) relative to HEAD."""
+    # Check if file is untracked or modified
+    result = _run(["status", "--porcelain", "--", file_path])
+    return result.returncode == 0 and bool(result.stdout.strip())
 
 
 def _display_commits(commits: list[CommitInfo]) -> None:

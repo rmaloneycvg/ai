@@ -25,6 +25,10 @@ COMMIT_PATTERN = re.compile(
 )
 
 
+# Maximum header length
+MAX_HEADER_LENGTH = 72
+
+
 def validate(message: str) -> bool:
     """Validate a commit message against conventional commit format.
 
@@ -35,6 +39,8 @@ def validate(message: str) -> bool:
         True if the message conforms to conventional commit format.
     """
     subject = message.split("\n", 1)[0].strip()
+    if len(subject) > MAX_HEADER_LENGTH:
+        return False
     return COMMIT_PATTERN.match(subject) is not None
 
 
@@ -151,8 +157,11 @@ if __name__ == "__main__":
         if validate(msg):
             sys.exit(0)
         else:
+            subject = msg.split("\n", 1)[0].strip()
             suggestion = rewrite_message(msg)
-            print(f"❌ Invalid commit message format: '{msg}'")
+            print(f"❌ Invalid commit message format: '{subject}'")
+            if len(subject) > MAX_HEADER_LENGTH:
+                print(f"   Header too long: {len(subject)} chars (max {MAX_HEADER_LENGTH})")
             print(f"   Expected: <type>(<scope>): <description>")
             print(f"   Valid types: {', '.join(sorted(VALID_TYPES))}")
             if suggestion:

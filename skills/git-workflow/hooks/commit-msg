@@ -1,25 +1,20 @@
 #!/bin/bash
 # Git hook: commit-msg
 # Validates commit messages against conventional commit format.
-# Installed by scripts/git/setup.sh as a symlink into .git/hooks/
+# Installed by setup.sh as a symlink into .git/hooks/
 #
 # This is a thin shim that delegates to the Python validation module.
 
-SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
-GIT_SCRIPTS_DIR="$(cd "$SCRIPT_DIR/../../scripts/git" 2>/dev/null && pwd)"
+# Resolve the real location of this script (follows symlinks)
+HOOK_DIR="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
 
-# Try to find the scripts/git directory
-if [ -z "$GIT_SCRIPTS_DIR" ] || [ ! -d "$GIT_SCRIPTS_DIR" ]; then
-    # Fall back to searching from repo root
-    REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
-    if [ -n "$REPO_ROOT" ]; then
-        GIT_SCRIPTS_DIR="$REPO_ROOT/scripts/git"
-    fi
-fi
+# scripts/ is a sibling of hooks/ in the skill directory
+SKILL_DIR="$(cd "$HOOK_DIR/.." && pwd)"
+GIT_SCRIPTS_DIR="$SKILL_DIR/scripts"
 
 if [ ! -d "$GIT_SCRIPTS_DIR" ]; then
     echo "⚠️  git-workflow scripts not found. Skipping commit-msg validation."
-    echo "   Run setup.sh to configure: scripts/git/setup.sh"
+    echo "   Expected at: $GIT_SCRIPTS_DIR"
     exit 0
 fi
 

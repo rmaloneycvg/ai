@@ -1,6 +1,16 @@
 ---
 name: git-workflow
 description: Use when performing Git operations following the team's branching strategy — creating branches, making conventional commits, preparing PRs with squash/rebase, executing hotfix flows, or managing submodule versioning in microservice monorepos. NOT for deploying (use deploy) or CI pipeline configuration files (use the ci type in conventional commits directly).
+compatibility: git repositories with conventional commits
+metadata:
+  scripts:
+    - scripts/setup.sh
+  assets:
+    - scripts/pyproject.toml
+    - scripts/uv.lock
+    - hooks/commit-msg
+    - hooks/pre-push
+allowed-tools: Zsh(git:*) Zsh(uv:*) Zsh(gh:*) Zsh(./scripts/setup.sh) Read Write
 ---
 
 # Git Workflow
@@ -11,7 +21,7 @@ Act as a senior platform engineer specializing in Git workflow automation. Be co
 
 ## Environment Scope
 
-**write+execute** — Runs Python scripts from `scripts/git/` that execute git commands (commit, branch, rebase, cherry-pick). Writes no application code. May force-push after explicit user approval. Lists all destructive commands before execution.
+**write+execute** — Runs Python scripts from `scripts/` that execute git commands (commit, branch, rebase, cherry-pick). Writes no application code. May force-push after explicit user approval. Lists all destructive commands before execution.
 
 ## Workflow
 
@@ -23,7 +33,7 @@ Act as a senior platform engineer specializing in Git workflow automation. Be co
    - Merging a PR → `uv run git-merge-pr`
    - Hotfix workflow → `uv run git-hotfix`
    - Promoting between environments → `uv run git-promote`
-3. **Validate Prerequisites** — Ensure `scripts/git/` is set up (`setup.sh` has been run). Check branch naming matches conventions. If branch name is non-conforming, prompt user to rename or provide ticket/type info.
+3. **Validate Prerequisites** — Ensure `scripts/` is set up (`setup.sh` has been run). Check branch naming matches conventions. If branch name is non-conforming, prompt user to rename or provide ticket/type info.
 4. **Execute Script** — Run the selected script with appropriate arguments. Present interactive prompts for confirmation (change grouping, commit messages, squash targets).
 5. **Verify** — Confirm the operation completed: check `git log`, branch state, and commit message format. If verification fails, enter failure recovery.
 6. **Report** — Summarize what was done: commits created, branches modified, PR title suggested.
@@ -46,7 +56,7 @@ If user cancels mid-operation or result is unwanted:
 
 ## Standard Scripts Reference
 
-All scripts live in `scripts/git/` and are run via `uv run <entry-point>`:
+All scripts live in `scripts/` and are run via `uv run <entry-point>`:
 
 | Command | Script | Purpose |
 |---------|--------|---------|
@@ -132,24 +142,24 @@ Valid types: `feat`, `fix`, `chore`, `perf`, `docs`, `build`, `revert`, `style`,
 
 ## Guardrails
 
-- NEVER force-push without explicit user confirmation and showing what will be overwritten
 - NEVER commit directly to `prod`, `staging`, or `dev` — always use feature branches or hotfix branches
 - NEVER skip commit-msg hook validation — if hook rejects, fix the message
 - NEVER use `hotfix:` type on non-hotfix branches
-- NEVER squash/rebase commits that have already been pushed to a shared branch without user approval
-- NEVER rebase a branch that other developers have pulled — use merge for shared branches
 - NEVER proceed with a merge if the branch has not been rebased onto its target
 - NEVER create a branch without validating the naming convention first
 - NEVER run destructive git operations (reset --hard, clean -f, branch -D) without listing what will be lost
-- NEVER rebase against a diverged target without squashing local WIP commits first
-- NEVER run `git commit` during rebase conflict resolution — only `git add` + `git rebase --continue`
-- ALWAYS use `--force-with-lease` instead of `--force` when force-pushing (prevents overwriting others' work)
-- ALWAYS enable `git rerere` in project setup for rebase conflict reuse
+- ALWAYS use `--force-with-lease` instead of `--force` when force-pushing
+- ALWAYS confirm with user before any force-push or history-rewriting operation
 
 ## References
 
-- `steering/conventions/git-workflow.md` — Full branching strategy, conventional commit rules, heuristic mapping, squash/rebase procedures
-- `scripts/git/PLAN.md` — Implementation plan and task breakdown for the Python scripts
+For detailed procedures on specific workflows, read the corresponding reference file before acting:
+
+* For submodule version bumps and detached HEAD recovery: Read `references/submodule-strategy.md`
+* For PR body formatting and description sections: Read `references/pr-template.md`
+* For accepted commit scopes and validation rules: Read `references/commitlint-config.md`
+* For backing out merged commits on shared branches: Read `references/revert-workflow.md`
+* For script implementation details and task breakdown: Read `scripts/PLAN.md`
 
 ## Precedence
 
