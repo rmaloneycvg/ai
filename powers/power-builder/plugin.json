@@ -1,0 +1,13 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "power-builder",
+  "version": "1.0.0",
+  "description": "Create new Kiro Powers using the Agent Plugins specification, or migrate existing POWER.md-based powers to the agent-plugins standard.",
+  "author": {
+    "name": "Kiro Team",
+    "url":"https://kiro.dev"
+  },
+  "keywords": ["kiro power", "power builder", "agent plugins", "plugin", "migrate power", "create power"],
+  "license": "MIT",
+  "repository": "https://github.com/kirodotdev/powers"
+}

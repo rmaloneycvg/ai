@@ -1,0 +1,29 @@
+#!/bin/bash
+# Git hook: pre-push
+# Validates branch naming conventions before pushing.
+# When TICKET_SYSTEM_URL is set: blocks non-conforming branches.
+# When not set: warns but allows the push.
+#
+# Installed by setup.sh as a symlink into .git/hooks/
+
+# Resolve the real location of this script (follows symlinks)
+HOOK_DIR="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
+
+# scripts/ is a sibling of hooks/ in the skill directory
+SKILL_DIR="$(cd "$HOOK_DIR/.." && pwd)"
+GIT_SCRIPTS_DIR="$SKILL_DIR/scripts"
+
+if [ ! -d "$GIT_SCRIPTS_DIR" ]; then
+    echo "⚠️  git-workflow scripts not found. Skipping pre-push validation."
+    echo "   Expected at: $GIT_SCRIPTS_DIR"
+    exit 0
+fi
+
+# Run the Python validator
+cd "$GIT_SCRIPTS_DIR" || exit 0
+
+if command -v uv &>/dev/null; then
+    uv run python -m src.lib.ticket validate-branch
+else
+    python -m src.lib.ticket validate-branch
+fi

@@ -14,14 +14,17 @@
     "dev:jaeger": "tsx servers/jaeger.ts",
     "dev:grafana": "tsx servers/grafana.ts",
     "dev:rag": "tsx servers/rag.ts",
+    "dev:work-summary": "tsx servers/work-summary.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",
+    "sql.js": "^1.11.0",
     "zod": "^3.25.36"
   },
   "devDependencies": {
+    "@types/sql.js": "^1.4.9",
     "@types/node": "^22.0.0",
     "tsx": "^4.16.0",
     "typescript": "^5.5.0",

@@ -1,0 +1,31 @@
+# .NET build output — applies to every project at any depth
+**/bin/
+**/obj/
+
+# EF Core generated migrations (adjust/remove if you DO want these in context)
+**/Migrations/**/*.Designer.cs
+**/*.Designer.cs
+
+# Auto-generated source
+**/*.g.cs
+**/*.g.i.cs
+**/AssemblyInfo.cs
+**/GlobalAssemblyInfo.cs
+
+# Test results / coverage
+**/TestResults/
+**/coverage/
+
+# NuGet
+**/packages/
+**/*.nupkg
+
+# Node (in case any project has a frontend)
+**/node_modules/
+**/dist/
+**/build/
+
+# IDE / OS noise
+**/.vs/
+**/.idea/
+**/.DS_Store

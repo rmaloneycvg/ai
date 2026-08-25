@@ -1,81 +1,98 @@
 {
   "name": "general-dev",
-  "description": "General-purpose full-stack development agent. Has broad tool access but requires approval for destructive operations (shell commands, database writes). ",
-  "prompt": "You are a full-stack development assistant. Prefer non-destructive operations. Ask before running shell commands that modify state, write to databases, or alter git history. suggest available agents when there is support and future prompts are related before doing work.",
-  "mcpServers": {
-    "git": {
-      "command": "npx",
-      "args": ["tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/git.ts"],
-      "timeout": 30000
-    },
-    "io": {
-      "command": "npx",
-      "args": ["tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/io.ts"],
-      "timeout": 10000
-    },
-    "rag": {
-      "command": "npx",
-      "args": ["tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/rag.ts"],
-      "timeout": 30000
-    }
-  },
+  "description": "General-purpose full-stack development agent. Has broad tool access but requires approval for destructive operations (shell commands, database writes).",
+  "prompt": "You are a full-stack development assistant. Prefer non-destructive operations. Ensure you step through problems logically. If you need to perform state-modifying shell commands (like git resets or database writes), verify the command with the user first. Suggest available specialized agents when future prompts are related to their domains.",
   "tools": [
+    "file_search",
+    "glob",
+    "grep",
     "read",
-    "write",
     "shell",
-    "glob",
-    "grep",
-    "code",
-    "@git",
-    "@io",
-    "@rag"
+    "web",
+    "web_search",
+    "write"
   ],
-  "allowedTools": [
-    "read",
-    "glob",
-    "grep",
-    "code",
-    "@git/git_status",
-    "@io/read_json",
-    "@rag/rag_search",
-    "@rag/rag_status"
-  ],
-  "toolsSettings": {
-    "shell": {
-      "allowedCommands": [
-        "npm *",
-        "npx *",
-        "node *",
-        "tilt *",
-        "docker *",
-        "kubectl *",
-        "terraform *",
-        "git *",
-        "cat *",
-        "ls *",
-        "find *",
-        "grep *"
-      ]
-    }
+  "permissions": {
+    "rules": [
+      {
+        "capability": "shell",
+        "match": [
+          "rm -rf*",
+          "sudo *"
+        ],
+        "effect": "deny"
+      },
+      {
+        "capability": "shell",
+        "match": [
+          "git status",
+          "git diff",
+          "git log",
+          "git branch"
+        ],
+        "effect": "allow"
+      },
+      {
+        "capability": "shell",
+        "match": [
+          "git *",
+          "npm *",
+          "npx *",
+          "tilt *"
+        ],
+        "exclude": [
+          "git push*",
+          "git reset*",
+          "git clean*",
+          "npm publish*"
+        ],
+        "effect": "ask"
+      },
+      {
+        "capability": "shell",
+        "match": [
+          "grep *",
+          "cat *",
+          "ls *",
+          "find *"
+        ],
+        "effect": "allow"
+      },
+      {
+        "capability": "fs_read",
+        "match": [
+          "**/.env*",
+          "secrets/**",
+          "**/*.pem",
+          "**/*.key"
+        ],
+        "effect": "deny"
+      },
+      {
+        "capability": "fs_write",
+        "match": [
+          "**/*.lock"
+        ],
+        "effect": "deny"
+      },
+      {
+        "capability": "web_fetch",
+        "match": [
+          "*"
+        ],
+        "effect": "allow"
+      },
+      {
+        "capability": "file_search",
+        "match": [
+          "*"
+        ],
+        "effect": "allow"
+      }
+    ]
   },
   "resources": [
     "skill://../skills/git-workflow.md",
     "skill://../skills/mermaid-diagram.md"
-  ],
-  "hooks": {
-    "agentSpawn": [
-      {
-        "command": "git status --porcelain",
-        "timeout_ms": 5000
-      },
-      {
-        "command": "git branch --show-current",
-        "timeout_ms": 3000
-      },
-      {
-        "command": "node --version 2>/dev/null || echo 'no node'",
-        "timeout_ms": 3000
-      }
-    ]
-  }
+  ]
 }
