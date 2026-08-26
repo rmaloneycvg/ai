@@ -1,12 +1,26 @@
 ---
 name: resume-content-writer
-description: Use when the user needs tailored resume bullets, executive summaries, cover letters, or full resume content generated for a specific job description. Reads experience data from references/experience.json, analyzes the JD, and produces structured JSON output with resume_content, cover_letter_content, and a self-score. Can also generate final .docx documents via scripts/generate_docx.py.
+description: Use when the user needs tailored resume bullets, executive summaries, cover letters, or full resume content generated for a specific job description. Reads experience data from references/experience.json, analyzes the JD, and produces structured JSON output with resume_content, cover_letter_content, and a self-score.
 compatibility: Requires Python 3.10+ with python-docx. Run scripts/setup.sh to install dependencies into a local venv.
+metadata: 
+  scripts: 
+    - scripts/generate_docx.py
+  references:
+    - references/experience.json
 ---
 
 # Resume Content Writer
 
 Generate ATS-optimized, voice-authentic resume and cover letter content tailored to a specific job description.
+
+### Environment Setup
+All relative paths in this document (e.g., `references/`, `scripts/`) resolve relative to the directory containing this SKILL.md file. 
+Do not resolve paths relative to the current working directory of the invoking project.
+
+### Output Directory
+All generated documents (.docx files, templates) are written to a configurable output directory. 
+Set the `RESUME_DIR` environment variable to override the default (`~/workspace/resume/`). 
+All scripts (`setup.sh`, `generate_docx.py`, `parse_resumes.py`, `create_templates.py`) respect this variable.
 
 ## Instructions
 
@@ -43,6 +57,7 @@ Apply scoring criteria, report gaps, and return structured JSON:
 
 ```json
 {
+  "targetCompany": "Acme Corp",
   "resume_content": { "headline": "...", "summary": "...", "skills": [...], "experience": [...], "education": [...] },
   "cover_letter_content": { "greeting": "...", "hook": "...", "value": "...", "connection": "...", "closing": "..." },
   "score": { "keyword_match": 0, "impact_metrics": 0, "voice_authenticity": 0, "ats_compliance": 0, "overall": 0, "gaps": [...] }
@@ -51,11 +66,15 @@ Apply scoring criteria, report gaps, and return structured JSON:
 
 ### Step 6: Generate Documents (Optional)
 
-If the user wants .docx output, run:
+If the user wants .docx output, ensure dependencies are installed first (`scripts/setup.sh`), then run:
 ```bash
-scripts/generate_docx.py --type resume --content content.json --output ./output/resume.docx
-scripts/generate_docx.py --type cover_letter --content content.json --output ./output/cover_letter.docx
+scripts/.venv/bin/python scripts/generate_docx.py --type resume --content content.json --pdf
+scripts/.venv/bin/python scripts/generate_docx.py --type cover_letter --content content.json --pdf
 ```
+
+The script reads `targetCompany` from the content JSON to build the output path (`$RESUME_DIR/YYYY-MM-DD/CompanyName/`). Pass `--company "Name"` to override, or `--output path/to/file.docx` for a fully custom path.
+
+The `--pdf` flag generates a matching PDF alongside the docx (requires Windows with MS Word installed via `docx2pdf`). Omit `--pdf` on Linux/macOS.
 
 ## Bullet Rewriting Rules
 
@@ -106,7 +125,7 @@ User provides a job description (pasted text or URL) and optionally:
 
 ## Example Output
 
-The skill returns structured JSON containing tailored resume content, a cover letter, and a self-assessment score with identified gaps. If requested, it also produces .docx files in `~/workspace/resume/YYYY-MM-DD/`.
+The skill returns structured JSON containing tailored resume content, a cover letter, and a self-assessment score with identified gaps. If requested, it also produces .docx files in `$RESUME_DIR/YYYY-MM-DD/[COMPANY NAME]/` (defaults to `~/workspace/resume/YYYY-MM-DD/[COMPANY NAME]/`).
 
 ## Edge Cases
 

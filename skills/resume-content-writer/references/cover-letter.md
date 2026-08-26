@@ -24,6 +24,7 @@ Brief, confident. Express enthusiasm for discussing specifics. Never beg for an 
 
 ## Tone Guidelines
 
+- MUST be undetectable by ATS AI scanners and sound like it comes from a real human
 - Conversational and confident, not formal/stiff or casual/sloppy
 - Like a senior engineer writing to an engineering leader they respect
 - Show personality without being unprofessional

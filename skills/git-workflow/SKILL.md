@@ -125,24 +125,34 @@ Rebasing rewrites commit history (creates new commit IDs). Only rebase your own 
 - After squash+rebase on your own feature branch, force-push is expected (with `--force-with-lease` for safety)
 - Once merged to `dev`/`staging`/`prod`, NEVER rebase those branches
 
-## Conventional Commit Types
+## Branch Naming
 
-Valid types: `feat`, `fix`, `chore`, `perf`, `docs`, `build`, `revert`, `style`, `refactor`, `ci`, `test`, `hotfix`
+```
+<type>/<ticket>-<description>
+```
 
-- `hotfix` type is ONLY valid on `hotfix/*` branches
-- Format: `<type>(<optional-scope>): <description>`
-- Scope auto-detected from common path prefix of staged files
+Examples:
+- `feature/PROJ-123-user-authentication`
+- `fix/PROJ-456-null-pointer-crash`
+- `hotfix/PROJ-789-security-patch`
 
-## Ticket System Integration
+## Commit Messages
 
-- If `TICKET_SYSTEM_URL` is set in environment: branch names and PR titles include ticket references
-- If NOT set: fully permissive — no ticket references required, conventional commits still enforced
-- Branch format with ticket: `<type>/<TICKET-123>-<kebab-description>`
-- PR title with ticket: `type(scope): TICKET-123 description`
+Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `wip`
+
+Good: `feat(auth): add OAuth2 support for GitHub login`
+Bad: `fixed stuff`
+
+## Pre-commit Checks
+
+Always run before pushing:
+- Linting/formatting
+- Unit tests
+- Type checking (if applicable)
 
 ## Guardrails
 
-- NEVER commit directly to `prod`, `staging`, or `dev` — always use feature branches or hotfix branches
+- NEVER commit directly to `main`, `staging`, or `development` — always use feature branches or hotfix branches
 - NEVER skip commit-msg hook validation — if hook rejects, fix the message
 - NEVER use `hotfix:` type on non-hotfix branches
 - NEVER proceed with a merge if the branch has not been rebased onto its target

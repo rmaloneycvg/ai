@@ -9,7 +9,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILL_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-RESUME_DIR="$HOME/workspace/resume"
+RESUME_DIR="${RESUME_DIR:-$HOME/workspace/resume}"
 TEMPLATE_DIR="$RESUME_DIR/templates"
 
 echo "=== Resume Tooling Setup ==="

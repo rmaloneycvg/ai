@@ -1,4 +1,6 @@
 ---
+name: DOTNET-EntityFrameworkQueries
+description: EF Core query guardrails, CQRS patterns, bulk mutation thresholds, encryption handling, and anti-pattern detection for .NET data access layers
 inclusion: manual
 fileMatchPattern: [
   "**/*Controller.cs",

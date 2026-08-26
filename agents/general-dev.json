@@ -1,17 +1,11 @@
 {
   "name": "general-dev",
   "description": "General-purpose full-stack development agent. Has broad tool access but requires approval for destructive operations (shell commands, database writes).",
+  "model": "auto",
   "prompt": "You are a full-stack development assistant. Prefer non-destructive operations. Ensure you step through problems logically. If you need to perform state-modifying shell commands (like git resets or database writes), verify the command with the user first. Suggest available specialized agents when future prompts are related to their domains.",
-  "tools": [
-    "file_search",
-    "glob",
-    "grep",
-    "read",
-    "shell",
-    "web",
-    "web_search",
-    "write"
-  ],
+  "tools": ["@builtin" ],
+  "allowedTools": ["@builtin"],
+  "resources": [],
   "permissions": {
     "rules": [
       {
@@ -21,16 +15,6 @@
           "sudo *"
         ],
         "effect": "deny"
-      },
-      {
-        "capability": "shell",
-        "match": [
-          "git status",
-          "git diff",
-          "git log",
-          "git branch"
-        ],
-        "effect": "allow"
       },
       {
         "capability": "shell",
@@ -49,17 +33,7 @@
         "effect": "ask"
       },
       {
-        "capability": "shell",
-        "match": [
-          "grep *",
-          "cat *",
-          "ls *",
-          "find *"
-        ],
-        "effect": "allow"
-      },
-      {
-        "capability": "fs_read",
+        "capability": "read",
         "match": [
           "**/.env*",
           "secrets/**",
@@ -67,32 +41,7 @@
           "**/*.key"
         ],
         "effect": "deny"
-      },
-      {
-        "capability": "fs_write",
-        "match": [
-          "**/*.lock"
-        ],
-        "effect": "deny"
-      },
-      {
-        "capability": "web_fetch",
-        "match": [
-          "*"
-        ],
-        "effect": "allow"
-      },
-      {
-        "capability": "file_search",
-        "match": [
-          "*"
-        ],
-        "effect": "allow"
       }
     ]
-  },
-  "resources": [
-    "skill://../skills/git-workflow.md",
-    "skill://../skills/mermaid-diagram.md"
-  ]
+  }
 }

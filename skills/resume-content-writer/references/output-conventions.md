@@ -4,12 +4,12 @@ File naming, directory structure, and output format rules.
 
 ## Output Directory
 
-Configured via `paths.resumeDir` in `references/experience.json` (default: `~/workspace/resume`).
+Configured via the `RESUME_DIR` environment variable (default: `~/workspace/resume`).
 
 ## Directory Structure
 
 ```
-{resumeDir}/YYYY-MM-DD/
+{RESUME_DIR}/YYYY-MM-DD/{CompanyName}/
 ├── Resume_{CompanyName}.docx
 ├── Resume_{CompanyName}.pdf
 ├── Cover_Letter_{CompanyName}.docx
@@ -22,7 +22,7 @@ Configured via `paths.resumeDir` in `references/experience.json` (default: `~/wo
 
 | Element | Convention | Example |
 |---------|-----------|---------|
-| CompanyName (filenames) | PascalCase, no spaces | "BlueOrigin", "YesEnergy", "OrthoFi" |
+| CompanyName (folder & filenames) | PascalCase, no spaces | "BlueOrigin", "YesEnergy", "OrthoFi" |
 | companyname (JSON files) | lowercase, no spaces | "blueorigin", "frontera" |
 | Date folder | ISO format from generation date | "2026-08-24" |
 
@@ -39,6 +39,7 @@ Always produce all 6 files:
 
 ```json
 {
+  "targetCompany": "Acme Corp",
   "personalInfo": { "name": "...", "email": "...", "phone": "...", "location": "...", "linkedin": "...", "github": "..." },
   "headline": "<10 words matching JD role language",
   "summary": "<50 words, active voice, starts with role noun",
@@ -62,6 +63,7 @@ Always produce all 6 files:
 
 ```json
 {
+  "targetCompany": "Acme Corp",
   "personalInfo": { "name": "...", "email": "...", "phone": "...", "location": "..." },
   "date": "Month DD, YYYY",
   "greeting": "Dear ... Hiring Manager,",

@@ -24,6 +24,8 @@ except ImportError:
     print("ERROR: python-docx is required. Install with: pip3 install python-docx")
     sys.exit(1)
 
+from config import DEFAULT_RESUME_DIR
+
 
 def is_resume_file(filepath: Path) -> bool:
     """Filter to only resume .docx files (skip cover letters, references, etc.)."""
@@ -247,8 +249,8 @@ def main():
     )
     parser.add_argument(
         "--dir",
-        default=os.path.expanduser("~/workspace/resume"),
-        help="Directory containing resume .docx files",
+        default=str(DEFAULT_RESUME_DIR),
+        help="Directory containing resume .docx files (default: $RESUME_DIR or ~/workspace/resume/)",
     )
     parser.add_argument(
         "--output",
@@ -262,9 +264,9 @@ def main():
         print(f"ERROR: Directory not found: {resume_dir}")
         sys.exit(1)
 
-    # Find all resume .docx files
+    # Find all resume .docx files recursively (supports YYYY-MM-DD/CompanyName/ structure)
     resume_files = sorted(
-        [f for f in resume_dir.iterdir() if is_resume_file(f)],
+        [f for f in resume_dir.rglob("*.docx") if is_resume_file(f)],
         key=lambda f: f.stat().st_mtime,
         reverse=True,  # Most recent first
     )

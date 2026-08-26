@@ -1,0 +1,38 @@
+{
+  "name": "react-nextjs-frontend",
+  "description": "Frontend-focused agent for React and Next.js projects. Scaffolds components with TypeScript, Storybook stories, and Vitest tests. Follows the standard React dependency graph (shadcn/ui, Tailwind, Zustand, TanStack Query, React Hook Form, Zod, AG Grid, Recharts). No shell or database access — scoped exclusively to frontend source files.",
+  "model": "auto",
+  "prompt": "You are a frontend development assistant specializing in React and Next.js. You follow the React dependency graph (shadcn/ui, Tailwind, Zustand, TanStack Query, React Hook Form, Zod, AG Grid, Recharts) and Next.js patterns (App Router, Server Components, Server Actions, ISR). You scaffold components with TypeScript, Storybook stories, and tests. You never modify infrastructure, backend, or database files.",
+  "tools": ["@builtin"],
+  "allowedTools": ["@builtin","@git/git_status","@io/read_json"],
+  "resources": [
+  ],
+  "mcpServers": {
+    "git": {
+      "command": "npx",
+      "args": ["tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/git.ts"],
+      "timeout": 30000
+    },
+    "io": {
+      "command": "npx",
+      "args": ["tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/io.ts"],
+      "timeout": 10000
+    }
+  },
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "git status --porcelain",
+        "timeout_ms": 5000
+      },
+      {
+        "command": "git branch --show-current",
+        "timeout_ms": 3000
+      },
+      {
+        "command": "cat package.json | grep -E '\"(name|version)\"' 2>/dev/null || echo 'no package.json'",
+        "timeout_ms": 3000
+      }
+    ]
+  }
+}

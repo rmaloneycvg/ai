@@ -28,6 +28,8 @@ except ImportError:
     print("ERROR: python-docx is required. Install with: pip3 install python-docx")
     sys.exit(1)
 
+from config import DEFAULT_TEMPLATE_DIR
+
 
 def create_resume_template(output_path: Path):
     """Create an ATS-optimized resume template with named styles."""
@@ -264,8 +266,8 @@ def main():
     )
     parser.add_argument(
         "--output-dir",
-        default=str(Path.home() / "workspace" / "resume" / "templates"),
-        help="Directory for template output (default: ~/workspace/resume/templates/)",
+        default=str(DEFAULT_TEMPLATE_DIR),
+        help="Directory for template output (default: $RESUME_DIR/templates/ or ~/workspace/resume/templates/)",
     )
     args = parser.parse_args()
 

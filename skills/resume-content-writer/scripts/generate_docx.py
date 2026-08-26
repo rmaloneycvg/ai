@@ -22,6 +22,7 @@ Usage:
 
 Content JSON format for resume:
 {
+    "targetCompany": "Acme Corp",
     "personalInfo": {
         "name": "...",
         "email": "...",
@@ -64,6 +65,7 @@ Content JSON format for resume:
 
 Content JSON format for cover_letter:
 {
+    "targetCompany": "Acme Corp",
     "personalInfo": { "name": "...", "email": "...", "phone": "...", "location": "..." },
     "date": "July 29, 2026",
     "greeting": "Dear Engineering Hiring Manager,",
@@ -77,7 +79,9 @@ Content JSON format for cover_letter:
 import argparse
 import json
 import os
+import re
 import sys
+from datetime import date
 from pathlib import Path
 
 try:
@@ -90,8 +94,13 @@ except ImportError:
     print("ERROR: python-docx is required. Install with: pip3 install python-docx")
     sys.exit(1)
 
+try:
+    from docx2pdf import convert as docx2pdf_convert
+    HAS_DOCX2PDF = True
+except ImportError:
+    HAS_DOCX2PDF = False
 
-TEMPLATE_DIR = Path.home() / "workspace" / "resume" / "templates"
+from config import DEFAULT_RESUME_DIR, DEFAULT_TEMPLATE_DIR
 
 # ATS formatting constants
 FONT_NAME = "Lato"
@@ -413,6 +422,22 @@ def generate_cover_letter(content: dict, template_path: Path, output_path: Path)
         print(f"  Word count: ~{body_word_count} (within 250-300 target) ✓", file=sys.stderr)
 
 
+def to_pascal_case(name: str) -> str:
+    """Convert a company name to PascalCase for directory/file naming."""
+    # Remove non-alphanumeric chars (except spaces), then PascalCase each word
+    cleaned = re.sub(r"[^\w\s]", "", name)
+    return "".join(word.capitalize() for word in cleaned.split())
+
+
+def build_output_path(company: str, doc_type: str, resume_dir: Path) -> Path:
+    """Build the canonical output path: $RESUME_DIR/YYYY-MM-DD/CompanyName/filename.docx"""
+    company_dir = to_pascal_case(company)
+    date_str = date.today().isoformat()
+    prefix = "Resume" if doc_type == "resume" else "Cover_Letter"
+    filename = f"{prefix}_{company_dir}.docx"
+    return resume_dir / date_str / company_dir / filename
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Generate ATS-optimized resume or cover letter docx from content JSON"
@@ -429,14 +454,25 @@ def main():
         help="Path to content JSON file",
     )
     parser.add_argument(
+        "--company",
+        default=None,
+        help="Target company name (used for output directory and file naming). Inferred from content JSON 'targetCompany' field if omitted.",
+    )
+    parser.add_argument(
         "--output",
-        required=True,
-        help="Output docx file path",
+        default=None,
+        help="Explicit output docx path (overrides --company-based path generation)",
     )
     parser.add_argument(
         "--template",
         default=None,
         help="Path to template docx (ignored — generates from scratch for ATS safety)",
+    )
+    parser.add_argument(
+        "--pdf",
+        action="store_true",
+        default=False,
+        help="Also generate a PDF via docx2pdf (requires Windows with MS Word installed)",
     )
     args = parser.parse_args()
 
@@ -449,16 +485,45 @@ def main():
     with open(content_path) as f:
         content = json.load(f)
 
-    output_path = Path(args.output)
+    # Determine company name: CLI arg > content JSON > error
+    company = args.company or content.get("targetCompany")
+    if not company and not args.output:
+        print(
+            "ERROR: --company not provided and 'targetCompany' not found in content JSON. "
+            "Either pass --company or add a 'targetCompany' field to the content JSON.",
+        )
+        sys.exit(1)
+
+    # Determine output path: explicit --output wins, otherwise build from company
+    if args.output:
+        output_path = Path(args.output)
+    else:
+        output_path = build_output_path(company, args.type, DEFAULT_RESUME_DIR)
 
     # Template path (kept for API compat but not used — we generate from scratch)
-    template_path = Path(args.template) if args.template else TEMPLATE_DIR / "resume_template.docx"
+    template_path = Path(args.template) if args.template else DEFAULT_TEMPLATE_DIR / "resume_template.docx"
 
     # Generate
     if args.type == "resume":
         generate_resume(content, template_path, output_path)
     else:
         generate_cover_letter(content, template_path, output_path)
+
+    # PDF conversion (Windows only via docx2pdf)
+    if args.pdf:
+        if not HAS_DOCX2PDF:
+            print(
+                "  ⚠ WARNING: --pdf requested but docx2pdf is not installed. "
+                "Install with: pip install docx2pdf (Windows only, requires MS Word)",
+                file=sys.stderr,
+            )
+        else:
+            pdf_path = output_path.with_suffix(".pdf")
+            try:
+                docx2pdf_convert(str(output_path), str(pdf_path))
+                print(f"✓ PDF generated: {pdf_path}")
+            except Exception as e:
+                print(f"  ✗ PDF conversion failed: {e}", file=sys.stderr)
 
 
 if __name__ == "__main__":
