@@ -7,156 +7,142 @@ Portable AI agent configurations, steering documents, skills, and MCP tooling. D
 ```
 ai/
 ├── steering/                           # Behavioral guidance loaded into agent context
-│   ├── orchestration/
-│   │   ├── local-dev.md                # Tilt, nginx, Docker, k8s, Terraform patterns
-│   │   ├── pipeline-contract.md        # Sub-agent pipeline I/O schema (input, output, retry, errors)
-│   │   └── sdlc-pipeline.md           # SDLC phase ordering, gates, change control, rework paths
-│   ├── conventions/
-│   │   ├── code-style.md              # TypeScript naming, file org, imports
-│   │   ├── documentation.md           # README structure, Mermaid templates, validation
-│   │   ├── git-workflow.md            # Branching strategy, conventional commits, PR workflow
-│   │   ├── release-gates.md           # Security, accessibility, data migration, parity gates
-│   │   └── skill-schema.md            # Skill authoring patterns, quality checklist, refactoring ops
-│   ├── security/
-│   │   └── policies.md               # Auth, validation, CORS, secrets, headers
-│   └── preferences/
-│       ├── stack/
-│       │   ├── react/
-│       │   │   ├── dependency-graph.md    # React stack choices (shadcn, Zustand, TQ, etc.)
-│       │   │   ├── custom-hooks.md        # Custom hook extraction patterns
-│       │   │   ├── legacy-react-component.md # Class component lifecycle reference
-│       │   │   ├── tanstack-query-hooks.md # TanStack Query hook patterns
-│       │   │   ├── react-router-hooks.md  # React Router v6+ hook patterns
-│       │   │   ├── use-callback.md        # useCallback steering
-│       │   │   ├── use-context.md         # useContext vs Zustand decisions
-│       │   │   ├── use-debug-value.md     # useDebugValue for custom hooks
-│       │   │   ├── use-deferred-value.md  # useDeferredValue for expensive renders
-│       │   │   ├── use-effect.md          # useEffect patterns and anti-patterns
-│       │   │   ├── use-effect-event.md    # useEffectEvent (experimental)
-│       │   │   ├── use-imperative-handle.md # useImperativeHandle for ref APIs
-│       │   │   ├── use-layout-effect.md   # useLayoutEffect for DOM measurement
-│       │   │   ├── use-memo.md            # useMemo steering
-│       │   │   ├── use-optimistic.md      # useOptimistic for server actions
-│       │   │   ├── use-reducer.md         # useReducer state machine patterns
-│       │   │   ├── use-ref.md             # useRef patterns and pitfalls
-│       │   │   ├── use-sync-external-store.md # useSyncExternalStore for browser APIs
-│       │   │   └── use-transition.md      # useTransition for non-blocking updates
-│       │   ├── nextjs/
-│       │   │   ├── overview.md            # What Next.js replaces vs keeps from React stack
-│       │   │   ├── app-router.md          # File-based routing, layouts, parallel routes
-│       │   │   ├── server-components.md   # RSC vs client component decisions
-│       │   │   ├── data-patterns.md       # ISR, server actions, route handlers
-│       │   │   └── middleware.md          # Auth, redirects, A/B testing at the edge
-│       │   ├── node/
-│       │   │   └── api-caching.md         # Layered caching (HTTP, Redis, in-memory)
-│       │   ├── csharp/
-│       │   │   ├── api-caching.md         # Response/output cache, IDistributedCache
-│       │   │   ├── dotnet-architecture-cheatsheet.md # .NET architecture patterns, CQRS, DDD, resilience
-│       │   │   ├── efcore-query-patterns.md  # EF Core query diagnostic framework & patterns
-│       │   │   ├── efcore-antipatterns.md    # EF Core anti-pattern catalog
-│       │   │   └── dapper-antipatterns.md    # Dapper anti-pattern catalog
-│       │   └── mssql/
-│       │       ├── mssql-cheatsheet.md    # SQL Server comprehensive patterns reference
-│       │       └── query-performance.md   # Query performance decision hierarchies & DMVs
-│       └── resume/
-│           └── guardrails.md              # Resume/cover letter generation guardrails
-├── skills/                             # On-demand capability files (YAML frontmatter)
-│   ├── backend-cron-feature.md         # Cron job / scheduled task setup
-│   ├── backend-rest-api-feature.md     # REST API endpoint scaffolding
-│   ├── codility-prep.md               # Coding interview preparation
-│   ├── dapper-antipattern-refactor.md  # Refactor Dapper anti-patterns in C# code
-│   ├── efcore-antipattern-refactor.md  # Refactor EF Core anti-patterns in C# code
-│   ├── efcore-query-author.md          # Interactive EF Core query generation with diagnostics
-│   ├── general-debug.md               # Debugging workflow
-│   ├── general-deploy.md              # Deployment workflow
-│   ├── general-documentation.md       # README generation and maintenance
-│   ├── general-refactor.md            # General code refactoring
-│   ├── general-test.md                # Test writing workflow
-│   ├── git-workflow.md                 # Git branching, conventional commits, PR prep, hotfix
-│   ├── kiro-create-agent.md           # Standard agent config creation
-│   ├── kiro-create-orchestration.md   # Orchestrator + sub-agent pipeline creation
-│   ├── kiro-create-skill.md           # Skill authoring workflow
-│   ├── kiro-refactor-agent.md         # Standard agent config editing
-│   ├── kiro-refactor-orchestration.md # Orchestration pipeline editing
-│   ├── kiro-refactor-skill.md         # Skill refactoring operations
-│   ├── kiro-workflow-guidelines.md    # AI workspace architecture rules
-│   ├── mermaid-diagram.md             # Mermaid diagram authoring (all diagram types)
-│   ├── mssql-query-performance.md     # SQL Server query performance analysis
-│   ├── react-architecture.md          # Pipeline: UI architecture decisions
-│   ├── react-components.md            # React component generation
-│   ├── react-hooks-optimization.md    # Audit React hooks, extract custom hooks
-│   ├── react-refactor.md              # Pipeline: code refactoring
-│   ├── react-scaffold.md              # Pipeline: component scaffolding
-│   ├── react-styling.md               # Pipeline: Tailwind/shadcn styling
-│   ├── react-testing.md               # Pipeline: tests and stories
-│   ├── resume-builder.md              # Resume/cover letter generation orchestrator
-│   ├── resume-content-writer.md       # Sub-agent: high-reasoning content generation
-│   ├── resume-experience-parser.md    # Extract experience from .docx files
-│   ├── resume-job-scorer.md           # Score resume against job description
-│   ├── sdlc-detailed-design.md       # SDLC design: workflows, ERDs, data flows, cloud architecture
-│   ├── sdlc-epic-planning.md         # Epic/story/task decomposition with dependencies
-│   ├── sdlc-manager-1on1.md         # Personal 1:1 prep, win tracking, goals, review narratives
-│   ├── sdlc-meeting-debrief.md      # Post-meeting: store notes/transcripts, extract actions, route items
-│   ├── sdlc-meeting-prep.md          # Meeting preparation, scheduling, and "what's next" guidance
-│   ├── sdlc-meeting-schedule.md      # Full meeting schedule planning, registry, phase-to-meeting mapping
-│   ├── sdlc-people-management.md     # Coaching, improvement plans, escalation, promotion cases
-│   ├── sdlc-performance-log.md     # Win logging, disagreement receipts, goals, review narrative
-│   ├── sdlc-planning.md              # SDLC planning phase: debates, artifacts, meetings
-│   ├── sdlc-release-planning.md      # Release criteria, rollback, monitoring, staged rollout
-│   ├── sdlc-sprint-planning.md       # Sprint capacity, dependency tracking, timeline reports
-│   ├── sdlc-stack-selection.md       # SDLC design: stack evaluation, gap analysis, architecture docs
-│   ├── sdlc-team-metrics.md          # Sprint KPIs, thresholds, retro prep, estimate calibration
-│   ├── sdlc-implementation.md        # Sprint execution: story pickup, WIP, PR workflow, DoD, QA handoff
-│   ├── sdlc-testing-qa.md            # Test strategy, execution, defect management, QA sign-off
-│   ├── sdlc-deployment.md            # Staged rollout execution, health verification, rollback decisions
-│   ├── sdlc-observability.md         # SLO dashboards, alert rules, runbooks, error budget policy
-│   ├── sdlc-maintenance.md           # Dependency audits, security patching, tech debt, capacity planning
-│   ├── sdlc-incident-management.md   # Incident response: triage, mitigation, blameless RCA, action items
-│   ├── sdlc-tool-jira.md             # Jira-specific field mapping and import guidance
-│   └── sdlc-tool-linear.md           # Linear-specific field mapping and import guidance
+│   ├── DOTNET-EntityFrameworkQueries.md # EF Core query guardrails, CQRS, bulk ops, encryption
+│   ├── react/
+│   │   ├── dependency-graph.md        # React stack choices (shadcn, Zustand, TQ, etc.)
+│   │   ├── custom-hooks.md            # Custom hook extraction patterns
+│   │   ├── tanstack-query-hooks.md    # TanStack Query hook patterns
+│   │   ├── react-router-hooks.md      # React Router v6+ hook patterns
+│   │   ├── use-callback.md            # useCallback steering
+│   │   ├── use-context.md             # useContext vs Zustand decisions
+│   │   ├── use-debug-value.md         # useDebugValue for custom hooks
+│   │   ├── use-deferred-value.md      # useDeferredValue for expensive renders
+│   │   ├── use-effect.md              # useEffect patterns and anti-patterns
+│   │   ├── use-effect-event.md        # useEffectEvent (experimental)
+│   │   ├── use-imperative-handle.md   # useImperativeHandle for ref APIs
+│   │   ├── use-layout-effect.md       # useLayoutEffect for DOM measurement
+│   │   ├── use-memo.md                # useMemo steering
+│   │   ├── use-optimistic.md          # useOptimistic for server actions
+│   │   ├── use-reducer.md             # useReducer state machine patterns
+│   │   ├── use-ref.md                 # useRef patterns and pitfalls
+│   │   ├── use-sync-external-store.md # useSyncExternalStore for browser APIs
+│   │   └── use-transition.md          # useTransition for non-blocking updates
+│   ├── nextjs/
+│   │   ├── overview.md                # What Next.js replaces vs keeps from React stack
+│   │   ├── app-router.md              # File-based routing, layouts, parallel routes
+│   │   ├── server-components.md       # RSC vs client component decisions
+│   │   ├── data-patterns.md           # ISR, server actions, route handlers
+│   │   └── middleware.md              # Auth, redirects, A/B testing at the edge
+│   └── security/
+│       └── policies.md                # Auth, validation, CORS, secrets, headers
+├── skills/                             # On-demand capability directories (SKILL.md + supporting files)
+│   ├── design/                        # Plan new features interactively (clarify → research → plan.md)
+│   │   └── SKILL.md
+│   ├── diagnose/                      # Test-first debugging for .kiro/issues/ reports
+│   │   └── SKILL.md
+│   ├── diagram-spec/                  # Mermaid diagram authoring (architecture, flowchart, ER, etc.)
+│   │   ├── SKILL.md
+│   │   ├── assets/
+│   │   │   └── puppeteer-config.json
+│   │   ├── references/                # Per-diagram-type reference docs
+│   │   └── scripts/
+│   │       └── validate-mermaid.sh
+│   ├── documentation/                 # README generation, API docs, runbooks, ADRs
+│   │   └── SKILL.md
+│   ├── execute/                       # Run active plan task groups via subagent delegation
+│   │   └── SKILL.md
+│   ├── flywheel/                      # Analyze sessions for correction patterns → improve config
+│   │   └── SKILL.md
+│   ├── git-workflow/                  # Branching, conventional commits, PR prep, hotfix
+│   │   ├── SKILL.md
+│   │   ├── hooks/                     # Git hook shell shims (commit-msg, pre-push)
+│   │   ├── references/                # Commitlint config, PR template, revert workflow, submodules
+│   │   └── scripts/                   # Python CLI (branch, commit, prepare_pr, hotfix, merge, promote)
+│   │       ├── setup.sh
+│   │       ├── pyproject.toml
+│   │       └── src/
+│   │           ├── branch.py
+│   │           ├── commit.py
+│   │           ├── prepare_pr.py
+│   │           ├── merge_pr.py
+│   │           ├── hotfix.py
+│   │           ├── promote.py
+│   │           └── lib/               # Shared: conventional, detect_changes, git_ops, ticket
+│   ├── harvest-debt/                  # Collect SHORTCUT: markers into docs/debt.md ledger
+│   │   └── SKILL.md
+│   └── resume-content-writer/         # Tailored resume bullets, cover letters, scoring from JD
+│       ├── SKILL.md
+│       ├── references/                # Experience data, guardrails, formatting rules, voice
+│       └── scripts/                   # Python: generate_docx, parse_resumes, create_templates
+│           ├── setup.sh
+│           ├── generate_docx.py
+│           ├── parse_resumes.py
+│           ├── create_templates.py
+│           └── requirements.txt
 ├── agents/                             # Agent persona configs (JSON)
-│   ├── dotnet-dev.json                 # .NET backend: EF Core, Dapper, CQRS, SQL Server
-│   ├── general-dev.json                # Full-stack: all steering, broad tool access
-│   ├── infra-dev.json                  # Infrastructure/DevOps focused
-│   ├── react-architecture.json         # Sub-agent: UI architecture decisions (opus)
-│   ├── react-frontend.json             # React/Next.js only, no shell/db access
-│   ├── react-orchestrator.json         # Orchestrator: routes to sub-agents by task type
-│   ├── react-refactor.json             # Sub-agent: code refactoring (opus)
-│   ├── react-scaffold.json             # Sub-agent: component scaffolding (haiku)
-│   ├── react-styling.json              # Sub-agent: Tailwind/shadcn styling (haiku)
-│   ├── react-testing.json              # Sub-agent: tests and stories (sonnet)
-│   ├── resume-builder.json             # Resume generation orchestrator
-│   ├── resume-content-writer.json      # Sub-agent: high-reasoning content generation (opus)
-│   ├── resume-experience-parser.json   # Extract experience from .docx resumes
-│   ├── resume-job-scorer.json          # Score resume fit against a job description
-│   └── sdlc-lead.json                  # SDLC planning, architecture, sprints, release, metrics
-├── rag/                                # Semantic search over steering documents
-│   ├── chunker.py                     # Markdown → heading-aware chunks
-│   ├── embedder.py                    # Ollama embedding via nomic-embed-text
-│   ├── ingest.py                      # Watch steering/ and ingest into pgvector
-│   ├── search_cli.py                  # CLI for testing triple-vector search
-│   ├── init.sql                       # pgvector schema (chunks, embeddings)
-│   ├── docker-compose.yml             # PostgreSQL + pgvector container
-│   ├── Tiltfile                       # Local dev orchestration for RAG stack
-│   ├── Dockerfile.watcher             # File watcher container for auto-ingest
-│   ├── setup.sh                       # One-command RAG system setup
-│   ├── pyproject.toml                 # Python dependencies (uv-managed)
-│   └── test_chunker.py               # Tests for chunking logic
+│   ├── general-dev.json               # Full-stack: broad tool access, suggests specialists
+│   ├── react-architecture.json        # Sub-agent: UI architecture decisions (opus)
+│   ├── react-frontend.json            # React/Next.js only, no shell/db access
+│   ├── react-orchestrator.json        # Orchestrator: routes to sub-agents by task type
+│   ├── react-scaffold.json            # Sub-agent: component scaffolding (haiku)
+│   ├── react-styling.json             # Sub-agent: Tailwind/shadcn styling (haiku)
+│   ├── react-testing.json             # Sub-agent: tests and stories (sonnet)
+│   ├── resume-builder.json            # Resume generation orchestrator
+│   └── work-summary.json              # Daily work summary tracker (git, AI sessions, browser)
+├── hooks/                              # Kiro CLI hooks (pre/post tool-use guards)
+│   ├── 01-check-secrets.json          # Block writes containing credential-shaped strings
+│   ├── 02-guard-secret-reads.json     # Guard reads of .env, credentials, private keys
+│   ├── 03-guard-config-writes.json    # Guard writes to sensitive config files
+│   ├── 10-validate-environment.json   # Validate environment before operations
+│   ├── 20-git-context.json            # Inject git context into prompts
+│   ├── 50-rtk-compress.json           # Compress RTK context
+│   └── scripts/                       # Shell scripts invoked by hook actions
+│       ├── check-secrets.sh
+│       ├── git-context.sh
+│       ├── guard-config-writes.sh
+│       ├── guard-destructive-commands.sh
+│       ├── guard-secret-reads.sh
+│       ├── rtk-compress.sh
+│       └── validate-environment.sh
+├── knowledge/                          # Reference documents for semantic search / RAG
+│   ├── csharp/
+│   │   ├── dapper-antipatterns.md
+│   │   ├── dotnet-architecture-cheatsheet.md
+│   │   ├── efcore-antipatterns.md
+│   │   └── efcore-query-patterns.md
+│   ├── mssql/
+│   │   ├── mssql-cheatsheet.md
+│   │   └── query-performance.md
+│   └── nextjs/
+│       ├── data-patterns.md
+│       └── middleware.md
 ├── mcp/                                # MCP server definitions + tool scripts
 │   └── mcp-scripts/
 │       ├── servers/                    # MCP server entry points
 │       │   ├── git.ts                 # git_status tool
+│       │   ├── grafana.ts             # Grafana dashboards, reports, annotations, self-healing
 │       │   ├── io.ts                  # read_json, write_json tools
+│       │   ├── jaeger.ts             # Distributed tracing: search, bottlenecks, Kiro traces
 │       │   ├── jira.ts               # Jira Cloud API (issues, sprints, metrics, links)
 │       │   ├── linear.ts             # Linear GraphQL API (issues, cycles, projects, docs)
 │       │   ├── postgres.ts            # postgres_query, postgres_seed tools
-│       │   └── rag.ts                 # rag_search, rag_status (semantic search over steering)
+│       │   ├── prometheus.ts          # PromQL queries, metric discovery, alerting, Kiro telemetry
+│       │   ├── rag.ts                 # rag_search, rag_status (semantic search over steering)
+│       │   └── work-summary.ts        # Daily work summary generation + config
 │       ├── lib/
 │       │   └── exec-python.ts         # Python execution helper
-│       ├── git/status.ts              # Parsed git status implementation
+│       ├── git/
+│       │   └── status.ts              # Parsed git status implementation
+│       ├── grafana/
+│       │   ├── client.ts             # Grafana HTTP client
+│       │   ├── mutations.ts          # Annotations, ticket creation, self-healing triggers
+│       │   └── queries.ts            # Dashboard search, query, versions, reports
 │       ├── io/
 │       │   ├── read-json.ts           # Read and validate JSON files
 │       │   └── write-json.ts          # Write JSON with formatting
+│       ├── jaeger/
+│       │   ├── client.ts             # Jaeger HTTP client
+│       │   └── queries.ts            # Trace search, bottleneck analysis, Kiro session traces
 │       ├── jira/
 │       │   ├── client.ts             # Jira REST API v3 client (auth, fetch wrapper)
 │       │   ├── queries.ts            # Search, sprints, boards, sprint metrics
@@ -165,34 +151,34 @@ ai/
 │       │   ├── client.ts             # Linear GraphQL client (auth, query wrapper)
 │       │   ├── queries.ts            # Teams, issues, projects, cycles, cycle metrics
 │       │   └── mutations.ts          # Create issues, projects, cycles, documents, relations
-│       └── postgres/
-│           ├── query.py               # Parameterized read-only queries
-│           └── seed.py                # Run SQL seed files
-├── scripts/                            # Executable scripts used by agents
-│   ├── git/
-│   │   ├── setup.sh                  # Install hooks, validate env, configure workflow
-│   │   ├── pyproject.toml            # Python dependencies (managed by uv)
-│   │   ├── src/                      # CLI scripts + shared library
-│   │   │   ├── branch.py            # Create branch with naming convention
-│   │   │   ├── commit.py            # Auto-group changes, commit per type
-│   │   │   ├── prepare_pr.py        # Squash + rewrite + rebase for PR
-│   │   │   ├── merge_pr.py          # Final validation + merge
-│   │   │   ├── hotfix.py            # Hotfix workflow from prod
-│   │   │   ├── promote.py           # Manual environment promotion
-│   │   │   └── lib/                  # Shared library (conventional, detect_changes, git_ops, ticket)
-│   │   ├── hooks/                    # Git hook shell shims (commit-msg, pre-push)
-│   │   └── tests/                    # pytest unit + integration tests
+│       ├── postgres/
+│       │   ├── query.py               # Parameterized read-only queries
+│       │   └── seed.py                # Run SQL seed files
+│       ├── prometheus/
+│       │   ├── client.ts             # Prometheus HTTP client
+│       │   └── queries.ts            # PromQL execution, metric discovery, Kiro telemetry
+│       └── work-summary/
+│           ├── aggregator.ts          # Combine collector outputs into unified timeline
+│           ├── ai-flagger.ts          # Flag AI-assisted work (Kiro session overlap)
+│           ├── categorizer.ts         # Categorize work items (Features, Refactors, Tests, Docs)
+│           ├── config.ts              # Configuration management (workspace paths, collectors)
+│           ├── renderer.ts            # Render summaries as JSON + Markdown
+│           ├── types.ts               # Shared type definitions
+│           └── collectors/
+│               ├── chrome-collector.ts    # Browser activity
+│               ├── git-collector.ts       # Git commit history
+│               ├── kiro-collector.ts      # Kiro AI session activity
+│               ├── google-meet-collector.ts
+│               ├── outlook-collector.ts
+│               ├── slack-collector.ts
+│               ├── teams-collector.ts
+│               ├── zoom-collector.ts
+│               └── time-estimator.ts      # Edit time estimation from git + file mtimes
+├── config/                             # Per-user configuration
+│   ├── permissions.yaml               # Kiro CLI user-global permissions
+│   ├── .kiroignore                    # Files excluded from Kiro context
 │   └── resume/
-│       ├── generate_docx.py           # Generate ATS-optimized resume/cover letter docx (Lato, royal blue)
-│       ├── parse_resumes.py           # Extract structured text from .docx files
-│       ├── create_templates.py        # Generate docx templates with named styles
-│       ├── requirements.txt           # Python dependencies (python-docx)
-│       └── setup.sh                   # Initialize config (experience.json, venv, templates)
-├── config/                             # Per-user configuration (personal data gitignored)
-│   └── resume/
-│       ├── experience.schema.json     # Schema for experience data (tracked)
-│       ├── experience.json            # Personal experience data (gitignored, created by setup.sh)
-│       └── templates/                 # Generated docx templates (gitignored)
+│       └── experience.schema.json     # Schema for experience data (tracked)
 ├── templates/                          # Default stub templates (copied to projects, not loaded into context)
 │   └── sdlc/
 │       ├── preferred-stack.md         # Team technology preferences baseline
@@ -213,9 +199,11 @@ ai/
 
 | Concept | What it is | How it's used |
 |---------|-----------|---------------|
-| **Steering** | Prescriptive docs that shape agent behavior: technology choices, patterns, security rules, naming conventions | Loaded as always-in-context via `file://` URIs in agent configs |
-| **Skills** | Condensed instruction sets with YAML frontmatter. Each skill is one focused capability | Loaded on-demand via `skill://` URIs — only metadata at startup, full content when triggered |
+| **Steering** | Prescriptive docs that shape agent behavior: technology choices, patterns, security rules | Loaded as always-in-context references in agent configs or via Kiro rules |
+| **Skills** | Directory-based capability units (SKILL.md + references + scripts). Each skill is one focused capability | Loaded on-demand — only metadata at startup, full content when triggered by intent |
 | **Agents** | JSON configs that compose a persona from steering + skills + tools | Selected with `kiro --agent <name>` — each restricts scope, tools, and file access |
+| **Hooks** | JSON-defined guards that intercept tool calls (pre/post) to enforce security policies | Evaluated automatically by Kiro CLI before/after tool execution |
+| **Knowledge** | Reference documents organized by domain for semantic search | Indexed for RAG search via the `rag` MCP server |
 | **MCP Scripts** | Small tool implementations (TypeScript/Python) invoked via Model Context Protocol | Declared in agent `mcpServers` — agents call them like functions |
 | **Templates** | Stub markdown/JSON files copied into projects as starting points | Not loaded into context — used by SDLC skills to scaffold planning docs |
 
@@ -227,112 +215,62 @@ Each agent is a focused persona with specific tool access, steering context, and
 
 ### Primary Agents (user-facing)
 
-| Agent | Command | Purpose | Tools |
-|-------|---------|---------|-------|
-| `general-dev` | `kiro --agent dev` | Full-stack development. Broad access, asks before destructive ops. Suggests specialized agents when relevant. | read, write, shell, glob, grep, code, git, io |
-| `dotnet-dev` | `kiro --agent dotnet` | .NET 9+ backend: EF Core, Dapper, CQRS, Minimal APIs, SQL Server query performance, anti-pattern refactoring. Shell access for dotnet CLI. | read, write, shell, glob, grep, code, git, io, rag |
-| `react-frontend` | `kiro --agent react-frontend` | React/Next.js development. No shell or database access. Writes restricted to `src/`. | read, write, glob, grep, code |
-| `infra-dev` | `kiro --agent infra` | Terraform, Docker, Kubernetes, Tilt, nginx. Shell access for infra commands. Writes restricted to infra files. | read, write, shell, glob, grep, git, io, postgres |
-| `react-orchestrator` | `kiro --agent react-orchestrator` | Multi-agent pipeline for frontend work. Classifies intent and delegates to sub-agents (architecture → scaffold → styling → testing). Never writes code directly. | read, glob, grep, code, subagent |
-| `resume-builder` | `kiro --agent resume-builder` | Paste a JD → get tailored resume + cover letter (docx + pdf). Reads from experience.json. Delegates to content-writer sub-agent for high-reasoning work. | read, write, shell, glob, grep, subagent |
-| `resume-experience-parser` | `kiro --agent experience-parser` | Extract structured experience data from .docx resume files into experience.json format. | read, write, shell, glob, grep |
-| `resume-job-scorer` | `kiro --agent job-scorer` | Score a resume against a job description. Reports keyword match, gap analysis, and improvement suggestions. | read, glob, grep, io |
-| `sdlc-lead` | `kiro --agent sdlc-lead` | Full SDLC lifecycle: planning → stack selection → design → epics → sprints → implementation → QA → release → deployment → observability → maintenance. Also handles metrics, people management, meeting prep, and incident management. Writes to `drafts/` and `docs/`. | read, write, glob, grep, code, git, io |
+| Agent | Command | Purpose |
+|-------|---------|---------|
+| `general-dev` | `kiro --agent dev` | Full-stack development. Broad access, asks before destructive ops. Suggests specialized agents when relevant. |
+| `react-frontend` | `kiro --agent react-frontend` | React/Next.js development. No shell or database access. Writes restricted to `src/`. |
+| `react-orchestrator` | `kiro --agent react-orchestrator` | Multi-agent pipeline for frontend work. Classifies intent and delegates to sub-agents. Never writes code directly. |
+| `resume-builder` | `kiro --agent resume-builder` | Paste a JD → get tailored resume + cover letter (docx). Delegates to content-writer sub-agent. |
+| `work-summary` | `kiro --agent work-summary` | Daily work summary tracker. Scans git repos, AI sessions, browser activity, and communication tools. |
 
 ### Sub-Agents (invoked by orchestrators, not directly)
 
-| Agent | Model | Invoked By | Purpose |
-|-------|-------|-----------|---------|
-| `react-architecture` | opus | react-orchestrator | Component decomposition, server/client boundaries, data flow decisions |
-| `react-scaffold` | haiku | react-orchestrator | Generate component files, stories, tests, barrel exports |
-| `react-styling` | haiku | react-orchestrator | Tailwind CSS, shadcn/ui composition, responsive design, accessibility |
-| `react-testing` | sonnet | react-orchestrator | Vitest unit tests, Playwright e2e, Storybook stories |
-| `react-refactor` | opus | react-orchestrator | Extract components/hooks, migrate state, performance optimization |
-| `resume-content-writer` | opus | resume-builder | High-reasoning content generation: headline crafting, bullet rewriting, cover letter writing, self-scoring |
+| Agent | Invoked By | Purpose |
+|-------|-----------|---------|
+| `react-architecture` | react-orchestrator | Component decomposition, server/client boundaries, data flow decisions |
+| `react-scaffold` | react-orchestrator | Generate component files, stories, tests, barrel exports |
+| `react-styling` | react-orchestrator | Tailwind CSS, shadcn/ui composition, responsive design, accessibility |
+| `react-testing` | react-orchestrator | Vitest unit tests, Playwright e2e, Storybook stories |
 
 ---
 
 ## Skills
 
-Skills are on-demand capabilities loaded into agent context when triggered by user intent.
+Skills are directory-based capabilities loaded into agent context when triggered by user intent. Each skill directory contains a `SKILL.md` with YAML frontmatter and optionally `references/`, `scripts/`, `hooks/`, and `assets/` subdirectories.
 
-### Development Skills
-
-| Skill | Trigger | What it does |
-|-------|---------|--------------|
-| `backend-rest-api-feature` | "Add an API endpoint" | Scaffolds Express route + Zod validation + handler + integration test |
-| `backend-cron-feature` | "Add a cron job" | Creates scheduled task with Dockerfile, k8s CronJob, Tiltfile entry |
-| `react-components` | "Create a component" | Generates component + types + story + test following stack conventions |
-| `react-hooks-optimization` | "Audit hooks" / "extract a hook" | Reviews hook usage, extracts custom hooks, applies optimization patterns |
-| `react-architecture` | "How should I structure this?" | Component decomposition, server/client split, state management decisions |
-| `react-scaffold` | "Scaffold a new page/feature" | Pipeline stage: file generation from architecture decisions |
-| `react-styling` | "Style this component" | Pipeline stage: Tailwind/shadcn application with responsive + a11y |
-| `react-testing` | "Write tests for X" | Pipeline stage: Vitest + Playwright + Storybook story creation |
-| `react-refactor` | "Refactor this" / "extract" | Pipeline stage: component/hook extraction, state migration |
-| `codility-prep` | "Prepare for coding interview" | Structured practice: problem analysis, optimal solution, edge cases, complexity |
-| `efcore-antipattern-refactor` | "Fix EF Core anti-patterns" | Detects and refactors N+1, missing projections, DbContext misuse, tracking overhead |
-| `dapper-antipattern-refactor` | "Fix Dapper anti-patterns" | Detects and refactors SQL injection, connection leaks, N+1 loops, missing cancellation |
-| `efcore-query-author` | "Write an EF Core query" | Interactive diagnostic → optimal pattern selection → code generation |
-| `mssql-query-performance` | "Analyze SQL performance" | Anti-pattern detection, index recommendations, DMV diagnostic queries |
-| `mermaid-diagram` | "Create a diagram" | Authors Mermaid diagrams (flowchart, sequence, state, ER, class, Gantt) with rendering validation |
-
-### General Workflows
+### Development & Workflow Skills
 
 | Skill | Trigger | What it does |
 |-------|---------|--------------|
-| `general-debug` | "Debug this" / "why is this failing" | Systematic debugging: reproduce → isolate → diagnose → fix → verify |
-| `general-deploy` | "Deploy this" | Deployment checklist: env validation → build → deploy → smoke test |
-| `general-documentation` | "Update the README" | README generation following documentation conventions with Mermaid diagrams |
-| `general-refactor` | "Refactor this code" | Code restructuring: identify smell → spec change → implement → verify |
-| `general-test` | "Write tests" | Test creation: coverage analysis → write tests → verify passing |
-| `git-workflow` | "Create a branch" / "prepare PR" | Git operations: branching, conventional commits, squash+rebase, hotfix |
-
-### SDLC Skills
-
-| Skill | Phase | What it does |
-|-------|-------|--------------|
-| `sdlc-planning` | 1 | Facilitates planning debates, generates charter, stakeholder analysis |
-| `sdlc-stack-selection` | 2 | Technology evaluation: gap analysis, risk matrix, debate format, architecture doc |
-| `sdlc-detailed-design` | 3 | Workflow diagrams, ERDs, data flows, cloud architecture, SLO definitions, API contracts |
-| `sdlc-epic-planning` | 4 | Decomposes features into epics → stories → tasks with dependencies |
-| `sdlc-sprint-planning` | 5 | Capacity allocation, dependency tracking, timeline, risk identification |
-| `sdlc-implementation` | 6 (per sprint) | Sprint execution: story pickup, WIP limits, PR workflow, CI enforcement, DoD verification, QA handoff |
-| `sdlc-testing-qa` | 7 (per sprint) | Test strategy, test plans, execution, defect management, regression maintenance, QA sign-off |
-| `sdlc-release-planning` | 8 (per release) | Release criteria, rollback plan, monitoring plan, staged rollout gates |
-| `sdlc-deployment` | 9 (per release) | Staged rollout execution, health verification, smoke tests, rollback decisions |
-| `sdlc-observability` | 10 (per release) | SLO dashboard creation, alert rules, runbooks, error budget policy, capacity signals |
-| `sdlc-maintenance` | 11 (ongoing) | Dependency audits, security patching, tech debt tracking, deprecation management, capacity planning |
-| `sdlc-incident-management` | Standalone | Incident response: severity classification, war room, mitigation, blameless RCA, action items |
-| `sdlc-team-metrics` | Any | Sprint KPIs, velocity tracking, retro prep, estimate calibration |
-| `sdlc-people-management` | Any | Coaching, improvement plans, escalation paths, promotion case building |
-| `sdlc-meeting-prep` | Any | Meeting preparation: agenda, prep checklists, discussion questions, "what's next" |
-| `sdlc-meeting-schedule` | Any | Full meeting schedule planning, registry, phase-to-meeting mapping |
-| `sdlc-meeting-debrief` | Any | Post-meeting: store notes, extract action items, route to owners |
-| `sdlc-manager-1on1` | Any | Personal 1:1 prep: win tracking, goals, talking points, review narratives |
-| `sdlc-performance-log` | Any | Win logging, disagreement receipts, goal tracking, review narrative generation |
-| `sdlc-tool-linear` | After Phase 4 | Export epics/stories to Linear with field mapping |
-| `sdlc-tool-jira` | After Phase 4 | Export epics/stories to Jira with field mapping |
+| `design` | "Design this" / "Plan a feature" | Interactive planning: clarify problem → research → produce plan.md + tasks.md |
+| `diagnose` | "Debug this" / "Triage the issue" | Test-first debugging for `.kiro/issues/` reports |
+| `execute` | "Execute the plan" / "Build this" | Runs active plan task groups via subagent delegation (coder, ops, reviewer, docs) |
+| `documentation` | "Write docs" / "Update README" | Technical documentation: READMEs, API docs, runbooks, ADRs |
+| `diagram-spec` | "Create a diagram" | Mermaid diagram authoring (architecture-beta, flowchart, erDiagram, stateDiagram-v2, sequenceDiagram, journey, eventmodeling, ishikawa-beta) |
+| `git-workflow` | "Create a branch" / "Prepare PR" | Git operations: branching, conventional commits, squash+rebase, hotfix, submodules |
+| `harvest-debt` | "Harvest debt" / "Audit shortcuts" | Collects `SHORTCUT:` markers across codebase into docs/debt.md ledger |
+| `flywheel` | "Run the flywheel" / "Improve config" | Analyzes session transcripts for user-correction patterns → proposes config improvements |
 
 ### Resume Skills
 
 | Skill | Trigger | What it does |
 |-------|---------|--------------|
-| `resume-builder` | "Build a resume for this JD" | Orchestrates: JD parsing → content generation → docx creation → PDF conversion |
-| `resume-content-writer` | (sub-agent) | High-reasoning: headline, bullet selection/rewriting, cover letter, scoring |
-| `resume-experience-parser` | "Parse my resume" | Extracts structured data from .docx files into experience.json format |
-| `resume-job-scorer` | "Score this resume" | Keyword analysis, gap detection, match percentage, improvement suggestions |
+| `resume-content-writer` | "Build a resume for this JD" | Tailored resume bullets, cover letters, and scoring from a job description. Reads experience data, produces docx output. |
 
-### Kiro Meta-Skills (workspace management)
+---
 
-| Skill | Trigger | What it does |
-|-------|---------|--------------|
-| `kiro-create-skill` | "Create a new skill" | Authors a skill file following the skill-schema conventions |
-| `kiro-refactor-skill` | "Refactor this skill" | Narrow triggers, split oversized skills, merge overlaps, add missing schema elements |
-| `kiro-create-agent` | "Create a new agent" | Scaffolds agent JSON with steering, skills, tools, and restrictions |
-| `kiro-refactor-agent` | "Edit this agent" | Updates agent config: add/remove skills, change tool access, update prompt |
-| `kiro-create-orchestration` | "Create a pipeline" | Builds orchestrator + sub-agent pipeline with pipeline-contract compliance |
-| `kiro-refactor-orchestration` | "Edit this pipeline" | Modifies orchestration: add/remove stages, change routing, update models |
-| `kiro-workflow-guidelines` | "How does this workspace work?" | Explains architecture rules: steering vs skills, when to split, overlap detection |
+## Hooks
+
+Hooks are JSON-defined guards that run before or after tool calls to enforce security and operational policies.
+
+| Hook | Trigger | What it does |
+|------|---------|--------------|
+| `01-check-secrets` | PreToolUse (writes) | Blocks writes containing credential-shaped strings (AWS keys, tokens, private keys) |
+| `02-guard-secret-reads` | PreToolUse (reads) | Guards reads of `.env`, credentials, and private key files |
+| `03-guard-config-writes` | PreToolUse (writes) | Guards writes to sensitive configuration files |
+| `10-validate-environment` | PreToolUse | Validates environment prerequisites before operations |
+| `20-git-context` | PreToolUse | Injects git context (branch, status) into prompts |
+| `50-rtk-compress` | PreToolUse | Compresses RTK context for efficiency |
 
 ---
 
@@ -347,10 +285,11 @@ MCP (Model Context Protocol) tools give agents structured access to external sys
 | **jira** (`servers/jira.ts`) | `jira_list_projects`, `jira_search_issues`, `jira_get_issue`, `jira_create_issue`, `jira_create_issues_bulk`, `jira_list_sprints`, `jira_get_sprint_metrics`, `jira_create_sprint`, `jira_create_link`, `jira_transition_issue`, `jira_add_comment` | Jira Cloud REST API: issue CRUD, sprint management, metrics extraction, dependency linking |
 | **linear** (`servers/linear.ts`) | `linear_list_teams`, `linear_list_issues`, `linear_get_issue`, `linear_create_issue`, `linear_create_issues_bulk`, `linear_list_projects`, `linear_create_project`, `linear_list_cycles`, `linear_get_cycle_metrics`, `linear_create_cycle`, `linear_create_document`, `linear_create_relation` | Linear GraphQL API: issue CRUD, project/cycle management, metrics, documents, relations |
 | **postgres** (`servers/postgres.ts`) | `postgres_query`, `postgres_seed` | Parameterized read-only queries; run SQL seed files against local dev DB |
-| **rag** (`servers/rag.ts`) | `rag_search`, `rag_status` | Triple-vector semantic search over steering documents (folder 30% + heading hierarchy 30% + content 40%). Session-aware deduplication. |
+| **rag** (`servers/rag.ts`) | `rag_search`, `rag_status` | Triple-vector semantic search over steering/knowledge documents (folder 30% + heading hierarchy 30% + content 40%). Session-aware deduplication. |
 | **prometheus** (`servers/prometheus.ts`) | `prometheus_query`, `prometheus_range_query`, `prometheus_metrics`, `prometheus_label_values`, `prometheus_alerts`, `prometheus_rules`, `prometheus_kiro_usage`, `prometheus_kiro_performance`, `prometheus_kiro_models`, `prometheus_kiro_context`, `prometheus_kiro_security`, `prometheus_error_rates`, `prometheus_release_compare` | Prometheus PromQL queries, metric discovery, alerting status, Kiro feature/model/context/security telemetry |
 | **jaeger** (`servers/jaeger.ts`) | `jaeger_services`, `jaeger_operations`, `jaeger_search_traces`, `jaeger_get_trace`, `jaeger_dependencies`, `jaeger_analyze_bottlenecks`, `jaeger_kiro_slow_sessions`, `jaeger_kiro_by_command`, `jaeger_kiro_by_model`, `jaeger_kiro_security_traces`, `jaeger_kiro_session_trace` | Jaeger distributed tracing: trace search, bottleneck analysis, Kiro session/model/security trace queries |
 | **grafana** (`servers/grafana.ts`) | `grafana_search_dashboards`, `grafana_get_dashboard`, `grafana_dashboard_versions`, `grafana_query`, `grafana_datasources`, `grafana_annotations`, `grafana_create_annotation`, `grafana_release_report`, `grafana_kiro_report`, `grafana_top10_report`, `grafana_create_ticket_from_telemetry`, `grafana_trigger_self_healing`, `grafana_kiro_failure_report` | Grafana dashboards, release comparison reports, Kiro telemetry reports, automatic ticket generation from alerts, self-healing triggers with audit trail |
+| **work-summary** (`servers/work-summary.ts`) | `work_summary_generate`, `work_summary_config`, `work_summary_status` | Daily work summary generation (git + AI sessions + browser + comms), configuration management, collector status |
 
 ### Environment Variables
 
@@ -438,40 +377,49 @@ uv run pytest          # pytest for Python tools (postgres)
 
 Steering docs are loaded into agent context at startup. They define how the agent should behave prescriptively.
 
-### Orchestration
+### Top-Level Rules
 
 | File | What it defines |
 |------|----------------|
-| `local-dev.md` | Tilt topology, nginx gateway patterns, Docker multi-stage builds, k8s manifests, Terraform conventions, OAuth2 flow |
-| `pipeline-contract.md` | Sub-agent I/O JSON schema: input format, output format, error schema, retry context, escalation rules |
-| `sdlc-pipeline.md` | SDLC phase ordering, gate requirements, skip prevention rules, rework paths |
+| `DOTNET-EntityFrameworkQueries.md` | EF Core query guardrails, CQRS patterns, bulk mutation thresholds, encryption handling, anti-pattern detection |
 
-### Conventions
+### React Hooks & Patterns
 
 | File | What it defines |
 |------|----------------|
-| `code-style.md` | TypeScript naming (PascalCase components, camelCase functions, kebab-case files), import ordering, component patterns |
-| `documentation.md` | README structure, Mermaid diagram templates (flowchart, sequence, state, ER, class), staleness detection |
-| `git-workflow.md` | Branching model (prod ← staging ← dev ← feature), conventional commits, PR workflow, hotfix flow, CI auto-promotion |
-| `release-gates.md` | Security, accessibility, data migration, environment parity, and operational readiness checklists |
-| `skill-schema.md` | Skill file structure, quality checklist, idempotent scope principle, overlap detection, refactoring operations |
+| `react/dependency-graph.md` | Stack choices: shadcn, Zustand, TanStack Query, RHF+Zod, AG Grid, Recharts |
+| `react/custom-hooks.md` | Custom hook extraction patterns |
+| `react/tanstack-query-hooks.md` | TanStack Query hook patterns |
+| `react/react-router-hooks.md` | React Router v6+ hook patterns |
+| `react/use-*.md` (14 files) | Every React hook with when/how/anti-patterns |
+
+### Next.js
+
+| File | What it defines |
+|------|----------------|
+| `nextjs/overview.md` | What Next.js replaces vs keeps from React stack |
+| `nextjs/app-router.md` | File-based routing, layouts, parallel routes |
+| `nextjs/server-components.md` | RSC vs client component decisions |
+| `nextjs/data-patterns.md` | ISR, server actions, route handlers |
+| `nextjs/middleware.md` | Auth, redirects, A/B testing at the edge |
 
 ### Security
 
 | File | What it defines |
 |------|----------------|
-| `policies.md` | OAuth2 + PKCE, RBAC middleware, input validation (Zod at boundary), CORS (per-origin, never wildcard), secrets management, security headers, rate limiting, container hardening |
+| `security/policies.md` | OAuth2 + PKCE, RBAC middleware, input validation (Zod at boundary), CORS (per-origin, never wildcard), secrets management, security headers, rate limiting, container hardening |
 
-### Stack Preferences
+---
+
+## Knowledge (Reference Documents)
+
+Deep-reference documents indexed for semantic search via the RAG MCP server. Not loaded into agent context directly — queried on demand.
 
 | Directory | Coverage |
 |-----------|----------|
-| `react/` | Dependency graph (shadcn, Zustand, TanStack Query, RHF+Zod, AG Grid, Recharts), every React hook with when/how/anti-patterns, custom hook extraction, legacy class component lifecycle reference |
-| `nextjs/` | App Router (file-based routing, layouts, parallel routes), Server Components vs Client, data patterns (ISR, Server Actions, Route Handlers), middleware (auth, geo, A/B) |
-| `node/` | Layered API caching: HTTP headers → nginx proxy_cache → Redis → in-memory LRU → request dedup → stampede prevention |
-| `csharp/` | .NET architecture cheatsheet (CQRS, DDD, resilience, serverless, clean arch, decorators, CORS/security), EF Core query diagnostic framework & patterns, EF Core anti-pattern catalog, Dapper anti-pattern catalog, response/output caching, IDistributedCache (Redis), IMemoryCache, stampede prevention |
-| `mssql/` | SQL Server comprehensive patterns (indexing, APPLY vs JOIN, query hints, window functions, CTEs, execution plans, locking, anti-patterns, troubleshooting), query performance decision hierarchies & DMV diagnostics |
-| `resume/` | ATS formatting rules, section order, keyword optimization, cover letter structure, truthfulness constraints, voice/personality |
+| `csharp/` | .NET architecture cheatsheet (CQRS, DDD, resilience, clean arch), EF Core query patterns & anti-patterns, Dapper anti-patterns |
+| `mssql/` | SQL Server comprehensive patterns (indexing, APPLY vs JOIN, window functions, CTEs, execution plans), query performance decision hierarchies & DMV diagnostics |
+| `nextjs/` | Next.js data patterns and middleware reference |
 
 ---
 
@@ -479,18 +427,18 @@ Steering docs are loaded into agent context at startup. They define how the agen
 
 Stub files in `templates/sdlc/` are copied into projects by SDLC skills. They're never loaded into agent context directly.
 
-| Template | Used by | Purpose |
-|----------|---------|---------|
-| `preferred-stack.md` | sdlc-stack-selection | Baseline team technology preferences |
-| `scope-profile.md` | sdlc-stack-selection | Project dimensions for stack evaluation |
-| `high-level-architecture.md` | sdlc-detailed-design | Technology-agnostic system diagram |
-| `workflow-diagrams.md` | sdlc-detailed-design | Data flow and interaction patterns |
-| `gap-risk-assessment.md` | sdlc-stack-selection | Risk matrix across all dimensions |
-| `stack-debate.md` | sdlc-stack-selection | Structured pros/cons for contested decisions |
-| `design-architecture.md` | sdlc-detailed-design | Final design document with selected stack |
-| `epics.json` | sdlc-epic-planning | Epic/story/task JSON schema with foundation epic |
-| `epic-document.md` | sdlc-epic-planning | Human-readable epic document |
-| `sprint-plan.md` | sdlc-sprint-planning | Sprint capacity and dependency tracking |
+| Template | Purpose |
+|----------|---------|
+| `preferred-stack.md` | Baseline team technology preferences |
+| `scope-profile.md` | Project dimensions for stack evaluation |
+| `high-level-architecture.md` | Technology-agnostic system diagram |
+| `workflow-diagrams.md` | Data flow and interaction patterns |
+| `gap-risk-assessment.md` | Risk matrix across all dimensions |
+| `stack-debate.md` | Structured pros/cons for contested decisions |
+| `design-architecture.md` | Final design document with selected stack |
+| `epics.json` | Epic/story/task JSON schema with foundation epic |
+| `epic-document.md` | Human-readable epic document |
+| `sprint-plan.md` | Sprint capacity and dependency tracking |
 
 ---
 
@@ -511,28 +459,26 @@ Changes to any file here are reflected immediately in all linked projects.
 
 ```bash
 kiro --agent dev                 # Full-stack, broad access
-kiro --agent dotnet              # .NET 9+ backend (EF Core, Dapper, CQRS, SQL Server)
 kiro --agent react-frontend      # React/Next.js scoped (no shell)
-kiro --agent infra               # Terraform, Docker, k8s, Tilt
 kiro --agent react-orchestrator  # Multi-agent frontend pipeline
 kiro --agent resume-builder      # Tailored resume + cover letter from a JD
-kiro --agent experience-parser   # Extract experience from .docx resumes
-kiro --agent job-scorer          # Score resume against a job description
-kiro --agent sdlc-lead           # Full SDLC lifecycle management
+kiro --agent work-summary        # Daily work summary tracker
 ```
 
 ### Resume tooling setup
 
 ```bash
-./scripts/resume/setup.sh
+cd skills/resume-content-writer/scripts
+./setup.sh
 ```
 
-Creates `config/resume/experience.json` (gitignored), installs Python deps, generates docx templates.
+Creates experience.json, installs Python deps, generates docx templates.
 
 ### Git workflow setup
 
 ```bash
-./scripts/git/setup.sh
+cd skills/git-workflow/scripts
+./setup.sh
 ```
 
 Installs commit-msg/pre-push hooks, enables `git rerere`, makes workflow scripts available:
@@ -556,18 +502,20 @@ Optional: `export TICKET_SYSTEM_URL="https://yourcompany.atlassian.net"` for tic
 {
   "name": "agent-name",
   "description": "What this agent does",
+  "model": "auto",
   "prompt": "System prompt text",
   "mcpServers": { /* server connections */ },
-  "tools": [ /* available tools */ ],
-  "allowedTools": [ /* auto-approved subset */ ],
-  "toolsSettings": { /* per-tool restrictions (allowed paths, commands) */ },
+  "tools": ["@builtin"],
+  "allowedTools": ["@builtin"],
+  "permissions": {
+    "rules": [
+      { "capability": "shell", "match": ["git *"], "effect": "allow" }
+    ]
+  },
   "resources": [
-    "skill://../skills/react-components.md",  // On-demand (metadata only at startup)
-    "file://package.json"                     // Always in context
-  ],
-  "hooks": {
-    "agentSpawn": [ /* commands run when agent starts */ ]
-  }
+    "skill://../skills/git-workflow/SKILL.md",  // On-demand (metadata only at startup)
+    "file://package.json"                       // Always in context
+  ]
 }
 ```
 
@@ -585,6 +533,7 @@ Optional: `export TICKET_SYSTEM_URL="https://yourcompany.atlassian.net"` for tic
 | `steering/` | `.claude/instructions/` or `CLAUDE.md` | `.github/copilot-instructions.md` | System prompt context |
 | `skills/` | Referenced files in `CLAUDE.md` | Inline in instructions | RAG documents or tool descriptions |
 | `agents/` | Per-directory `CLAUDE.md` variants | Not supported | `Agent` class definitions |
+| `hooks/` | `.claude/hooks/` | Not supported | Middleware / guardrails |
 | `mcp/` | `.claude/mcp.json` | Copilot Extensions | `Tool` implementations |
 
 ---
@@ -592,7 +541,8 @@ Optional: `export TICKET_SYSTEM_URL="https://yourcompany.atlassian.net"` for tic
 ## Principles
 
 1. **Organization enables portability.** Clear directory structure maps to any tool's config format.
-2. **Skills are condensed; steering has depth.** Skills stay compact for context windows. They reference steering when detail is needed.
-3. **MCP scripts are testable.** Each tool script does one thing, has tests alongside it, and runs independently of any agent framework.
-4. **Everything is version-controllable.** Human-readable text, clean diffs, standard PR workflow.
-5. **Agents are composable.** Adding a new persona means writing one JSON file over shared steering and skills.
+2. **Skills are self-contained directories.** Each skill bundles its SKILL.md, references, and scripts together.
+3. **Hooks enforce invariants.** Security policies are enforced automatically, not by agent self-discipline.
+4. **MCP scripts are testable.** Each tool script does one thing, has tests alongside it, and runs independently of any agent framework.
+5. **Everything is version-controllable.** Human-readable text, clean diffs, standard PR workflow.
+6. **Agents are composable.** Adding a new persona means writing one JSON file over shared steering and skills.

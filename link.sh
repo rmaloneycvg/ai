@@ -15,7 +15,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DIRS_TO_LINK=(agents steering skills)
+DIRS_TO_LINK=(agents steering skills hooks)
 
 # Default to ~/.kiro/ if no argument provided
 if [[ $# -lt 1 ]]; then
@@ -57,7 +57,19 @@ for dir in "${DIRS_TO_LINK[@]}"; do
         mkdir -p "$target_dir"
         ln -sf "$file" "$KIRO_DIR/$dir/$rel"
         ((count++)) || true
-    done < <(find "$SCRIPT_DIR/$dir" -type f -print0) || true
+    done < <(find "$SCRIPT_DIR/$dir" -type f \
+        -not -path '*/__pycache__/*' \
+        -not -path '*/pytest_cache/*' \
+        -not -path '*/tests/*'\
+        -not -path '*/node_modules/*' \
+        -not -path '*/.next/*' \
+        -not -path '*/dist/*' \
+        -not -path '*/build/*' \
+        -not -path '*/.cache/*' \
+        -not -path '*/.git/*' \
+        -not -name '*.pyc' \
+        -not -name '*.pyo' \
+        -print0) || true
 
     echo "  Linked $count files in $KIRO_DIR/$dir/"
 done

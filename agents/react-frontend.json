@@ -17,6 +17,10 @@
       "command": "npx",
       "args": ["tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/io.ts"],
       "timeout": 10000
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest", "--no-usage-statistics"]
     }
   },
   "hooks": {
