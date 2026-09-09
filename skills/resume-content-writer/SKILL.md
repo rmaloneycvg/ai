@@ -68,11 +68,11 @@ Apply scoring criteria, report gaps, and return structured JSON:
 
 If the user wants .docx output, ensure dependencies are installed first (`scripts/setup.sh`), then run:
 ```bash
-scripts/.venv/bin/python scripts/generate_docx.py --type resume --content content.json --pdf
-scripts/.venv/bin/python scripts/generate_docx.py --type cover_letter --content content.json --pdf
+scripts/.venv/bin/python scripts/generate_docx.py --type resume --content content.json --date 2025-01-27 --pdf
+scripts/.venv/bin/python scripts/generate_docx.py --type cover_letter --content content.json --date 2025-01-27 --pdf
 ```
 
-The script reads `targetCompany` from the content JSON to build the output path (`$RESUME_DIR/YYYY-MM-DD/CompanyName/`). Pass `--company "Name"` to override, or `--output path/to/file.docx` for a fully custom path.
+The script reads `targetCompany` from the content JSON to build the output path (`$RESUME_DIR/YYYY-MM-DD/CompanyName/`). Pass `--company "Name"` to override, `--date YYYY-MM-DD` to control the output directory date, or `--output path/to/file.docx` for a fully custom path.
 
 The `--pdf` flag generates a matching PDF alongside the docx (requires Windows with MS Word installed via `docx2pdf`). Omit `--pdf` on Linux/macOS.
 

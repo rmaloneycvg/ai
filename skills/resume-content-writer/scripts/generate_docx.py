@@ -429,10 +429,10 @@ def to_pascal_case(name: str) -> str:
     return "".join(word.capitalize() for word in cleaned.split())
 
 
-def build_output_path(company: str, doc_type: str, resume_dir: Path) -> Path:
+def build_output_path(company: str, doc_type: str, resume_dir: Path, date_override: str = None) -> Path:
     """Build the canonical output path: $RESUME_DIR/YYYY-MM-DD/CompanyName/filename.docx"""
     company_dir = to_pascal_case(company)
-    date_str = date.today().isoformat()
+    date_str = date_override or date.today().isoformat()
     prefix = "Resume" if doc_type == "resume" else "Cover_Letter"
     filename = f"{prefix}_{company_dir}.docx"
     return resume_dir / date_str / company_dir / filename
@@ -474,6 +474,11 @@ def main():
         default=False,
         help="Also generate a PDF via docx2pdf (requires Windows with MS Word installed)",
     )
+    parser.add_argument(
+        "--date",
+        default=None,
+        help="Date for output directory (YYYY-MM-DD format). Uses today's date if not specified.",
+    )
     args = parser.parse_args()
 
     # Load content
@@ -498,7 +503,7 @@ def main():
     if args.output:
         output_path = Path(args.output)
     else:
-        output_path = build_output_path(company, args.type, DEFAULT_RESUME_DIR)
+        output_path = build_output_path(company, args.type, DEFAULT_RESUME_DIR, args.date)
 
     # Template path (kept for API compat but not used — we generate from scratch)
     template_path = Path(args.template) if args.template else DEFAULT_TEMPLATE_DIR / "resume_template.docx"
