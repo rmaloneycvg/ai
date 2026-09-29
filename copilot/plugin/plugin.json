@@ -1,0 +1,15 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "kiro-ported-devtools",
+  "version": "0.1.0",
+  "description": "Kiro configuration ported to GitHub Copilot: agent skills, custom agents (with subagents + handoffs), and MCP servers.",
+  "keywords": [
+    "react",
+    "nextjs",
+    "security",
+    "planning",
+    "mcp",
+    "devtools"
+  ],
+  "license": "MIT"
+}

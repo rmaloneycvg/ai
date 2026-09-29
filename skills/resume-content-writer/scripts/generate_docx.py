@@ -514,21 +514,74 @@ def main():
     else:
         generate_cover_letter(content, template_path, output_path)
 
-    # PDF conversion (Windows only via docx2pdf)
+    # PDF conversion (Windows docx2pdf or WSL + PowerShell + Windows Word)
     if args.pdf:
-        if not HAS_DOCX2PDF:
-            print(
-                "  ⚠ WARNING: --pdf requested but docx2pdf is not installed. "
-                "Install with: pip install docx2pdf (Windows only, requires MS Word)",
-                file=sys.stderr,
-            )
-        else:
-            pdf_path = output_path.with_suffix(".pdf")
+        pdf_path = output_path.with_suffix(".pdf")
+        pdf_generated = False
+        
+        if HAS_DOCX2PDF:
             try:
                 docx2pdf_convert(str(output_path), str(pdf_path))
                 print(f"✓ PDF generated: {pdf_path}")
+                pdf_generated = True
             except Exception as e:
-                print(f"  ✗ PDF conversion failed: {e}", file=sys.stderr)
+                print(f"  ⚠ docx2pdf failed: {e}", file=sys.stderr)
+        
+        # If docx2pdf failed or not available, try PowerShell + Windows Word (WSL)
+        if not pdf_generated:
+            try:
+                import subprocess
+                import platform
+                
+                if platform.system() == "Linux":  # Likely WSL
+                    # Create PowerShell script for PDF conversion
+                    ps_script = output_path.parent / "convert_to_pdf.ps1"
+                    ps_content = '''# PowerShell script to convert DOCX to PDF using Microsoft Word
+param(
+    [string]$InputPath,
+    [string]$OutputPath
+)
+
+try {
+    $word = New-Object -ComObject Word.Application
+    $word.Visible = $false
+    $doc = $word.Documents.Open($InputPath)
+    $doc.SaveAs2($OutputPath, 17) # 17 = PDF format
+    $doc.Close()
+    $word.Quit()
+    Write-Host "Successfully converted to PDF: $OutputPath"
+} catch {
+    Write-Error "Failed to convert to PDF: $_"
+    exit 1
+} finally {
+    if ($word) {
+        try { $word.Quit() } catch {}
+    }
+}'''
+                    ps_script.write_text(ps_content)
+                    
+                    # Use wslpath to convert paths for PowerShell
+                    result = subprocess.run([
+                        'powershell.exe', '-ExecutionPolicy', 'Bypass', '-File', str(ps_script),
+                        '-InputPath', f'$(wslpath -w "{output_path}")',
+                        '-OutputPath', f'$(wslpath -w "{pdf_path}")'
+                    ], capture_output=True, text=True, cwd=output_path.parent, shell=True)
+                    
+                    if result.returncode == 0:
+                        print(f"✓ PDF generated: {pdf_path}")
+                        pdf_generated = True
+                    else:
+                        raise Exception(f"PowerShell conversion failed: {result.stderr}")
+                        
+            except Exception as e:
+                print(f"  ⚠ PowerShell PDF conversion failed: {e}", file=sys.stderr)
+        
+        if not pdf_generated:
+            print(
+                "  ⚠ WARNING: --pdf requested but no PDF conversion method available. "
+                "Install docx2pdf (Windows + MS Word) or ensure Windows Word is accessible from WSL.",
+                file=sys.stderr,
+            )
 
 
 if __name__ == "__main__":

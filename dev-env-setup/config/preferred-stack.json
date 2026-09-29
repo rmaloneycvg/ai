@@ -1,0 +1,189 @@
+{
+  "_note": {
+    "purpose": "Preferred dependency/image choices per role for the dev-env-setup agent system. Scaffold agents read this for context when stubbing out microservices.",
+    "version_contract": "A version value of \"latest\" is an INSTRUCTION, not a value to write. At scaffold time the agent resolves \"latest\" to the newest secure, stable, well-supported release, WRITES that concrete pinned version into the project manifest (package.json, go.mod, requirements.txt, k8s image tag, etc.), and records the resolution in .dev-env/resolved-stack.lock.json. Never leave the literal string \"latest\" in a project manifest. Pinned exact versions only: no \"^\", no \"~\", no floating ranges (SecurityPolicies). If a concrete version is given here instead of \"latest\", honor it exactly.",
+    "audit_gate": "After resolving Node dependencies, run `npm audit --audit-level=high` and refuse to proceed on high/critical findings.",
+    "container_policy": "All images run as non-root. Secrets are injected via env, never baked into images or committed.",
+    "lockfile": ".dev-env/resolved-stack.lock.json is the shared source of truth for resolved versions across parallel agents and re-runs."
+  },
+  "api": {
+    "go": {
+      "language": "go",
+      "runtime": { "go": "latest" },
+      "dependencies": {
+        "github.com/gin-gonic/gin": "latest",
+        "go.opentelemetry.io/otel": "latest",
+        "go.opentelemetry.io/otel/sdk": "latest",
+        "go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc": "latest",
+        "go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin": "latest"
+      },
+      "baseImage": "golang:latest",
+      "runtimeImage": "gcr.io/distroless/base-debian12:latest",
+      "notes": "Prefer distroless non-root runtime image. Multi-stage build."
+    },
+    "node": {
+      "language": "typescript",
+      "runtime": { "node": "latest" },
+      "framework": "express",
+      "dependencies": {
+        "express": "latest",
+        "@opentelemetry/api": "latest",
+        "@opentelemetry/sdk-node": "latest",
+        "@opentelemetry/auto-instrumentations-node": "latest",
+        "@opentelemetry/exporter-trace-otlp-grpc": "latest",
+        "zod": "latest"
+      },
+      "devDependencies": {
+        "typescript": "latest",
+        "@types/express": "latest",
+        "@types/node": "latest",
+        "tsx": "latest"
+      },
+      "baseImage": "node:latest",
+      "runtimeImage": "node:latest",
+      "notes": "TypeScript strict mode. Non-root node user. npm ci with committed package-lock.json."
+    }
+  },
+  "socket-api": {
+    "description": "Optional second API service dedicated to a socket layer. Uses the same language choice as the primary API.",
+    "node": {
+      "language": "typescript",
+      "dependencies": {
+        "express": "latest",
+        "ws": "latest",
+        "@opentelemetry/api": "latest",
+        "@opentelemetry/sdk-node": "latest",
+        "@opentelemetry/exporter-trace-otlp-grpc": "latest"
+      },
+      "devDependencies": {
+        "typescript": "latest",
+        "@types/ws": "latest",
+        "@types/node": "latest",
+        "tsx": "latest"
+      },
+      "notes": "One example socket handler + a /healthz route."
+    },
+    "go": {
+      "language": "go",
+      "dependencies": {
+        "github.com/gorilla/websocket": "latest",
+        "go.opentelemetry.io/otel": "latest"
+      },
+      "notes": "One example socket handler + a /healthz route."
+    }
+  },
+  "web": {
+    "next": {
+      "language": "typescript",
+      "framework": "next",
+      "dependencies": {
+        "next": "latest",
+        "react": "latest",
+        "react-dom": "latest"
+      },
+      "devDependencies": {
+        "typescript": "latest",
+        "@types/react": "latest",
+        "@types/node": "latest"
+      },
+      "baseImage": "node:latest",
+      "notes": "App Router. Server Components by default. shadcn/ui + Tailwind on demand. Non-root."
+    },
+    "react": {
+      "language": "typescript",
+      "framework": "react-vite",
+      "dependencies": {
+        "react": "latest",
+        "react-dom": "latest"
+      },
+      "devDependencies": {
+        "vite": "latest",
+        "@vitejs/plugin-react": "latest",
+        "typescript": "latest",
+        "@types/react": "latest",
+        "@types/react-dom": "latest"
+      },
+      "baseImage": "node:latest",
+      "notes": "Vite + React + TypeScript strict. shadcn/ui + Tailwind on demand. Non-root."
+    }
+  },
+  "database": {
+    "default": "postgres",
+    "postgres": {
+      "image": "postgres:latest",
+      "vectorImage": "pgvector/pgvector:latest",
+      "vectorNote": "Use the pgvector image and enable the `vector` extension in the migrations stub only when vector support is requested.",
+      "migrations": "Provide a migrations/ stub directory with an initial 0001_init.sql placeholder.",
+      "secrets": "POSTGRES_PASSWORD injected via env / k8s secret, never committed."
+    },
+    "mysql": {
+      "image": "mysql:latest",
+      "note": "Only when explicitly chosen over the Postgres default."
+    },
+    "mongodb": {
+      "image": "mongo:latest",
+      "note": "Only when explicitly chosen over the Postgres default."
+    }
+  },
+  "messaging": {
+    "rabbitmq": {
+      "image": "rabbitmq:latest",
+      "managementImage": "rabbitmq:latest",
+      "notes": "Use the management-enabled tag when resolving. Broker for Celery when Celery is selected."
+    }
+  },
+  "cache": {
+    "redis": {
+      "image": "redis:latest",
+      "notes": "Non-root. AOF persistence optional in dev."
+    }
+  },
+  "taskqueue": {
+    "celery": {
+      "language": "python",
+      "runtime": { "python": "latest" },
+      "dependencies": {
+        "celery": "latest",
+        "opentelemetry-api": "latest",
+        "opentelemetry-sdk": "latest",
+        "opentelemetry-exporter-otlp": "latest",
+        "opentelemetry-instrumentation-celery": "latest"
+      },
+      "broker": "rabbitmq",
+      "baseImage": "python:latest",
+      "notes": "Own Tilt service with one example task. Requires RabbitMQ (auto-added if Celery selected)."
+    }
+  },
+  "cron": {
+    "kind": "k8s-cronjob",
+    "notes": "Bare-bones k8s CronJob stub running one placeholder job. OTLP-wired.",
+    "image": "alpine:latest"
+  },
+  "telemetry": {
+    "always_added": true,
+    "otel-collector": {
+      "image": "otel/opentelemetry-collector-contrib:latest",
+      "role": "aggregator",
+      "notes": "Receives OTLP (grpc 4317 / http 4318) from all services; exports traces to Jaeger and metrics to Prometheus."
+    },
+    "jaeger": {
+      "image": "jaegertracing/all-in-one:latest",
+      "notes": "Trace backend + UI. Collector exports traces here."
+    },
+    "prometheus": {
+      "image": "prom/prometheus:latest",
+      "notes": "Scrapes the collector's Prometheus exporter endpoint."
+    },
+    "grafana": {
+      "image": "grafana/grafana:latest",
+      "notes": "Pre-provisioned datasources for Prometheus and Jaeger."
+    }
+  },
+  "gateway": {
+    "nginx": {
+      "image": "nginx:latest",
+      "role": "reverse-proxy-and-secure-gateway",
+      "notes": "Mostly-empty base config with security headers; route blocks are appended per service by des-integration. Per-origin CORS, never wildcard-with-credentials (SecurityPolicies)."
+    }
+  }
+}

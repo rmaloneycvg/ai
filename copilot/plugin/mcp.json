@@ -1,0 +1,94 @@
+{
+  "servers": {
+    "git": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "tsx",
+        "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/git.ts"
+      ]
+    },
+    "io": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "tsx",
+        "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/io.ts"
+      ]
+    },
+    "postgres": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "tsx",
+        "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/postgres.ts"
+      ]
+    },
+    "linear": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "tsx",
+        "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/linear.ts"
+      ]
+    },
+    "jira": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "tsx",
+        "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/jira.ts"
+      ]
+    },
+    "prometheus": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "tsx",
+        "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/prometheus.ts"
+      ]
+    },
+    "jaeger": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "tsx",
+        "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/jaeger.ts"
+      ]
+    },
+    "grafana": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "tsx",
+        "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/grafana.ts"
+      ]
+    },
+    "rag": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "tsx",
+        "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/rag.ts"
+      ]
+    },
+    "work-summary": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "tsx",
+        "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/work-summary.ts"
+      ]
+    }
+  }
+}

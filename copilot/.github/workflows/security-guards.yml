@@ -1,0 +1,39 @@
+# CI enforcement of the ported Kiro security guards.
+#
+# WHY: replaces Kiro's always-on PreToolUse hooks (no Copilot equivalent) with a
+# CI gate so secret-shaped content never lands on a protected branch, regardless
+# of which agent (CLI / IDE / cloud) authored the change. Mirrors the local
+# pre-commit config in .pre-commit-config.yaml.
+name: Security Guards
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+
+jobs:
+  check-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Scan changed files for secrets
+        shell: bash
+        run: |
+          # On PRs, scan files changed vs the base ref; on push, scan the whole tree.
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            mapfile -t CHANGED < <(git diff --name-only --diff-filter=ACM \
+              "origin/${{ github.base_ref }}...HEAD")
+          else
+            mapfile -t CHANGED < <(git ls-files)
+          fi
+          if [ "${#CHANGED[@]}" -eq 0 ]; then
+            echo "No files to scan."; exit 0
+          fi
+          chmod +x hooks/scripts/check-secrets-precommit.sh
+          hooks/scripts/check-secrets-precommit.sh "${CHANGED[@]}"

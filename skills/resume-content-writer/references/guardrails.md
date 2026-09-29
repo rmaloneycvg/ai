@@ -11,6 +11,8 @@ Non-negotiable constraints. Violating these risks ATS rejection, misrepresentati
 | Accomplishments | If it's not documented as a bullet, don't invent it |
 | Metrics | Use only metrics explicitly recorded. Never round up or extrapolate |
 | Scope | Don't upgrade "contributed to" → "led" or "team of 3" → "team of 10" |
+| Context fabrication | NEVER invent specific industries, client details, or use cases not explicitly stated |
+| Domain specificity | Don't assume "scheduling" is healthcare, "data reconciliation" is patient data, etc. |
 | Rephrasing | Allowed — rewording for impact without changing meaning is fine |
 | Fabrication | NEVER allowed under any circumstances |
 
@@ -48,6 +50,17 @@ Non-negotiable constraints. Violating these risks ATS rejection, misrepresentati
 | Listing duties instead of results | Tells AI what you were supposed to do, not what you achieved |
 | Missing or hidden dates | AI views missing dates as intentional omission |
 | Keyword stuffing | AI detects unnatural density and flags as spam |
+| **Fabricating domain context** | **Claiming "healthcare scheduling" when experience.json only says "scheduling"** |
+| **Inventing client details** | **Adding "50,000+ patients" or "NJ mental health facilities" not in source** |
+| **Assuming HIPAA compliance** | **Don't claim regulatory compliance without explicit documentation** |
+
+## Example of Fabrication to AVOID
+
+❌ **WRONG** (fabricated from generic "scheduling application"):
+"Optimized critical patient scheduling queries for NJ mental health facilities, improving care coordination for 50,000+ patients"
+
+✅ **CORRECT** (stays true to source):
+"Optimized critical scheduling queries, reducing response times from multi-minute waits to instant results for administrative staff"
 
 ## Years of Experience Rule
 

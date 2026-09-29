@@ -1,0 +1,1146 @@
+{
+  "paths": {
+    "resumeDir": "~/workspace/resume"
+  },
+  "metadata": {
+    "version": "1.2.0",
+    "lastUpdated": "2026-07-29",
+    "notes": "Added paths config for agent tooling"
+  },
+  "personalInfo": {
+    "name": "Ryan Maloney",
+    "email": "rsmaloney@gmail.com",
+    "phone": "(574) 612-5413",
+    "linkedin": "https://www.linkedin.com/in/rsmaloney/",
+    "github": "https://github.com/rmaloneycvg",
+    "portfolio": "",
+    "location": "Broomfield, CO"
+  },
+  "summaryTemplates": [
+    {
+      "focus": "full-stack",
+      "text": "Full Stack Engineer with {yearsExperience}+ years delivering scalable web applications across React, .NET, Node.js, and Python. Proven track record architecting microservices, serverless APIs, and data pipelines on AWS, Azure, and GCP. Combines deep technical execution with pragmatic leadership\u2014mentoring teams, championing observability, and shipping iteratively under tight constraints."
+    },
+    {
+      "focus": "frontend",
+      "text": "Frontend-focused Full Stack Engineer with {yearsExperience}+ years building performant, accessible interfaces in React, Angular, Vue.js, and TypeScript. Experienced with GraphQL/Apollo, component-driven architectures, and comprehensive E2E testing with Playwright. Passionate about developer experience, design systems, and delivering polished UIs that drive measurable business outcomes."
+    },
+    {
+      "focus": "backend",
+      "text": "Backend and platform engineer with {yearsExperience}+ years designing distributed systems, ETL pipelines, and serverless architectures on AWS and Azure. Deep expertise in .NET, Node.js, Python, and SQL with proven ability to migrate legacy systems, establish observability practices, and maintain <5-minute downtime SLAs for mission-critical deployments."
+    },
+    {
+      "focus": "leadership",
+      "text": "Technical Lead and Senior Engineer with {yearsExperience}+ years shipping production software while growing engineering teams. Champions iterative delivery, integration-first testing, and AI-augmented development workflows. Leads with empathy in code reviews and technical debates, ensuring teams ship confidently under tight constraints. Primary metric for success: the success of those mentored."
+    }
+  ],
+  "skills": {
+    "categories": [
+      {
+        "name": "Languages",
+        "skills": [
+          "TypeScript",
+          "JavaScript",
+          "Python",
+          "C#",
+          "SQL",
+          "HTML/CSS"
+        ]
+      },
+      {
+        "name": "Frameworks & Libraries",
+        "skills": [
+          "React",
+          ".NET",
+          "Node.js",
+          "Angular",
+          "GraphQL",
+          "Apollo",
+          "TanStack Query",
+          "React Redux",
+          "Express.js",
+          "Entity Framework",
+          "Celery",
+          "Tailwind CSS",
+          "Bootstrap",
+          "AG Grid",
+          "Apryse",
+          "jQuery"
+        ]
+      },
+      {
+        "name": "Cloud & Infrastructure",
+        "skills": [
+          "AWS",
+          "Azure",
+          "GCP",
+          "Serverless Architecture",
+          "Docker",
+          "Tilt",
+          "Databricks",
+          "SQL Server",
+          "PostgreSQL",
+          "Firebase",
+          "MySQL",
+          "Redis",
+          "MongoDB",
+          "Nebula GraphDB",
+          "RabbitMQ"
+        ]
+      },
+      {
+        "name": "Architecture",
+        "skills": [
+          "Microservices",
+          "Serverless",
+          "Event-Driven Architecture",
+          "REST APIs",
+          "SOAP",
+          "Socket.IO",
+          "ETL Pipelines",
+          "Distributed Tracing",
+          "API Gateway",
+          "OAuth2/Entra ID"
+        ]
+      },
+      {
+        "name": "Tools & Practices",
+        "skills": [
+          "GitHub Actions",
+          "CI/CD Pipelines",
+          "SSRS (SQL Server Reporting Services)",
+          "Grafana",
+          "Prometheus",
+          "Jaeger",
+          "OpenTelemetry",
+          "CloudWatch",
+          "Application Insights",
+          "Playwright",
+          "Vitest",
+          "Jest",
+          "xUnit",
+          "NUnit",
+          "pytest",
+          "JMeter",
+          "OpenAI",
+          "LangChain",
+          "LangGraph",
+          "Llama",
+          "IBM Watson AI SDK",
+          "NVIDIA SDK",
+          "MCP Services"
+        ]
+      }
+    ]
+  },
+  "experience": [
+    {
+      "company": "Pellera",
+      "title": "Tech Lead / Sr. Software Engineer",
+      "startDate": "September 2022",
+      "endDate": "May 2026",
+      "location": "Remote",
+      "remote": true,
+      "bullets": [
+        {
+          "text": "Co-developed an AI application using Python, Node.js, IBM Watson AI, and NVIDIA libraries featuring conversation summarization, key term extraction, speaker diarization, and a next-best-action agent driven by entity extraction and vectorized Nebula GraphDB",
+          "keywords": [
+            "Python",
+            "Node.js",
+            "IBM Watson AI",
+            "NVIDIA",
+            "Nebula GraphDB",
+            "AI",
+            "NLP",
+            "entity extraction"
+          ],
+          "category": "architecture"
+        },
+        {
+          "text": "Modernized legacy development environments into Tilt-orchestrated microservices with integrated observability (Grafana, Prometheus, Jaeger) and comprehensive test suites, leveraging agentic AI tools and custom agents for instrumentation and code generation",
+          "keywords": [
+            "Tilt",
+            "microservices",
+            "Grafana",
+            "Prometheus",
+            "Jaeger",
+            "observability",
+            "AI agents"
+          ],
+          "category": "force-multiplier"
+        },
+        {
+          "text": "Established standardized observability practice using OpenTelemetry collectors with Grafana, Prometheus, and Jaeger for distributed tracing; configured Application Insights (Azure) and CloudWatch (AWS) for production debugging",
+          "keywords": [
+            "OpenTelemetry",
+            "Grafana",
+            "Prometheus",
+            "Jaeger",
+            "Application Insights",
+            "CloudWatch",
+            "distributed tracing"
+          ],
+          "category": "architecture"
+        },
+        {
+          "text": "Implemented GitHub Action pipelines enforcing pre-merge quality gates including linting, dependency vulnerability scanning, smoke tests, and automated test execution",
+          "keywords": [
+            "GitHub Actions",
+            "CI/CD",
+            "quality gates",
+            "linting",
+            "vulnerability scanning"
+          ],
+          "category": "force-multiplier"
+        },
+        {
+          "text": "Owned end-to-end deployment pipelines for a .NET scheduling application including automated test gates, staging builds, database backup with diff-based rollback script generation, and coordinated web farm restarts; maintained <5-minute unscheduled downtime SLA for State of New Jersey deployment",
+          "metrics": "<5-minute unscheduled downtime SLA",
+          "keywords": [
+            ".NET",
+            "deployment pipeline",
+            "database backup",
+            "rollback",
+            "web farm",
+            "SLA"
+          ],
+          "category": "scale"
+        },
+        {
+          "text": "Championed integration-first testing approach establishing Playwright E2E suites, Vitest/Jest (frontend), xUnit/NUnit (.NET), and pytest (Python); applied JMeter for API load and performance testing",
+          "keywords": [
+            "Playwright",
+            "Vitest",
+            "Jest",
+            "xUnit",
+            "NUnit",
+            "pytest",
+            "JMeter",
+            "E2E testing",
+            "load testing"
+          ],
+          "category": "technical-execution"
+        },
+        {
+          "text": "Architected a secure Azure serverless API (Entra ID OAuth2, API Gateway) interfacing with Databricks and Microsoft Power Platform for AI/ML-driven inventory reconciliation, solving client inability to reconcile inventory between vendors, partners, and internal systems",
+          "keywords": [
+            "Azure",
+            "serverless",
+            "Entra ID",
+            "OAuth2",
+            "API Gateway",
+            "Databricks",
+            "Power Platform",
+            "AI/ML"
+          ],
+          "category": "architecture"
+        },
+        {
+          "text": "Engineered a custom Node.js and BCP CLI ETL pipeline to migrate 20+ years of active data (millions of records) from unsupported Lotus Notes database to RDBMS with less than 1 hour of production downtime",
+          "metrics": "<1 hour downtime for 20+ years of production data migration",
+          "keywords": [
+            "Node.js",
+            "ETL",
+            "BCP",
+            "data migration",
+            "Lotus Notes",
+            "RDBMS"
+          ],
+          "category": "technical-execution"
+        },
+        {
+          "text": "Developed React frontend for a DocuSign-alternative digital signature application integrating Apryse components and Notarius API",
+          "keywords": [
+            "React",
+            "Apryse",
+            "digital signatures",
+            "Notarius"
+          ],
+          "category": "technical-execution"
+        },
+        {
+          "text": "Inherited and stabilized a troubled Vue.js ecommerce application for the Golden Gate Bridge as the third developer on the project, resolving build failures, implementing missing test coverage, and delivering to MVP status",
+          "keywords": [
+            "Vue.js",
+            "ecommerce",
+            "legacy code",
+            "stabilization",
+            "MVP",
+            "Golden Gate Bridge"
+          ],
+          "category": "technical-execution"
+        },
+        {
+          "text": "Led IBM Cloud Hackathon team to build 'HavenSync,' a HIPAA-compliant agentic AI disaster relief intake assistant",
+          "keywords": [
+            "IBM Cloud",
+            "hackathon",
+            "HIPAA",
+            "AI agent",
+            "disaster relief"
+          ],
+          "category": "leadership"
+        },
+        {
+          "text": "Tech lead for white-label project using MIST access points to track anonymous Bluetooth/wireless signals with triangulation for retail analytics dashboards, generating metrics that optimized product placement",
+          "keywords": [
+            "MIST",
+            "Bluetooth",
+            "triangulation",
+            "retail analytics",
+            "white-label"
+          ],
+          "category": "architecture"
+        },
+        {
+          "text": "Eliminated critical scheduling delays for administrative staff across multiple NJ mental health facilities\u2014processes dropped from multi-minute waits to instant response",
+          "metrics": "Multi-minute waits reduced to instant response",
+          "keywords": [
+            "performance optimization",
+            "scheduling",
+            "healthcare"
+          ],
+          "category": "business-impact"
+        },
+        {
+          "text": "Led the internal effort to standardize UI development practices and establish consistent frontend patterns across all projects",
+          "keywords": [
+            "UI standards",
+            "frontend",
+            "best practices",
+            "standardization"
+          ],
+          "category": "force-multiplier"
+        },
+        {
+          "text": "Led agile ceremonies and sprint planning across multiple concurrent projects",
+          "keywords": [
+            "agile",
+            "sprint planning",
+            "scrum",
+            "project management"
+          ],
+          "category": "leadership"
+        },
+        {
+          "text": "Responsible for quality control oversight of .NET implementations across the engineering team",
+          "keywords": [
+            ".NET",
+            "quality control",
+            "code review",
+            "oversight"
+          ],
+          "category": "leadership"
+        },
+        {
+          "text": "Contributed to requirements gathering and pre-sale project estimation for prospective client engagements",
+          "keywords": [
+            "requirements gathering",
+            "estimation",
+            "pre-sale",
+            "consulting"
+          ],
+          "category": "leadership"
+        }
+      ],
+      "technologies": [
+        "Python",
+        "Node.js",
+        "C#",
+        ".NET",
+        "React",
+        "Vue.js",
+        "TypeScript",
+        "Azure",
+        "AWS",
+        "Tilt",
+        "Docker",
+        "GitHub Actions",
+        "Grafana",
+        "Prometheus",
+        "Jaeger",
+        "OpenTelemetry",
+        "CloudWatch",
+        "Application Insights",
+        "Playwright",
+        "Vitest",
+        "Jest",
+        "xUnit",
+        "NUnit",
+        "pytest",
+        "JMeter",
+        "IBM Watson AI SDK",
+        "NVIDIA SDK",
+        "Nebula GraphDB",
+        "Apryse",
+        "Entra ID",
+        "Databricks",
+        "SQL Server",
+        "Tailwind CSS",
+        "TanStack Query",
+        "React Redux",
+        "Bootstrap",
+        "REST APIs",
+        "Socket.IO",
+        "Celery",
+        "LangChain",
+        "LangGraph"
+      ]
+    },
+    {
+      "company": "DailyAI",
+      "title": "Sr. Software Engineer",
+      "startDate": "November 2021",
+      "endDate": "August 2022",
+      "location": "Remote",
+      "remote": true,
+      "bullets": [
+        {
+          "text": "Rebuilt core CRM contact and sales pipeline modules implementing dynamic sorting, saved filters, advanced reporting, and data exports with automated follow-ups, unblocking agent productivity and enabling faster lead management",
+          "keywords": [
+            "CRM",
+            "React",
+            "sales pipeline",
+            "reporting",
+            "data exports"
+          ],
+          "category": "business-impact"
+        },
+        {
+          "text": "Developed 'Daily CLI,' a batch operations tool for generating rollback scripts, eliminating hours of manual maintenance and accelerating feature development",
+          "metrics": "Eliminated hours of manual maintenance",
+          "keywords": [
+            "CLI tooling",
+            "batch operations",
+            "rollback scripts",
+            "developer productivity"
+          ],
+          "category": "force-multiplier"
+        },
+        {
+          "text": "Diagnosed critical recursive serverless function anomaly (3,000+ concurrent instances) via Google Cloud Monitoring dashboards; resolved through targeted refactoring into isolated, testable functions with proper exception handling, saving $8,000\u2013$10,000/week in compute costs",
+          "metrics": "$8,000\u2013$10,000/week savings",
+          "keywords": [
+            "GCP",
+            "serverless",
+            "Cloud Functions",
+            "debugging",
+            "cost optimization",
+            "refactoring"
+          ],
+          "category": "scale"
+        },
+        {
+          "text": "Collaborated on foundational data access patterns for React and Apollo GraphQL architecture using custom hooks and React Query",
+          "keywords": [
+            "React",
+            "Apollo",
+            "GraphQL",
+            "React Query",
+            "custom hooks"
+          ],
+          "category": "architecture"
+        },
+        {
+          "text": "Implemented integrations with Twilio SMS and SendGrid for automated customer communications",
+          "keywords": [
+            "Twilio",
+            "SendGrid",
+            "integrations",
+            "SMS"
+          ],
+          "category": "technical-execution"
+        },
+        {
+          "text": "Optimized database and serverless functions to improve horizontal and vertical scalability for the platform",
+          "keywords": [
+            "database optimization",
+            "serverless",
+            "scalability",
+            "performance"
+          ],
+          "category": "scale"
+        }
+      ],
+      "technologies": [
+        "React",
+        "TypeScript",
+        "GraphQL",
+        "Apollo",
+        "React Query",
+        "GCP",
+        "Cloud Functions",
+        "Serverless",
+        "Twilio",
+        "SendGrid",
+        "Node.js",
+        "MongoDB",
+        "Bootstrap",
+        "REST APIs"
+      ]
+    },
+    {
+      "company": "Onebridge",
+      "title": "Sr. Software Engineer",
+      "startDate": "March 2020",
+      "endDate": "October 2021",
+      "location": "Remote",
+      "remote": true,
+      "bullets": [
+        {
+          "text": "Architected payroll integration between NetSuite ERP/OpenAir and external systems with custom data extraction scripts, Webhooks, and serverless functions",
+          "keywords": [
+            "NetSuite",
+            "ERP",
+            "OpenAir",
+            "payroll integration",
+            "Webhooks",
+            "serverless"
+          ],
+          "category": "architecture"
+        },
+        {
+          "text": "Designed role-based administrative web interface and implemented robust asynchronous workflows for email processing, optimizing scheduled job performance from several minutes to instant completion",
+          "metrics": "Scheduled jobs reduced from minutes to instant",
+          "keywords": [
+            "role-based access",
+            "async workflows",
+            "email processing",
+            "performance optimization"
+          ],
+          "category": "scale"
+        },
+        {
+          "text": "Collaborated on dynamic, schema-driven form creation platform for a .NET/Azure/React-based travel insurance product while migrating from AngularJS to React",
+          "keywords": [
+            ".NET",
+            "Azure",
+            "React",
+            "AngularJS",
+            "schema-driven forms",
+            "migration"
+          ],
+          "category": "technical-execution"
+        },
+        {
+          "text": "Enhanced a healthcare tracking application with modern JavaScript tooling, extending the API with asynchronous and parallel processing and implementing a managed approach to logging",
+          "keywords": [
+            "healthcare",
+            "JavaScript",
+            "async",
+            "parallel processing",
+            "logging",
+            "performance"
+          ],
+          "category": "technical-execution"
+        },
+        {
+          "text": "Built a charity fundraising event management platform for a non-profit using ASP.NET MVC 5 with Entity Framework, featuring team/walker registration, Authorize.Net credit card donation processing, organizational sponsor management, image uploads, and reporting — deployed to Azure",
+          "keywords": [
+            "ASP.NET MVC",
+            "Entity Framework",
+            "Authorize.Net",
+            "payment processing",
+            "Azure",
+            "non-profit",
+            "fundraising"
+          ],
+          "category": "technical-execution"
+        }
+      ],
+      "technologies": [
+        "React",
+        "AngularJS",
+        ".NET",
+        "Azure",
+        "TypeScript",
+        "Node.js",
+        "NetSuite",
+        "Serverless",
+        "Entity Framework",
+        "Tailwind CSS",
+        "TanStack Query",
+        "React Redux",
+        "Bootstrap",
+        "REST APIs",
+        "Socket.IO"
+      ]
+    }
+  ],
+  "additionalExperience": [
+    {
+      "company": "Republic Airways",
+      "title": "Software Engineer II",
+      "startDate": "December 2011",
+      "endDate": "February 2020",
+      "location": "Indianapolis, IN",
+      "remote": false,
+      "bullets": [
+        {
+          "text": "Architected campaign-driven enrollment system in AngularJS with .NET Core API managing complex business rules and daily partner integrations across Delta, United, and American Airlines",
+          "keywords": [
+            "AngularJS",
+            ".NET Core",
+            "API",
+            "airline integrations",
+            "enrollment"
+          ],
+          "category": "architecture"
+        },
+        {
+          "text": "Designed and built a 42KB+ pass rider validation engine implementing age/gender/relationship eligibility rules, codeshare partner constraints, and enrollment period windowing — forming the core business logic for travel benefit enrollment across multiple subsidiary companies",
+          "keywords": [
+            "business rules engine",
+            "validation",
+            "AngularJS",
+            "complex logic",
+            "eligibility"
+          ],
+          "category": "architecture"
+        },
+        {
+          "text": "Built bidirectional partner feed automation (C# console app) generating outgoing enrollment files for Delta and United Airlines and processing incoming N-Number assignments, with file staging, encryption, archiving, and 365-day purge policies running on scheduled tasks",
+          "keywords": [
+            "C#",
+            "ETL",
+            "file processing",
+            "automation",
+            "Delta",
+            "United Airlines",
+            "scheduled tasks"
+          ],
+          "category": "technical-execution"
+        },
+        {
+          "text": "Created a separate administrative application with AG Grid, campaign configuration, employee search, multi-step approval workflows, enrollment history, imputed income tracking, fee management, and HTML email template editing via Ace editor",
+          "keywords": [
+            "AG Grid",
+            "admin panel",
+            "approval workflows",
+            "campaign management",
+            "AngularJS"
+          ],
+          "category": "technical-execution"
+        },
+        {
+          "text": "Created real-time dynamic email templating service for mass communications leveraging Azure-based sentiment analysis, processing up to 4,000 survey responses daily",
+          "metrics": "4,000 survey responses processed daily",
+          "keywords": [
+            "Azure",
+            "sentiment analysis",
+            "email templating",
+            "mass communications"
+          ],
+          "category": "scale"
+        },
+        {
+          "text": "Designed enterprise-wide integration architecture for UltiPro SaaS HR system with 30+ bidirectional ETL processes; cross-trained a dedicated team to manage future pipeline integrations",
+          "metrics": "30+ bidirectional ETL processes",
+          "keywords": [
+            "UltiPro",
+            "ETL",
+            "HR system",
+            "enterprise integration",
+            "cross-training"
+          ],
+          "category": "architecture"
+        },
+        {
+          "text": "Led development of React-based activity and time-tracking application integrating data flows between Flight Scheduling, Contract Management, Instructor Scheduling, Schedule Bidding, and Payroll systems to schedule, track, and export supplemental payroll data for flight instructors",
+          "keywords": [
+            "React",
+            "time-tracking",
+            "payroll integration",
+            "service-first architecture",
+            "data integration"
+          ],
+          "category": "architecture"
+        },
+        {
+          "text": "Created a schema-driven logic tree-based SPA application to manage hotel, car, and business travel expenses using PolymerJS, later redesigned with Angular 1.6x to improve performance",
+          "keywords": [
+            "PolymerJS",
+            "Angular",
+            "SPA",
+            "expense management",
+            "schema-driven"
+          ],
+          "category": "technical-execution"
+        },
+        {
+          "text": "Created a dining services application utilizing statistics modeling to predict inventory requirements for flights based on past sales history",
+          "keywords": [
+            "statistics",
+            "predictive modeling",
+            "inventory",
+            "dining services",
+            "data analysis"
+          ],
+          "category": "technical-execution"
+        },
+        {
+          "text": "Authored a modular .NET Core internal library providing reusable building blocks for enterprise integrations: TPL Dataflow-based parallel workflow execution, Scriban/Liquid template engine for dynamic email rendering, composable file pipeline steps (stage/archive/purge), and configurable SQL-to-CSV/Excel export services — adopted across multiple projects",
+          "keywords": [
+            ".NET Core",
+            "internal library",
+            "TPL Dataflow",
+            "Scriban",
+            "template engine",
+            "pipeline pattern",
+            "reusable components",
+            "data export"
+          ],
+          "category": "force-multiplier"
+        },
+        {
+          "text": "Developed and maintained SSRS reports for operational and executive stakeholders including flight operations metrics, employee enrollment statistics, and payroll reconciliation — integrated into internal .NET web applications with parameterized data sources and scheduled subscriptions",
+          "keywords": [
+            "SSRS",
+            "SQL Server Reporting Services",
+            "report development",
+            "flight operations",
+            "payroll",
+            "reporting",
+            "data visualization"
+          ],
+          "category": "technical-execution"
+        }
+      ],
+      "technologies": [
+        "AngularJS",
+        "React",
+        "PolymerJS",
+        ".NET Core",
+        "C#",
+        "Azure",
+        "SQL Server",
+        "JavaScript",
+        "OData",
+        "AG Grid",
+        "SSRS",
+        "Enterprise Library",
+        "Gulp",
+        "SASS",
+        "ui-router",
+        "Tailwind CSS",
+        "TanStack Query",
+        "React Redux",
+        "Bootstrap",
+        "REST APIs",
+        "SOAP"
+      ]
+    },
+    {
+      "company": "Exact Target (now Salesforce Marketing Cloud)",
+      "title": "Senior Software Engineer",
+      "startDate": "August 2010",
+      "endDate": "November 2011",
+      "location": "Indianapolis, IN",
+      "remote": false,
+      "bullets": [
+        {
+          "text": "Architected a middle tier and client-side framework to integrate Facebook Like into email by linking static hyperlinks to dynamically generated landing pages",
+          "keywords": [
+            "architecture",
+            "Facebook API",
+            "email marketing",
+            "landing pages"
+          ],
+          "category": "architecture"
+        },
+        {
+          "text": "Introduced the jquery-ui widget design pattern to the ExactTarget UI team, which was then adopted as the standard design pattern for all Fuel platform controls",
+          "metrics": "Design pattern adopted as team-wide standard for Fuel platform",
+          "keywords": [
+            "jquery-ui",
+            "design patterns",
+            "UI architecture",
+            "Fuel platform"
+          ],
+          "category": "force-multiplier"
+        },
+        {
+          "text": "Created client-side JavaScript controls using the jquery-ui widget pattern for A/B Testing, built for scalability by dynamically loading content",
+          "keywords": [
+            "JavaScript",
+            "jquery-ui",
+            "A/B testing",
+            "dynamic content loading"
+          ],
+          "category": "technical-execution"
+        },
+        {
+          "text": "Created an optimized search grid by extending a 3rd party grid control capable of searching and sorting more than a million records",
+          "metrics": "1M+ records searchable and sortable",
+          "keywords": [
+            "performance optimization",
+            "grid controls",
+            "search",
+            "large datasets"
+          ],
+          "category": "scale"
+        },
+        {
+          "text": "Architected a JavaScript validation library to validate JSON stored in plain text",
+          "keywords": [
+            "JavaScript",
+            "JSON validation",
+            "library development"
+          ],
+          "category": "technical-execution"
+        },
+        {
+          "text": "Built a client-side logging mechanism to record information about all classic ASP page requests by dynamically injecting JavaScript to collect data and route to a handler logging to SQL Server",
+          "keywords": [
+            "JavaScript",
+            "logging",
+            "classic ASP",
+            "SQL Server",
+            "instrumentation"
+          ],
+          "category": "force-multiplier"
+        },
+        {
+          "text": "Contributed to cross-functional teams including Product Management, Quality Assurance, UX Design, and Documentation on platform projects",
+          "keywords": [
+            "cross-functional",
+            "collaboration",
+            "product management"
+          ],
+          "category": "leadership"
+        }
+      ],
+      "technologies": [
+        "JavaScript",
+        "jQuery",
+        "jquery-ui",
+        "RequireJS",
+        "C#",
+        "ASP.NET",
+        "LINQ",
+        "SQL Server",
+        "IIS7",
+        "Facebook API",
+        "Classic ASP"
+      ]
+    },
+    {
+      "company": "Springwise Facility Management",
+      "title": "Web Developer",
+      "startDate": "July 2009",
+      "endDate": "August 2010",
+      "location": "South Bend, IN",
+      "remote": false,
+      "bullets": [
+        {
+          "text": "Designed and created a vendor/client portal servicing more than 2,000 active users with forms and Active Directory authentication through custom extensions of Microsoft Role, Profile, and Membership provider models",
+          "metrics": "2,000+ active users",
+          "keywords": [
+            "ASP.NET",
+            "Active Directory",
+            "authentication",
+            "vendor portal",
+            "membership providers"
+          ],
+          "category": "architecture"
+        },
+        {
+          "text": "Integrated SQL Server Reporting Services (SSRS) into existing web infrastructure utilizing multiple authentication models for public and internal users",
+          "keywords": [
+            "SSRS",
+            "SQL Server",
+            "reporting",
+            "authentication"
+          ],
+          "category": "technical-execution"
+        },
+        {
+          "text": "Created an automated phone answering system with SQL Phone utilizing SAPI 5.1 voices for vendors to report services",
+          "keywords": [
+            "SQL Phone",
+            "SAPI",
+            "automation",
+            "IVR"
+          ],
+          "category": "technical-execution"
+        },
+        {
+          "text": "Integrated Enterprise Library (4.1, 5.0) throughout various .NET solutions for Logging, Event Handling, Data Access, and Validation",
+          "keywords": [
+            "Enterprise Library",
+            ".NET",
+            "logging",
+            "data access",
+            "validation"
+          ],
+          "category": "technical-execution"
+        },
+        {
+          "text": "Deployed and maintained several 3rd party web applications including a wiki for knowledge transfer and a Subversion SVN server for source control",
+          "keywords": [
+            "SVN",
+            "wiki",
+            "IIS",
+            "deployment"
+          ],
+          "category": "force-multiplier"
+        }
+      ],
+      "technologies": [
+        "C#",
+        "ASP.NET",
+        "LINQ",
+        "SQL Server",
+        "JavaScript",
+        "jQuery",
+        "jquery-ui",
+        "IIS",
+        "Enterprise Library",
+        "SSRS",
+        "Web Services",
+        "AJAX",
+        ".NET Framework 3.5/4.0"
+      ]
+    },
+    {
+      "company": "Better World Books",
+      "title": "Developer II",
+      "startDate": "October 2008",
+      "endDate": "June 2009",
+      "location": "South Bend, IN",
+      "remote": false,
+      "bullets": [
+        {
+          "text": "Created a complex promotion content management system in C# and ASP.NET enabling the marketing team to create automated sales promotions on the company's ecommerce website, utilizing LINQ to SQL and Active Directory for authentication",
+          "keywords": [
+            "C#",
+            "ASP.NET",
+            "CMS",
+            "ecommerce",
+            "LINQ to SQL",
+            "Active Directory"
+          ],
+          "category": "architecture"
+        },
+        {
+          "text": "Led migration of BetterWorldBooks.com from a single Windows 2003 server to a web farm of 3 web servers using IIS7, implementing URL rewriting rules, 301 redirects, and .NET Framework 3.5 conversions",
+          "metrics": "Scaled from 1 server to 3-server web farm",
+          "keywords": [
+            "IIS7",
+            "web farm",
+            "URL rewriting",
+            "migration",
+            "scaling"
+          ],
+          "category": "scale"
+        },
+        {
+          "text": "Introduced programming best practices including Microsoft Automated Unit Testing, eliminating thousands of lines of code while improving performance and maintainability through SEO techniques and OO patterns",
+          "keywords": [
+            "unit testing",
+            "best practices",
+            "SEO",
+            "refactoring",
+            "OOP"
+          ],
+          "category": "force-multiplier"
+        },
+        {
+          "text": "Quickly addressed critical ecommerce site issues saving the company thousands of dollars in missed revenue and support fees",
+          "keywords": [
+            "ecommerce",
+            "incident response",
+            "revenue protection"
+          ],
+          "category": "business-impact"
+        },
+        {
+          "text": "Developed SSRS reports for inventory and sales analytics, providing the operations team with visibility into book processing volumes and fulfillment metrics",
+          "keywords": [
+            "SSRS",
+            "SQL Server Reporting Services",
+            "reporting",
+            "inventory",
+            "analytics"
+          ],
+          "category": "technical-execution"
+        }
+      ],
+      "technologies": [
+        "C#",
+        "ASP.NET",
+        "VB.NET",
+        "JavaScript",
+        "jQuery",
+        "LINQ",
+        "SQL Server 2005",
+        "SSRS",
+        "IIS7",
+        ".NET Framework 3.5"
+      ]
+    },
+    {
+      "company": "Memorial Health Systems",
+      "title": "Junior Systems Analyst",
+      "startDate": "April 2006",
+      "endDate": "October 2008",
+      "location": "South Bend, IN",
+      "remote": false,
+      "bullets": [
+        {
+          "text": "Created 30-40 Crystal Reports, 10 Cerner CCL reports, 5 McKesson Star reports, and 5 SSRS reports collecting data from disparate databases (Oracle, SQL Server, flat files) for clinical use",
+          "metrics": "50+ reports across multiple reporting platforms",
+          "keywords": [
+            "Crystal Reports",
+            "Cerner CCL",
+            "McKesson",
+            "SSRS",
+            "Oracle",
+            "SQL Server",
+            "healthcare"
+          ],
+          "category": "technical-execution"
+        },
+        {
+          "text": "Developed a cost-saving application with C#, Microsoft AJAX, and ASP.NET to streamline billing for specialty surgical products not in common inventory such as prosthetics",
+          "keywords": [
+            "C#",
+            "ASP.NET",
+            "AJAX",
+            "healthcare",
+            "billing",
+            "cost savings"
+          ],
+          "category": "business-impact"
+        },
+        {
+          "text": "Created a 4-tier solution to import insurance recipient data into SQL Server from text files using ASP.NET, C#, AJAX, and SSIS with extensive validation to filter incorrect data",
+          "keywords": [
+            "ASP.NET",
+            "C#",
+            "SSIS",
+            "ETL",
+            "data validation",
+            "SQL Server"
+          ],
+          "category": "architecture"
+        },
+        {
+          "text": "Created a client/server application with C#, JavaScript, and ASP.NET interfacing with label printers and handheld scanners",
+          "keywords": [
+            "C#",
+            "ASP.NET",
+            "hardware integration",
+            "barcode scanners"
+          ],
+          "category": "technical-execution"
+        }
+      ],
+      "technologies": [
+        "C#",
+        "ASP.NET",
+        "JavaScript",
+        "VB",
+        "SQL Server",
+        "Oracle",
+        "MySQL",
+        "Crystal Reports",
+        "Cerner CCL",
+        "McKesson STAR",
+        "SSRS",
+        "SSIS",
+        "AJAX"
+      ]
+    },
+    {
+      "company": "The Pinnacle Corporation",
+      "title": "Programmer Analyst",
+      "startDate": "March 2005",
+      "endDate": "April 2006",
+      "location": "Laporte, IN",
+      "remote": false,
+      "bullets": [
+        {
+          "text": "Maintained and created supporting software for the Pinnacle Point of Sale (POS) application written in Delphi",
+          "keywords": [
+            "Delphi",
+            "POS",
+            "point of sale"
+          ],
+          "category": "technical-execution"
+        },
+        {
+          "text": "Created functionality for existing software to interface with hardware devices including LED displays, touch screens, and PDAs using Delphi",
+          "keywords": [
+            "Delphi",
+            "hardware integration",
+            "LED displays",
+            "touch screens",
+            "PDAs"
+          ],
+          "category": "technical-execution"
+        },
+        {
+          "text": "Created a large part of Pinnacle's Inventory Fulfillment system using Delphi, FoxPro, and Sybase SQL",
+          "keywords": [
+            "Delphi",
+            "FoxPro",
+            "Sybase SQL",
+            "inventory management"
+          ],
+          "category": "technical-execution"
+        }
+      ],
+      "technologies": [
+        "Delphi",
+        "FoxPro",
+        "Sybase SQL"
+      ]
+    },
+    {
+      "company": "Maplenet Inc.",
+      "title": "Help Desk Technician",
+      "startDate": "June 2001",
+      "endDate": "March 2005",
+      "location": "Goshen, IN",
+      "remote": false,
+      "bullets": [
+        {
+          "text": "Provided software and hardware technical support including Windows installation and Local Area Network configuration for home users",
+          "keywords": [
+            "technical support",
+            "Windows",
+            "networking",
+            "LAN"
+          ],
+          "category": "technical-execution"
+        },
+        {
+          "text": "Wrote formal technical training documentation for end users and new employees; trained all new help desk staff",
+          "keywords": [
+            "documentation",
+            "training",
+            "onboarding"
+          ],
+          "category": "force-multiplier"
+        }
+      ],
+      "technologies": [
+        "Windows",
+        "Networking",
+        "Hardware"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Indiana University South Bend",
+      "degree": "B.S.",
+      "field": "Computer Science",
+      "location": "South Bend, IN",
+      "graduationYear": 2004,
+      "gpa": "3.16/4.0"
+    }
+  ],
+  "certifications": []
+}

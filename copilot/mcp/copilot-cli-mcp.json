@@ -1,0 +1,45 @@
+{
+  "$comment": "Copilot CLI MCP server registration (mcpServers object, Claude-Desktop-style). Merge these entries into your Copilot CLI MCP config (e.g. ~/.copilot/mcp-config.json or the CLI's configured MCP file). Same stdio servers as .vscode/mcp.json. Adjust the absolute paths if you relocate ~/workspace/ai/mcp/mcp-scripts. See MIGRATION-NOTES.md for per-server credential/backend requirements.",
+  "mcpServers": {
+    "git": {
+      "command": "npx",
+      "args": ["-y", "tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/git.ts"]
+    },
+    "io": {
+      "command": "npx",
+      "args": ["-y", "tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/io.ts"]
+    },
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/postgres.ts"]
+    },
+    "linear": {
+      "command": "npx",
+      "args": ["-y", "tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/linear.ts"]
+    },
+    "jira": {
+      "command": "npx",
+      "args": ["-y", "tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/jira.ts"]
+    },
+    "prometheus": {
+      "command": "npx",
+      "args": ["-y", "tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/prometheus.ts"]
+    },
+    "jaeger": {
+      "command": "npx",
+      "args": ["-y", "tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/jaeger.ts"]
+    },
+    "grafana": {
+      "command": "npx",
+      "args": ["-y", "tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/grafana.ts"]
+    },
+    "rag": {
+      "command": "npx",
+      "args": ["-y", "tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/rag.ts"]
+    },
+    "work-summary": {
+      "command": "npx",
+      "args": ["-y", "tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/work-summary.ts"]
+    }
+  }
+}

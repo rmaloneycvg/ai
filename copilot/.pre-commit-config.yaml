@@ -1,0 +1,29 @@
+# Pre-commit hooks that replace Kiro's always-on PreToolUse security guards.
+#
+# WHY: GitHub Copilot has no portable always-on PreToolUse gate. Kiro enforced
+# secret/config protection on every tool call via hooks/*.json + scripts/*.sh.
+# Copilot agent-scoped `hooks:` run only in the Local harness (Preview) and do
+# not cover the CLI or cloud agent. Moving these guards to pre-commit + CI keeps
+# equivalent protection regardless of which agent surface made the change.
+#
+# Install:  pip install pre-commit && pre-commit install
+# Run once: pre-commit run --all-files
+repos:
+  - repo: local
+    hooks:
+      - id: check-secrets
+        name: Block secret-shaped content (ported from Kiro 01-check-secrets)
+        entry: hooks/scripts/check-secrets-precommit.sh
+        language: script
+        pass_filenames: true
+        stages: [pre-commit]
+      # guard-config-writes is Kiro-specific: it protects ~/.kiro/settings,
+      # permissions.yaml, ~/.kiro/hooks, ~/.kiro/agents — paths that don't exist in
+      # Copilot. Re-scope its protected-path list before enabling. See MIGRATION-NOTES.md.
+      # - id: guard-config-writes
+      #   name: Guard enforcement-surface files (ported from Kiro 03-guard-config-writes)
+      #   entry: hooks/scripts/guard-config-writes.sh
+      #   language: script
+      #   pass_filenames: false
+      #   stages: [pre-commit]
+      #   always_run: true

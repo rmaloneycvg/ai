@@ -1,0 +1,55 @@
+{
+  "$comment": "Copilot / VS Code MCP server registration for the ported Kiro MCP servers. Each server is the existing stdio server under ~/workspace/ai/mcp/mcp-scripts/servers, launched with tsx. Paths are absolute so this works when the staging tree is copied elsewhere; adjust MCP_SCRIPTS_DIR if you relocate the server code. No secrets are stored here — postgres/linear/jira/grafana receive connection details as tool parameters or via their own backend config, not env vars. See MIGRATION-NOTES.md.",
+  "servers": {
+    "git": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/git.ts"]
+    },
+    "io": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/io.ts"]
+    },
+    "postgres": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/postgres.ts"]
+    },
+    "linear": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/linear.ts"]
+    },
+    "jira": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/jira.ts"]
+    },
+    "prometheus": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/prometheus.ts"]
+    },
+    "jaeger": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/jaeger.ts"]
+    },
+    "grafana": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/grafana.ts"]
+    },
+    "rag": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/rag.ts"]
+    },
+    "work-summary": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "tsx", "/home/ryanm/workspace/ai/mcp/mcp-scripts/servers/work-summary.ts"]
+    }
+  }
+}
