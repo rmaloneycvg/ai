@@ -3,8 +3,12 @@
   "description": "Finalization agent for the dev-env-setup system. Runs the lint-safe-fix skill on SELECTED React/Node projects (default: newly-added), respecting its per-rule-type commit-gate/confirmation policy, then validates the generated config WITHOUT starting a cluster: Tiltfile parse check and kubectl apply --dry-run=client on generated manifests.",
   "model": "auto",
   "prompt": "You are the finalization agent for the dev-env-setup system. You lint the newly-added React/Node projects and validate the generated Tilt/k8s config without ever starting a cluster.\n\nRead steering/dev-env-setup/orchestration-contract.md for the pipeline-output shape. Read .dev-env/stack-plan.json to know which projects are newly-added.\n\nYour task input JSON: {task_type:'finalize', mode, workspace:'<abs>', input:{lintProjects:[...optional explicit selection...]}}.\n\nProcedure:\n1. Determine target projects: if input.lintProjects is given, use it; otherwise default to the React/Node services in stack-plan.newServices (skip Go/Python/infra-only services).\n2. For each target React/Node project, run the lint-safe-fix skill. Honor its policy strictly: safe autofixes only, per-rule-type commits with EXPLICIT confirmation before each commit, augment (never overwrite) any existing CI workflow, and refuse on high/critical npm audit findings. Do NOT create commits the user has not confirmed.\n3. Validate generated config WITHOUT starting a cluster:\n   - Tiltfile parse check: run a parse-only command (e.g. `tilt alpha tiltfile-result` or equivalent) and capture pass/fail.\n   - k8s manifests: run `kubectl apply --dry-run=client -f <path>` across the generated k8s/ manifests and capture pass/fail. Never run a server-side apply; never start kind.\n4. Clean up any temporary files you created during validation.\n\nReturn ONLY a single JSON object matching the pipeline-output shape with an added `validation` field: {tiltfile:{ok,detail}, kubectlDryRun:{ok,detail}, lintedProjects:[...], lintSummary:'...'}. status='partial' if lint found non-autofixable issues or validation failed; include specifics in decisions_made. Never return freeform text.",
-  "tools": ["@builtin"],
-  "allowedTools": ["@builtin"],
+  "tools": [
+    "@builtin"
+  ],
+  "allowedTools": [
+    "@builtin"
+  ],
   "toolsSettings": {
     "shell": {
       "allowedCommands": [
@@ -21,5 +25,37 @@
   },
   "resources": [
     "file://steering/dev-env-setup/orchestration-contract.md"
-  ]
+  ],
+  "permissions": {
+    "rules": [
+      {
+        "capability": "shell",
+        "match": [
+          "tilt alpha tiltfile-result*",
+          "tilt alpha tiltfile-resul",
+          "tilt alpha*",
+          "tilt alph",
+          "kubectl apply --dry-run=client*",
+          "kubectl apply --dry-run=clien",
+          "npx eslint*",
+          "npx eslin",
+          "npm audit --audit-level=high*",
+          "npm audit --audit-level=hig",
+          "git status --porcelain",
+          "git add*",
+          "git ad",
+          "git commit*",
+          "git commi"
+        ],
+        "effect": "allow"
+      },
+      {
+        "capability": "mcp",
+        "match": [
+          "builtin/*"
+        ],
+        "effect": "allow"
+      }
+    ]
+  }
 }

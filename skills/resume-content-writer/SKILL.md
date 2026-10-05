@@ -1,21 +1,23 @@
 ---
 name: resume-content-writer
-description: Use when the user needs tailored resume bullets, executive summaries, cover letters, or full resume content generated for a specific job description. Reads experience data from references/experience.json, analyzes the JD, and produces structured JSON output with resume_content, cover_letter_content, and a self-score.
-compatibility: Requires Python 3.10+ with python-docx. Run scripts/setup.sh to install dependencies into a local venv.
+description: Use when the user needs to generate a resume and cover lettered tailored to a job description (JD). 
+compatibility: Requires Python 3.10+ with python-docx. Run /home/ryanm/workspace/ai/skills/resume-content-writer/scripts/setup.sh to install dependencies into a local venv.
 metadata: 
   scripts: 
-    - scripts/generate_docx.py
+    - /home/ryanm/workspace/ai/skills/resume-content-writer/scripts/generate_docx.py
+    - /home/ryanm/workspace/ai/skills/resume-content-writer/scripts/setup.sh
+    - /home/ryanm/workspace/ai/skills/resume-content-writer/scripts/config.py
+    - /home/ryanm/workspace/ai/skills/resume-content-writer/scripts/verify_setup.py
+    - /home/ryanm/workspace/ai/skills/resume-content-writer/scripts/parse_resume.py
+    - /home/ryanm/workspace/ai/skills/resume-content-writer/scripts/create_templates.py
   references:
-    - references/experience.json
+    - /home/ryanm/workspace/ai/skills/resume-content-writer/references/experience.json
 ---
 
 # Resume Content Writer
 
 Generate ATS-optimized, voice-authentic resume and cover letter content tailored to a specific job description.
 
-### Environment Setup
-All relative paths in this document (e.g., `references/`, `scripts/`) resolve relative to the directory containing this SKILL.md file. 
-Do not resolve paths relative to the current working directory of the invoking project.
 
 ### Output Directory
 All generated documents (.docx files, templates) are written to a configurable output directory. 
@@ -26,7 +28,7 @@ All scripts (`setup.sh`, `generate_docx.py`, `parse_resumes.py`, `create_templat
 
 ### Step 1: Load Source Data
 
-Read `references/experience.json` for all experience, skills, education, and personal info. This is the single source of truth — never fabricate beyond it.
+Read `/home/ryanm/workspace/ai/skills/resume-content-writer/references/experience.json` for all experience, skills, education, and personal info. This is the single source of truth — never fabricate beyond it.
 
 ### Step 2: Analyze the Job Description
 
@@ -55,7 +57,7 @@ Produce each section following these constraints:
 
 ### Step 5: Validate Against Source Truth
 
-Before finalizing content, perform a fact-check using `references/fabrication-checklist.md`:
+Before finalizing content, perform a fact-check using `/home/ryanm/workspace/ai/skills/resume-content-writer/references/fabrication-checklist.md`:
 - Verify every specific claim (metrics, technologies, context) appears in experience.json
 - Remove any domain assumptions not explicitly documented 
 - Ensure no industry-specific details are added beyond what's stated
@@ -79,8 +81,8 @@ Apply scoring criteria, report gaps, and return structured JSON:
 If the user wants .docx output, ensure dependencies are installed first (`scripts/setup.sh`), then run:
 ```bash
 TODAY=$(date +%Y-%m-%d)
-scripts/.venv/bin/python scripts/generate_docx.py --type resume --content content.json --date $TODAY --pdf
-scripts/.venv/bin/python scripts/generate_docx.py --type cover_letter --content content.json --date $TODAY --pdf
+scripts/.venv/bin/python /home/ryanm/workspace/ai/skills/resume-content-writer/scripts/generate_docx.py --type resume --content content.json --date $TODAY --pdf
+scripts/.venv/bin/python /home/ryanm/workspace/ai/skills/resume-content-writer/scripts/generate_docx.py --type cover_letter --content content.json --date $TODAY --pdf
 ```
 
 The script reads `targetCompany` from the content JSON to build the output path (`$RESUME_DIR/YYYY-MM-DD/CompanyName/`). Pass `--company "Name"` to override, `--date YYYY-MM-DD` to control the output directory date, or `--output path/to/file.docx` for a fully custom path.
@@ -98,7 +100,7 @@ The `--pdf` flag generates a matching PDF alongside the docx (requires Windows w
 | Combine text with keyword metadata | Claim undocumented skills |
 | | **Invent industry context not explicitly stated** |
 | | **Assume domain specificity (e.g., "scheduling" = "healthcare scheduling")** |
-| | **Add client details or use cases not documented** |
+| | **Add work history details or use cases not documented** |
 
 ## Hard Guardrails
 
@@ -118,21 +120,21 @@ The `--pdf` flag generates a matching PDF alongside the docx (requires Windows w
 
 For detailed guidance, load these as needed:
 
-- `references/guardrails.md` — Hard constraints, truthfulness rules, content red flags
-- `references/fabrication-checklist.md` — Validation checklist to prevent common fabrications
-- `references/voice.md` — Voice, tone, personality, anti-patterns, and examples
-- `references/ats-optimization.md` — ATS keyword strategy, formatting rules, quantification targets
-- `references/resume-format.md` — Section order, formatting templates, timeline structure
-- `references/cover-letter.md` — Cover letter structure, tone, and examples
-- `references/output-conventions.md` — File naming, directory structure, JSON schemas
-- `references/experience.json` — Source of truth for all experience data
+- `/home/ryanm/workspace/ai/skills/resume-content-writer/references/guardrails.md` — Hard constraints, truthfulness rules, content red flags
+- `/home/ryanm/workspace/ai/skills/resume-content-writer/references/fabrication-checklist.md` — Validation checklist to prevent common fabrications
+- `/home/ryanm/workspace/ai/skills/resume-content-writer/references/voice.md` — Voice, tone, personality, anti-patterns, and examples
+- `/home/ryanm/workspace/ai/skills/resume-content-writer/references/ats-optimization.md` — ATS keyword strategy, formatting rules, quantification targets
+- `/home/ryanm/workspace/ai/skills/resume-content-writer/references/resume-format.md` — Section order, formatting templates, timeline structure
+- `/home/ryanm/workspace/ai/skills/resume-content-writer/references/cover-letter.md` — Cover letter structure, tone, and examples
+- `/home/ryanm/workspace/ai/skills/resume-content-writer/references/output-conventions.md` — File naming, directory structure, JSON schemas
+- `/home/ryanm/workspace/ai/skills/resume-content-writer/references/experience.json` — Source of truth for all experience data
 
 ## Scripts
 
-- `scripts/generate_docx.py` — Generate ATS-optimized .docx from content JSON
-- `scripts/create_templates.py` — Generate template .docx files with named styles
-- `scripts/parse_resumes.py` — Extract structured data from existing .docx resumes
-- `scripts/setup.sh` — Install Python deps and generate templates
+- `/home/ryanm/workspace/ai/skills/resume-content-writer/scripts/generate_docx.py` — Generate ATS-optimized .docx from content JSON
+- `/home/ryanm/workspace/ai/skills/resume-content-writer/scripts/create_templates.py` — Generate template .docx files with named styles
+- `/home/ryanm/workspace/ai/skills/resume-content-writer/scripts/parse_resumes.py` — Extract structured data from existing .docx resumes
+- `/home/ryanm/workspace/ai/skills/resume-content-writer/scripts/setup.sh` — Install Python deps and generate templates
 
 ## Example Input
 

@@ -3,15 +3,42 @@
   "description": "Scaffolding sub-orchestrator for the dev-env-setup system. Reads the stack plan and spawns one des-scaffold-service sub-agent per NEW service IN PARALLEL, waits for all descriptors, then invokes des-integration once to generate/merge the shared Tiltfile and nginx.conf. Does not write code directly. This is a sub-agent that itself orchestrates sub-agents.",
   "model": "auto",
   "prompt": "You are the scaffolding sub-orchestrator for the dev-env-setup system. You do NOT write code yourself. You fan out per-service scaffolding to des-scaffold-service sub-agents IN PARALLEL, then fan in to a single des-integration run. You are spawned by the top-level dev-env-setup orchestrator — meaning you are a sub-agent that orchestrates its own sub-agents.\n\nRead steering/dev-env-setup/orchestration-contract.md for pipeline input/output shapes and idempotency rules.\n\nYour task input JSON: {task_type:'scaffold-orchestrate', mode, workspace:'<abs>'}. Read .dev-env/stack-plan.json for the service list and `newServices` (the names to scaffold this run — in adopt mode this excludes existing services).\n\nProcedure:\n1. For EACH name in stack-plan.newServices, construct a per-service pipeline-input JSON {task_type:'scaffold-service', mode, workspace, input:{service:<the matching service entry>, constraints:['pin exact versions','non-root container','OTLP wired']}}.\n2. Spawn all des-scaffold-service agents in ONE parallel batch (one per new service, each owning its own directory — no shared-file contention because they only write their own dir + descriptor + lockfile).\n3. Collect results. If any returns status='failed' with should_escalate=true, do NOT silently retry — record it and continue with the others; report the failure in your output. A single failed service must not block or re-run the successful ones (idempotency).\n4. After the batch completes, invoke des-integration ONCE with {task_type:'integrate', mode, workspace} to generate/merge the Tiltfile + nginx.conf from ALL descriptors (discovered + scaffolded).\n5. If des-integration returns status='partial' (adopt-mode diff awaiting confirmation), surface that in your output.\n\nUse toolsSettings.crew to spawn only des-scaffold-service and des-integration.\n\nReturn ONLY a single JSON object matching the pipeline-output shape, aggregating per-service results in decisions_made and listing all descriptors_written and files_created/modified. Never return freeform text.",
-  "tools": ["@builtin"],
-  "allowedTools": ["@builtin"],
+  "tools": [
+    "@builtin"
+  ],
+  "allowedTools": [
+    "@builtin"
+  ],
   "toolsSettings": {
     "crew": {
-      "availableAgents": ["des-scaffold-service", "des-integration"],
-      "trustedAgents": ["des-*"]
+      "availableAgents": [
+        "des-scaffold-service",
+        "des-integration"
+      ],
+      "trustedAgents": [
+        "des-*"
+      ]
     }
   },
   "resources": [
     "file://steering/dev-env-setup/orchestration-contract.md"
-  ]
+  ],
+  "permissions": {
+    "rules": [
+      {
+        "capability": "subagent",
+        "match": [
+          "des-*"
+        ],
+        "effect": "allow"
+      },
+      {
+        "capability": "mcp",
+        "match": [
+          "builtin/*"
+        ],
+        "effect": "allow"
+      }
+    ]
+  }
 }
